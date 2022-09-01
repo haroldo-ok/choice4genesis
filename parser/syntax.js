@@ -3,8 +3,9 @@ const parse = source => {
 	
 	return {
 		type: 'script',
-		body: lines.map(line => ({
+		body: lines.map((line, number) => ({
 			type: 'text',
+			line: number + 1,
 			content: line
 		}))
 	};
