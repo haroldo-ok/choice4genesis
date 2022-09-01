@@ -1,0 +1,27 @@
+{
+  "name": "choice4genesis",
+  "version": "0.0.1",
+  "description": "A ChoiceScript clone that generates SGDK-compatible C source for the Sega Genesis ",
+  "main": "index.js",
+  "scripts": {
+    "test": "jest"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/haroldo-ok/choice4genesis.git"
+  },
+  "keywords": [
+    "choose-your-own-adventure",
+    "sega-genesis",
+    "homebrew",
+    "sgdk",
+    "compiler",
+    "visual-novel-engine"
+  ],
+  "author": "Haroldo de Oliveira Pinheiro",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/haroldo-ok/choice4genesis/issues"
+  },
+  "homepage": "https://github.com/haroldo-ok/choice4genesis#readme"
+}
