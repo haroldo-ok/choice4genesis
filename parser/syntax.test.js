@@ -51,3 +51,27 @@ const SOURCE = `
 		]
 	});
 });
+
+test('parse nested command', () => {
+	
+const SOURCE = `
+* example
+	One line
+	Another line
+`
+
+	expect(parse(SOURCE)).toEqual({
+		type: 'script',
+		body: [
+			{ 
+				type: 'command', 
+				line: 2, 
+				command: 'example',
+				body: [
+					{ type: 'text', line: 3, text: 'One line' },
+					{ type: 'text', line: 4, text: 'Another line' },
+				]
+			},
+		]
+	});
+});
