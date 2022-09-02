@@ -22,14 +22,17 @@ const parse = source => {
 		line: index + 1
 	}));
 	
-	const body = lines.map(({ text, line}) => (text ? {
-		type: 'text',
-		line,
-		text
-	} : {
-		type: 'blank',
-		line
-	}));
+	const body = lines.map(({ text, line}) => {
+		if (!text) {
+			return { type: 'blank', line };
+		}
+		
+		if (text[0] === '*') {
+			return { type: 'command', line, command: text.substring(1).trim() };
+		}
+		
+		return { type: 'text', line, text };
+	});
 	
 	return {
 		type: 'script',
