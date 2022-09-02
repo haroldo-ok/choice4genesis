@@ -114,3 +114,52 @@ const SOURCE = `
 		]
 	});
 });
+
+
+test('parse deeply nested commands', () => {
+	
+const SOURCE = `
+* level_1
+	* level_1_1
+		* level_1_1_1
+		* level_1_1_2
+	* level_1_2
+	Another line
+* another
+	One more line
+	Yet another line
+`
+
+	expect(parse(SOURCE)).toEqual({
+		type: 'script',
+		body: [
+			{ 
+				type: 'command', 
+				line: 2, 
+				command: 'level_1',
+				body: [
+					{ 
+						type: 'command', 
+						line: 3, 
+						command: 'level_1_1',
+						body: [
+							{ type: 'command', line: 4, command: 'level_1_1_1' },
+							{ type: 'command', line: 5, command: 'level_1_1_2' },
+						]
+					},
+					{ type: 'command', line: 6, command: 'level_1_2' },
+					{ type: 'text', line: 7, text: 'Another line' },
+				]
+			},
+			{ 
+				type: 'command', 
+				line: 8, 
+				command: 'another',
+				body: [
+					{ type: 'text', line: 9, text: 'One more line' },
+					{ type: 'text', line: 10, text: 'Yet another line' },
+				]
+			},
+		]
+	});
+});
