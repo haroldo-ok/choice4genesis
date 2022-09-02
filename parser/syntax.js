@@ -1,12 +1,18 @@
 const parse = source => {
-	const lines = source.split(/\r?\n/g);
+	const lines = source.split(/\r?\n/g).map((text, index) => ({
+		text: text.trimEnd(),
+		line: index + 1
+	}));
 	
 	return {
 		type: 'script',
-		body: lines.map((line, number) => ({
+		body: lines.map(({ text, line}) => (text ? {
 			type: 'text',
-			line: number + 1,
-			content: line
+			line,
+			text
+		} : {
+			type: 'blank',
+			line
 		}))
 	};
 };
