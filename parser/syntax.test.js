@@ -35,3 +35,19 @@ const SOURCE = `
 		]
 	});
 });
+
+test('parse simple options', () => {
+	
+const SOURCE = `
+# I will choose this
+#I will choose that
+`
+
+	expect(parse(SOURCE)).toEqual({
+		type: 'script',
+		body: [
+			{ type: 'option', line: 2, text: 'I will choose this' },
+			{ type: 'option', line: 3, text: 'I will choose that' }
+		]
+	});
+});

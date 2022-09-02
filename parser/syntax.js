@@ -31,6 +31,10 @@ const parse = source => {
 			return { type: 'command', line, command: text.substring(1).trim() };
 		}
 		
+		if (text[0] === '#') {
+			return { type: 'option', line, text: text.substring(1).trim() };
+		}
+
 		return { type: 'text', line, text };
 	});
 	
