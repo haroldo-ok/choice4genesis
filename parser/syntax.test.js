@@ -36,6 +36,7 @@ const SOURCE = `
 	});
 });
 
+
 test('parse simple options', () => {
 	
 const SOURCE = `
@@ -51,6 +52,7 @@ const SOURCE = `
 		]
 	});
 });
+
 
 test('parse nested command', () => {
 	
@@ -70,6 +72,43 @@ const SOURCE = `
 				body: [
 					{ type: 'text', line: 3, text: 'One line' },
 					{ type: 'text', line: 4, text: 'Another line' },
+				]
+			},
+		]
+	});
+});
+
+
+test('parse multiple nested commands', () => {
+	
+const SOURCE = `
+* example
+	One line
+	Another line
+* another
+	One more line
+	Yet another line
+`
+
+	expect(parse(SOURCE)).toEqual({
+		type: 'script',
+		body: [
+			{ 
+				type: 'command', 
+				line: 2, 
+				command: 'example',
+				body: [
+					{ type: 'text', line: 3, text: 'One line' },
+					{ type: 'text', line: 4, text: 'Another line' },
+				]
+			},
+			{ 
+				type: 'command', 
+				line: 5, 
+				command: 'another',
+				body: [
+					{ type: 'text', line: 6, text: 'One more line' },
+					{ type: 'text', line: 7, text: 'Yet another line' },
 				]
 			},
 		]

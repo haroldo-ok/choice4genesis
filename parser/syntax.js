@@ -46,7 +46,7 @@ const parseBody = (lines, initialIndex, baseIndent) => {
 			const lastBody = body[body.length - 1];
 			const parsedChild = parseBody(lines, currentIndex, line.indent);
 			lastBody.body = parsedChild.body;
-			currentIndex = parsedChild.currentIndex + 1;
+			currentIndex = parsedChild.currentIndex;
 		}
 	}
 	
@@ -62,7 +62,7 @@ const parse = source => {
 		line: index + 1,
 		indent: /^\s*/.exec(text)[0].length
 	}));
-		
+
 	return {
 		type: 'script',
 		body: parseBody(lines, 0, 0).body
