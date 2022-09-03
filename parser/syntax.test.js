@@ -163,3 +163,14 @@ const SOURCE = `
 		]
 	});
 });
+
+
+test('check tab/space inconsinstency', () => {
+
+const SOURCE = '*example\n\tWith tab\n With space';
+
+	expect(parse(SOURCE).errors).toEqual([
+		{ line: 3, message: 'Inconsistent indentation, this line uses spaces, while line 2 uses tabs.' }
+	]);
+
+});

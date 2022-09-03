@@ -56,17 +56,50 @@ const parseBody = (lines, initialIndex, baseIndent) => {
 	}
 }
 
-const parse = source => {
-	const lines = source.split(/\r?\n/g).map((text, index) => ({
-		text: text.trim(),
-		line: index + 1,
-		indent: /^\s*/.exec(text)[0].length
-	}));
+const splitLines = (source, context) => source.split(/\r?\n/g).map((text, index) => {
+	const describeIndentChar = character => character === '\t' ? 'tabs' : 'spaces';
 
+	const lineNumber = index + 1;
+	const indentString = /^\s*/.exec(text)[0];
+	
+	if (indentString.length) {
+		const indentChar = indentString[0];
+		if (!context.indent) {
+			context.indent = {
+				firstIndentLine: lineNumber,
+				indentChar
+			};
+		} else if (indentChar != context.indent.indentChar) {
+			context.errors.push({
+				line: lineNumber, 
+				message: 
+					`Inconsistent indentation, this line uses ${describeIndentChar(indentChar)}, ` +
+					`while line 2 uses ${describeIndentChar(context.indent.indentChar)}.`
+			});
+		}
+	}
+	
 	return {
+		text: text.trim(),
+		line: lineNumber,
+		indent: indentString.length
+	};
+});
+
+const parse = source => {
+	const context = { errors: [] };
+	
+	const lines = splitLines(source, context);
+
+	const result = {
 		type: 'script',
 		body: parseBody(lines, 0, 0).body
 	};
+
+	if (context.errors.length) {
+		return { ...result, errors: context.errors };
+	}
+	return result;
 };
 
 module.exports = { parse };
