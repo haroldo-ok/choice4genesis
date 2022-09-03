@@ -64,7 +64,13 @@ const splitLines = (source, context) => source.split(/\r?\n/g).map((text, index)
 	
 	if (indentString.length) {
 		const indentChar = indentString[0];
-		if (!context.indent) {
+		
+		if (indentString.length && !!indentString.split('').find(ch => ch !== indentChar)) {
+			context.errors.push({
+				line: lineNumber, 
+				message: 'Inconsistent indentation, this line uses both spaces and tabs.'
+			});
+		} else if (!context.indent) {
 			context.indent = {
 				firstIndentLine: lineNumber,
 				indentChar

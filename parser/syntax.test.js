@@ -1,5 +1,6 @@
 const { parse } = require('./syntax');
 
+
 test('parse simple lines', () => {
 	
 const SOURCE = `
@@ -171,6 +172,28 @@ const SOURCE = '*example\n\tWith tab\n With space';
 
 	expect(parse(SOURCE).errors).toEqual([
 		{ line: 3, message: 'Inconsistent indentation, this line uses spaces, while line 2 uses tabs.' }
+	]);
+
+});
+
+
+test('check space/tab inconsinstency', () => {
+
+const SOURCE = '*example\n With space\n\tWith tabs';
+
+	expect(parse(SOURCE).errors).toEqual([
+		{ line: 3, message: 'Inconsistent indentation, this line uses tabs, while line 2 uses spaces.' }
+	]);
+
+});
+
+
+test('check tab/space inconsinstency on the same line', () => {
+
+const SOURCE = '*example\n\t  With mixed indentation on the same line';
+
+	expect(parse(SOURCE).errors).toEqual([
+		{ line: 2, message: 'Inconsistent indentation, this line uses both spaces and tabs.' }
 	]);
 
 });
