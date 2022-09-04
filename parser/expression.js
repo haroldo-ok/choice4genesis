@@ -84,8 +84,9 @@ const Identifier = P.regexp(/[a-z_][\w_]*/i)
 	.map(str => ["Identifier", str])
 	.desc("identifier");
 	
-// A comma
+// A few separators
 const comma = P.string(",");
+const colon = P.string(":");
 
 
 const table = [
@@ -100,6 +101,21 @@ const createExpressionParserObject = config => {
 	const Flag = config.flags && config.flags.length && P.regexp(new RegExp(config.flags.join('|')))
 		.map(str => ["Flag", str])
 		.desc("identifier");
+
+	const NamedParam = config.namedParams && P.lazy(() => P.alt(...Object.entries(config.namedParams).map(([k, v]) => {
+		const paramList = v.map((paramName, index) => {
+			const NamedParamParam = Expression.desc(k + ':' + paramName);
+			console.log({ NamedParamParam, index, Expression });
+			return index ? colon.trim(_).then(NamedParamParam) : NamedParamParam;
+		});
+		console.log(paramList);
+		const NamedParamParamList = P.seq(...paramList);
+		
+		return P.string(k + ':')
+			.then(NamedParamParamList)
+			.map(str => ['NamedParam', k])
+			.desc(k + ':')
+	})));
 	
 	// A basic value is any parenthesized expression or a number.
 	const Basic = P.lazy(() =>
@@ -119,6 +135,9 @@ const createExpressionParserObject = config => {
 	Expression = TableParser.trim(_);	
 	
 	let Parameter = Expression;
+	if (NamedParam) {
+		Parameter = NamedParam.trim(_).or(Parameter)
+	}
 	if (Flag) {
 		Parameter = Flag.trim(_).or(Parameter);
 	}
@@ -150,5 +169,6 @@ const createExpressionParser = config => {
 		return { line: lineNumber, params: result.value };
 	}
 };
+
 
 module.exports = { createExpressionParser };
