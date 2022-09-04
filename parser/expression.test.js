@@ -11,13 +11,24 @@ test('should perform simple addition', () => {
 	expect(result.errors).toBeFalsy();
 	expect(result).toMatchObject({ 
 		params: [
-			[ 'Add', [ 'Number', 1 ], [ 'Number', 3 ] ]
+			[ 'Add', [ 'NumberConstant', 1 ], [ 'NumberConstant', 3 ] ]
 		]			
 	});
 });
 
-test('should parse two expressions', () => {
+test('should parse a list of two expressions', () => {
 	const result = createExpressionParser({})('(1), (2)');
 	expect(result.errors).toBeFalsy();
-	expect(result).toMatchObject({ params: [ [ 'Number', 1 ], [ 'Number', 2 ] ] });
+	expect(result).toMatchObject({ params: [ [ 'NumberConstant', 1 ], [ 'NumberConstant', 2 ] ] });
+});
+
+test('should parse string constants', () => {
+	const result = createExpressionParser({})('"First string", "Second\nstring"');
+	expect(result.errors).toBeFalsy();
+	expect(result).toMatchObject({
+		params: [ 
+			[ 'StringConstant', "First string" ], 
+			[ 'StringConstant', "Second\nstring" ] 
+		]
+	});
 });

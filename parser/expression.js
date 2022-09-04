@@ -42,11 +42,39 @@ const BINARY_LEFT = (operatorsParser, nextParser) => {
 	);
 }
 
+// Turn escaped characters into real ones (e.g. "\\n" becomes "\n").
+// Taken from the "json.js?" example.
+function interpretEscapes(str) {
+  let escapes = {
+    b: "\b",
+    f: "\f",
+    n: "\n",
+    r: "\r",
+    t: "\t"
+  };
+  return str.replace(/\\(u[0-9a-fA-F]{4}|[^u])/, (_, escape) => {
+    let type = escape.charAt(0);
+    let hex = escape.slice(1);
+    if (type === "u") {
+      return String.fromCharCode(parseInt(hex, 16));
+    }
+    if (escapes.hasOwnProperty(type)) {
+      return escapes[type];
+    }
+    return type;
+  });
+}
+
 
 // A simple integer
-const Num = P.regexp(/[0-9]+/)
-	.map(str => ["Number", +str])
+const NumberConstant = P.regexp(/[0-9]+/)
+	.map(str => ["NumberConstant", +str])
 	.desc("number");
+
+// A simple string
+const StringConstant = P.regexp(/"((\\"|[^"])+)"/, 1)
+	.map(str => ["StringConstant", interpretEscapes(str)])
+	.desc("string");
 	
 let Expression;
 
@@ -55,7 +83,8 @@ const Basic = P.lazy(() =>
 	P.string("(")
 		.then(Expression)
 		.skip(P.string(")"))
-		.or(Num)
+		.or(NumberConstant)
+		.or(StringConstant)
 );
 
 // End: Utility functions from "math.js", from Parsimmon's demos
