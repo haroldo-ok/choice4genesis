@@ -100,23 +100,12 @@ const createExpressionParserObject = config => {
 	
 	const Flag = config.flags && config.flags.length && P.regexp(new RegExp(config.flags.join('|')))
 		.map(str => ["Flag", str])
-		.desc("identifier");
+		.desc("flag");
 
-	const NamedParam = config.namedParams && P.lazy(() => P.alt(...Object.entries(config.namedParams).map(([k, v]) => {
-		const paramList = v.map((paramName, index) => {
-			const NamedParamParam = Expression.desc(k + ':' + paramName);
-			console.log({ NamedParamParam, index, Expression });
-			return index ? colon.trim(_).then(NamedParamParam) : NamedParamParam;
-		});
-		console.log(paramList);
-		const NamedParamParamList = P.seq(...paramList);
-		
-		return P.string(k + ':')
-			.then(NamedParamParamList)
-			.map(str => ['NamedParam', k])
-			.desc(k + ':')
-	})));
-	
+	const NamedParam = config.namedParams && P.regexp(new RegExp(Object.keys(config.namedParams).join('|')))
+		.map(str => ["NamedParam", str])
+		.desc("named param");
+
 	// A basic value is any parenthesized expression or a number.
 	const Basic = P.lazy(() =>
 		P.string("(")
@@ -142,7 +131,7 @@ const createExpressionParserObject = config => {
 		Parameter = Flag.trim(_).or(Parameter);
 	}
 
-	const ParameterList = Parameter.sepBy(comma);
+	const ParameterList = Parameter.sepBy(comma.or(colon));
 	
 	return ParameterList;
 };
