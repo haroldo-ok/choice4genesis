@@ -76,6 +76,11 @@ const StringConstant = P.regexp(/"((\\"|[^"])+)"/, 1)
 	.map(str => ["StringConstant", interpretEscapes(str)])
 	.desc("string");
 	
+// A simple identifier
+const Identifier = P.regexp(/[a-z_][\w_]*/i)
+	.map(str => ["Identifier", str])
+	.desc("identifier");
+
 let Expression;
 
 // A basic value is any parenthesized expression or a number.
@@ -85,6 +90,7 @@ const Basic = P.lazy(() =>
 		.skip(P.string(")"))
 		.or(NumberConstant)
 		.or(StringConstant)
+		.or(Identifier)
 );
 
 // End: Utility functions from "math.js", from Parsimmon's demos

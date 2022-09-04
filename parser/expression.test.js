@@ -6,6 +6,7 @@ test('should reject an incorrect value', () => {
 	expect(result.errors.length).toBeTruthy();
 });
 
+
 test('should perform simple addition', () => {
 	const result = createExpressionParser({})('1 + 3');
 	expect(result.errors).toBeFalsy();
@@ -16,11 +17,13 @@ test('should perform simple addition', () => {
 	});
 });
 
+
 test('should parse a list of two expressions', () => {
 	const result = createExpressionParser({})('(1), (2)');
 	expect(result.errors).toBeFalsy();
 	expect(result).toMatchObject({ params: [ [ 'NumberConstant', 1 ], [ 'NumberConstant', 2 ] ] });
 });
+
 
 test('should parse string constants', () => {
 	const result = createExpressionParser({})('"First string", "Second\nstring"');
@@ -31,4 +34,11 @@ test('should parse string constants', () => {
 			[ 'StringConstant', "Second\nstring" ] 
 		]
 	});
+});
+
+
+test('should parse identifier', () => {
+	const result = createExpressionParser({})('oneIndentifier, someVariable');
+	expect(result.errors).toBeFalsy();
+	expect(result).toMatchObject({ params: [ [ 'Identifier', 'oneIndentifier' ], [ 'Identifier', 'someVariable' ] ] });
 });
