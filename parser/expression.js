@@ -75,6 +75,10 @@ const TableParser = table.reduce(
 
 Expression = TableParser.trim(_);
 
+const ExpressionList = Expression.sepBy(P.string(","));
+
+
+
 const formatExpected = expected => {
 	if (expected.length === 1) {
 		return "Expected: " + expected[0];
@@ -85,12 +89,12 @@ const formatExpected = expected => {
 
 const createExpressionParser = config => {
 	return (source, lineNumber) => {
-		const result = Expression.parse(source);
+		const result = ExpressionList.parse(source);
 		if (!result.status) {
 			const errorMessage = `Error on the expression on column ${result.index.column}: ${ formatExpected(result.expected) }`;
 			return { line: lineNumber, errors: [ errorMessage ] };
 		}
-		return { line: lineNumber, value: result.value };
+		return { line: lineNumber, params: result.value };
 	}
 };
 
