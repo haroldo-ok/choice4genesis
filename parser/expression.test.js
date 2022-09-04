@@ -42,3 +42,10 @@ test('should parse identifier', () => {
 	expect(result.errors).toBeFalsy();
 	expect(result).toMatchObject({ params: [ [ 'Identifier', 'oneIndentifier' ], [ 'Identifier', 'someVariable' ] ] });
 });
+
+
+test('should parse flag', () => {
+	const result = createExpressionParser({ flags: ['someFlag'] })('oneIndentifier, someFlag');
+	expect(result.errors).toBeFalsy();
+	expect(result).toMatchObject({ params: [ [ 'Identifier', 'oneIndentifier' ], [ 'Flag', 'someFlag' ] ] });
+});

@@ -71,6 +71,9 @@ const NumberConstant = P.regexp(/[0-9]+/)
 	.map(str => ["NumberConstant", +str])
 	.desc("number");
 
+// End: Utility functions from "math.js", from Parsimmon's demos
+
+
 // A simple string
 const StringConstant = P.regexp(/"((\\"|[^"])+)"/, 1)
 	.map(str => ["StringConstant", interpretEscapes(str)])
@@ -80,21 +83,9 @@ const StringConstant = P.regexp(/"((\\"|[^"])+)"/, 1)
 const Identifier = P.regexp(/[a-z_][\w_]*/i)
 	.map(str => ["Identifier", str])
 	.desc("identifier");
-
-let Expression;
-
-// A basic value is any parenthesized expression or a number.
-const Basic = P.lazy(() =>
-	P.string("(")
-		.then(Expression)
-		.skip(P.string(")"))
-		.or(NumberConstant)
-		.or(StringConstant)
-		.or(Identifier)
-);
-
-// End: Utility functions from "math.js", from Parsimmon's demos
-
+	
+// A comma
+const comma = P.string(",");
 
 
 const table = [
@@ -103,14 +94,39 @@ const table = [
   { type: BINARY_LEFT, ops: operators({ Add: "+", Subtract: "-" }) }
 ];
 
-const TableParser = table.reduce(
-	(acc, level) => level.type(level.ops, acc),
-	Basic
-);
+const createExpressionParserObject = config => {
+	let Expression;
+	
+	const Flag = config.flags && config.flags.length && P.regexp(new RegExp(config.flags.join('|')))
+		.map(str => ["Flag", str])
+		.desc("identifier");
+	
+	// A basic value is any parenthesized expression or a number.
+	const Basic = P.lazy(() =>
+		P.string("(")
+			.then(Expression)
+			.skip(P.string(")"))
+			.or(NumberConstant)
+			.or(StringConstant)
+			.or(Identifier)
+	);
+	
+	const TableParser = table.reduce(
+		(acc, level) => level.type(level.ops, acc),
+		Basic
+	);
 
-Expression = TableParser.trim(_);
+	Expression = TableParser.trim(_);	
+	
+	let Parameter = Expression;
+	if (Flag) {
+		Parameter = Flag.trim(_).or(Parameter);
+	}
 
-const ExpressionList = Expression.sepBy(P.string(","));
+	const ParameterList = Parameter.sepBy(comma);
+	
+	return ParameterList;
+};
 
 
 
@@ -123,8 +139,10 @@ const formatExpected = expected => {
 
 
 const createExpressionParser = config => {
+	const parser = createExpressionParserObject(config);
+	
 	return (source, lineNumber) => {
-		const result = ExpressionList.parse(source);
+		const result = parser.parse(source);
 		if (!result.status) {
 			const errorMessage = `Error on the expression on column ${result.index.column}: ${ formatExpected(result.expected) }`;
 			return { line: lineNumber, errors: [ errorMessage ] };
