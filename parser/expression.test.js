@@ -49,3 +49,12 @@ test('should parse flag', () => {
 	expect(result.errors).toBeFalsy();
 	expect(result).toMatchObject({ params: [ [ 'Identifier', 'oneIndentifier' ], [ 'Flag', 'someFlag' ] ] });
 });
+
+
+test('should parse named parameters', () => {
+	const result = createExpressionParser({ namedParams: { 'from': ['x', 'y'] } })('from: 123, 456');
+	expect(result.errors).toBeFalsy();
+	expect(result).toMatchObject({ params: [ [ 
+		'NamedParam', 'from', [ [ 'NumberConstant', 123 ], [ 'NumberConstant', 456 ] ] 
+	] ] });
+});
