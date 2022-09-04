@@ -51,10 +51,20 @@ test('should parse flag', () => {
 });
 
 
-test('should parse named parameters', () => {
-	const result = createExpressionParser({ namedParams: { 'from': ['x', 'y'] } })('from: 123, 456');
+test('should parse single named parameter', () => {
+	const result = createExpressionParser({ namedParams: { 'from': ['x', 'y'] } })('from( 123, 456)');
 	expect(result.errors).toBeFalsy();
 	expect(result).toMatchObject({ params: [ [ 
 		'NamedParam', 'from', [ [ 'NumberConstant', 123 ], [ 'NumberConstant', 456 ] ] 
 	] ] });
+});
+
+
+test('should parse multiple named parameters', () => {
+	const result = createExpressionParser({ namedParams: { 'from': ['x', 'y'] } })('from( 123, 456), to(789)');
+	expect(result.errors).toBeFalsy();
+	expect(result).toMatchObject({ params: [ 
+		[ 'NamedParam', 'from', [ [ 'NumberConstant', 123 ], [ 'NumberConstant', 456 ] ] ],
+		[ 'NamedParam', 'to', [ [ 'NumberConstant', 789 ] ] ] 
+	] });
 });

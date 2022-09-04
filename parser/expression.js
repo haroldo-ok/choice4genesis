@@ -80,7 +80,8 @@ const StringConstant = P.regexp(/"((\\"|[^"])+)"/, 1)
 	.desc("string");
 	
 // A simple identifier
-const Identifier = P.regexp(/[a-z_][\w_]*/i)
+const IDENTIFIER_REGEX = /[a-z_][\w_]*/i;
+const Identifier = P.regexp(IDENTIFIER_REGEX)
 	.map(str => ["Identifier", str])
 	.desc("identifier");
 	
@@ -98,12 +99,19 @@ const table = [
 const createExpressionParserObject = config => {
 	let Expression;
 	
+	const ExpressionList = P.lazy(() => Expression.trim(_).sepBy(comma));
+	
 	const Flag = config.flags && config.flags.length && P.regexp(new RegExp(config.flags.join('|')))
 		.map(str => ["Flag", str])
 		.desc("flag");
 
-	const NamedParam = config.namedParams && P.regexp(new RegExp(Object.keys(config.namedParams).join('|')))
-		.map(str => ["NamedParam", str])
+	const NamedParam = P.seq(
+			P.regexp(IDENTIFIER_REGEX).trim(_),
+			P.string("("),
+			ExpressionList,
+			P.string(")")
+		)
+		.map(([name, op, params, cp]) => ["NamedParam", name, params])
 		.desc("named param");
 
 	// A basic value is any parenthesized expression or a number.
@@ -123,15 +131,12 @@ const createExpressionParserObject = config => {
 
 	Expression = TableParser.trim(_);	
 	
-	let Parameter = Expression;
-	if (NamedParam) {
-		Parameter = NamedParam.trim(_).or(Parameter)
-	}
+	let Parameter = NamedParam.trim(_).or(Expression);
 	if (Flag) {
 		Parameter = Flag.trim(_).or(Parameter);
 	}
 
-	const ParameterList = Parameter.sepBy(comma.or(colon));
+	const ParameterList = Parameter.sepBy(comma);
 	
 	return ParameterList;
 };
