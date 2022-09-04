@@ -197,3 +197,14 @@ const SOURCE = '*example\n\t  With mixed indentation on the same line';
 	]);
 
 });
+
+
+test('check unexpected indent at the start of the file', () => {
+
+const SOURCE = '\tIndent at the start of the file';
+
+	expect(parse(SOURCE).errors).toEqual([
+		{ line: 1, message: 'Unexpected indentation at the start of the file.' }
+	]);
+
+});

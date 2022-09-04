@@ -32,7 +32,7 @@ const parseLine = ({ text, line}) => {
 	return { type: 'text', line, text };
 };
 
-const parseBody = (lines, initialIndex, baseIndent) => {
+const parseBody = (lines, initialIndex, baseIndent, context) => {
 	let currentIndex = initialIndex;
 	
 	const body = [];
@@ -44,9 +44,17 @@ const parseBody = (lines, initialIndex, baseIndent) => {
 			currentIndex++;
 		} else {
 			const lastBody = body[body.length - 1];
-			const parsedChild = parseBody(lines, currentIndex, line.indent);
-			lastBody.body = parsedChild.body;
-			currentIndex = parsedChild.currentIndex;
+			if (lastBody) {
+				const parsedChild = parseBody(lines, currentIndex, line.indent, context);
+				lastBody.body = parsedChild.body;
+				currentIndex = parsedChild.currentIndex;
+			} else {
+				context.errors.push({
+					line: line.line, 
+					message: 'Unexpected indentation at the start of the file.'
+				});
+				currentIndex = lines.length;
+			}				
 		}
 	}
 	
@@ -99,7 +107,7 @@ const parse = source => {
 
 	const result = {
 		type: 'script',
-		body: parseBody(lines, 0, 0).body
+		body: parseBody(lines, 0, 0, context).body
 	};
 
 	if (context.errors.length) {
