@@ -2,13 +2,12 @@ const { createExpressionParser } = require('./expression');
 
 
 test('should reject an incorrect value', () => {
-	const result = createExpressionParser({}).parse('?}{/~');
-	expect(result).toMatchObject({ status: false });
+	const result = createExpressionParser({})('?}{/~');
+	expect(result.errors.length).toBeTruthy();
 });
 
 test('should perform simple addition', () => {
-	const result = createExpressionParser({}).parse('1 + 3');
-	console.log(result);
-	expect(result).not.toMatchObject({ status: false });
-	expect(result).toEqual({ status: true, value: [ 'Add', [ 'Number', 1 ], [ 'Number', 3 ] ] });
+	const result = createExpressionParser({})('1 + 3');
+	expect(result.errors).toBeFalsy();
+	expect(result).toMatchObject({ value: [ 'Add', [ 'Number', 1 ], [ 'Number', 3 ] ] });
 });
