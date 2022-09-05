@@ -145,6 +145,9 @@ const createExpressionParserObject = config => {
 const buildResultObject = (result, lineNumber, config) => {
 	const errors = [];
 	
+	const isFlagArgument = argument => argument && argument[0] === 'Flag';
+	const isNamedArgument = argument => argument && argument[0] === 'NamedParam';
+	
 	const positional = (config.positional || []).map((paramName, index) => {
 		const argument = result.value[index];
 		if (!argument) {
@@ -152,7 +155,13 @@ const buildResultObject = (result, lineNumber, config) => {
 		}
 		return [ paramName, argument ]
 	});
-	console.log({ positional });
+	
+	const positionalLength = (config.positional || []).length;
+	const hasTooManyArguments = !!result.value.find((argument, index) => 
+		index >= positionalLength && !isFlagArgument(argument) && !isNamedArgument(argument));
+	if (hasTooManyArguments) {
+		errors.push('Too many arguments.');
+	}
 		 
 	const params = {};
 	if (positional.length) {

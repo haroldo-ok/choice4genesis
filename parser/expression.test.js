@@ -64,11 +64,13 @@ test('should parse identifier', () => {
 
 test('should validate if there are too few parameters', () => {
 	const result = createExpressionParser({ positional: ['z', 'w'] })('oneIndentifier');
-	expect(result.errors).toMatchObject([
-		'Missing argument for "w" at position 2.'
-	]);
+	expect(result.errors).toMatchObject([ 'Missing argument for "w" at position 2.' ]);
 });
 
+test('should validate if there are too many parameters', () => {
+	const result = createExpressionParser({ positional: ['z', 'w'] })('oneIndentifier, anotherIdentifier, excessIdentifier, moreExcessIdentifier');
+	expect(result.errors).toMatchObject([ 'Too many arguments.' ]);
+});
 
 /*
 test('should parse flag', () => {
