@@ -62,6 +62,14 @@ test('should parse identifier', () => {
 });
 
 
+test('should validate if there are too few parameters', () => {
+	const result = createExpressionParser({ positional: ['z', 'w'] })('oneIndentifier');
+	expect(result.errors).toMatchObject([
+		'Missing argument for "w" at position 2.'
+	]);
+});
+
+
 /*
 test('should parse flag', () => {
 	const result = createExpressionParser({ flags: ['someFlag'] })('oneIndentifier, someFlag');

@@ -145,8 +145,13 @@ const createExpressionParserObject = config => {
 const buildResultObject = (result, lineNumber, config) => {
 	const errors = [];
 	
-	const positional = (config.positional || []).map((paramName, index) => 
-		[ paramName, result.value[index] ]);
+	const positional = (config.positional || []).map((paramName, index) => {
+		const argument = result.value[index];
+		if (!argument) {
+			errors.push(`Missing argument for "${paramName}" at position ${index + 1}.`);
+		}
+		return [ paramName, argument ]
+	});
 	console.log({ positional });
 		 
 	const params = {};
