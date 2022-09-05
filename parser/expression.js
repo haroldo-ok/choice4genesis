@@ -142,6 +142,25 @@ const createExpressionParserObject = config => {
 };
 
 
+const buildResultObject = (result, lineNumber, config) => {
+	const errors = [];
+	
+	const positional = (config.positional || []).map((paramName, index) => 
+		[ paramName, result.value[index] ]);
+	console.log({ positional });
+		 
+	const params = {};
+	if (positional.length) {
+		params.positional = Object.fromEntries(positional);
+	}
+
+	const returnValue = { line: lineNumber, params };
+	if (errors.length) {
+		returnValue.errors = errors;
+	}		
+	return returnValue;
+};
+
 
 const formatExpected = expected => {
 	if (expected.length === 1) {
@@ -160,7 +179,7 @@ const createExpressionParser = config => {
 			const errorMessage = `Error on the expression on column ${result.index.column}: ${ formatExpected(result.expected) }`;
 			return { line: lineNumber, errors: [ errorMessage ] };
 		}
-		return { line: lineNumber, params: result.value };
+		return buildResultObject(result, lineNumber, config);
 	}
 };
 

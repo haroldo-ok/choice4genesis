@@ -1,49 +1,68 @@
 const { createExpressionParser } = require('./expression');
 
 
-test('should reject an incorrect value', () => {
+test('should reject a completely incorrect expression', () => {
 	const result = createExpressionParser({})('?}{/~');
 	expect(result.errors.length).toBeTruthy();
 });
 
 
-test('should perform simple addition', () => {
-	const result = createExpressionParser({})('1 + 3');
+test('should parse simple addition', () => {
+	const result = createExpressionParser({ positional: ['a']  })('1 + 3');
 	expect(result.errors).toBeFalsy();
 	expect(result).toMatchObject({ 
-		params: [
-			[ 'Add', [ 'NumberConstant', 1 ], [ 'NumberConstant', 3 ] ]
-		]			
+		params: {
+			positional: {
+				a: [ 'Add', [ 'NumberConstant', 1 ], [ 'NumberConstant', 3 ] ]
+			}
+		}			
 	});
 });
 
 
 test('should parse a list of two expressions', () => {
-	const result = createExpressionParser({})('(1), (2)');
+	const result = createExpressionParser({ positional: ['x', 'y'] })('(1), (2)');
 	expect(result.errors).toBeFalsy();
-	expect(result).toMatchObject({ params: [ [ 'NumberConstant', 1 ], [ 'NumberConstant', 2 ] ] });
+	expect(result).toMatchObject({ 
+		params: { 
+			positional: {
+				x: [ 'NumberConstant', 1 ], 
+				y: [ 'NumberConstant', 2 ] 
+			}
+		} 
+	});
 });
 
 
 test('should parse string constants', () => {
-	const result = createExpressionParser({})('"First string", "Second\nstring"');
+	const result = createExpressionParser({ positional: ['name', 'observation'] })('"First string", "Second\nstring"');
 	expect(result.errors).toBeFalsy();
 	expect(result).toMatchObject({
-		params: [ 
-			[ 'StringConstant', "First string" ], 
-			[ 'StringConstant', "Second\nstring" ] 
-		]
+		params: {
+			positional: {
+				name: [ 'StringConstant', "First string" ], 
+				observation: [ 'StringConstant', "Second\nstring" ] 
+			}
+		}
 	});
 });
 
 
 test('should parse identifier', () => {
-	const result = createExpressionParser({})('oneIndentifier, someVariable');
+	const result = createExpressionParser({ positional: ['z', 'w'] })('oneIndentifier, someVariable');
 	expect(result.errors).toBeFalsy();
-	expect(result).toMatchObject({ params: [ [ 'Identifier', 'oneIndentifier' ], [ 'Identifier', 'someVariable' ] ] });
+	expect(result).toMatchObject({ 
+		params: { 
+			positional: { 
+				z: [ 'Identifier', 'oneIndentifier' ], 
+				w: [ 'Identifier', 'someVariable' ] 
+			} 
+		} 
+	});
 });
 
 
+/*
 test('should parse flag', () => {
 	const result = createExpressionParser({ flags: ['someFlag'] })('oneIndentifier, someFlag');
 	expect(result.errors).toBeFalsy();
@@ -68,3 +87,4 @@ test('should parse multiple named parameters', () => {
 		[ 'NamedParam', 'to', [ [ 'NumberConstant', 789 ] ] ] 
 	] });
 });
+*/
