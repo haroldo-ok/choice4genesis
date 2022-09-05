@@ -88,14 +88,18 @@ test('should validate if there is no named parameter placed where there should b
 	expect(result.errors).toMatchObject([ 'Argument "w" at position 2 shouldn\'t be a named parameter.' ]);
 });
 
-/*
+
 test('should parse flag', () => {
-	const result = createExpressionParser({ flags: ['someFlag'] })('oneIndentifier, someFlag');
+	const result = createExpressionParser({ positional: ['a'], flags: ['someFlag'] })('oneIndentifier, someFlag');
 	expect(result.errors).toBeFalsy();
-	expect(result).toMatchObject({ params: [ [ 'Identifier', 'oneIndentifier' ], [ 'Flag', 'someFlag' ] ] });
+	expect(result).toMatchObject({ params: {
+		positional: { a: [ 'Identifier', 'oneIndentifier' ] },
+		flags: { someFlag: true }
+	} });
 });
 
 
+/*
 test('should parse single named parameter', () => {
 	const result = createExpressionParser({ namedParams: { 'from': ['x', 'y'] } })('from( 123, 456)');
 	expect(result.errors).toBeFalsy();

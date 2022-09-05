@@ -161,6 +161,9 @@ const buildResultObject = (result, lineNumber, config) => {
 		return [ paramName, argument ]
 	});
 	
+	// Collect flags
+	const flags = result.value.filter(isFlagArgument).map(([type, flagName]) => flagName);
+	
 	// Check if there are too many arguments
 	const positionalLength = (config.positional || []).length;
 	const hasTooManyArguments = !!result.value.find((argument, index) => 
@@ -172,6 +175,9 @@ const buildResultObject = (result, lineNumber, config) => {
 	const params = {};
 	if (positional.length) {
 		params.positional = Object.fromEntries(positional);
+	}
+	if (flags.length) {
+		params.flags = Object.fromEntries(flags.map(name => [name, true]));
 	}
 
 	const returnValue = { line: lineNumber, params };
