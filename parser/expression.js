@@ -147,15 +147,21 @@ const buildResultObject = (result, lineNumber, config) => {
 	
 	const isFlagArgument = argument => argument && argument[0] === 'Flag';
 	const isNamedArgument = argument => argument && argument[0] === 'NamedParam';
-	
+
+	// Collect positional arguments
 	const positional = (config.positional || []).map((paramName, index) => {
 		const argument = result.value[index];
 		if (!argument) {
 			errors.push(`Missing argument for "${paramName}" at position ${index + 1}.`);
+		} else if (isFlagArgument(argument)) {
+			errors.push(`Argument "${paramName}" at position ${index + 1} shouldn't be a flag.`);
+		} else if (isNamedArgument(argument)) {
+			errors.push(`Argument "${paramName}" at position ${index + 1} shouldn't be a named parameter.`);
 		}
 		return [ paramName, argument ]
 	});
 	
+	// Check if there are too many arguments
 	const positionalLength = (config.positional || []).length;
 	const hasTooManyArguments = !!result.value.find((argument, index) => 
 		index >= positionalLength && !isFlagArgument(argument) && !isNamedArgument(argument));

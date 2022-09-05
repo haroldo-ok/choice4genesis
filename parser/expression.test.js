@@ -67,9 +67,25 @@ test('should validate if there are too few parameters', () => {
 	expect(result.errors).toMatchObject([ 'Missing argument for "w" at position 2.' ]);
 });
 
+
 test('should validate if there are too many parameters', () => {
-	const result = createExpressionParser({ positional: ['z', 'w'] })('oneIndentifier, anotherIdentifier, excessIdentifier, moreExcessIdentifier');
+	const result = createExpressionParser({ positional: ['z', 'w'] })(
+		'oneIndentifier, anotherIdentifier, excessIdentifier, moreExcessIdentifier');
 	expect(result.errors).toMatchObject([ 'Too many arguments.' ]);
+});
+
+
+test('should validate if there is no flag placed on the positional parameters', () => {
+	const result = createExpressionParser({ positional: ['z', 'w'], flags: ['someFlag'] })(
+		'oneIndentifier, someFlag');
+	expect(result.errors).toMatchObject([ 'Argument "w" at position 2 shouldn\'t be a flag.' ]);
+});
+
+
+test('should validate if there is no named parameter placed where there should be positional parameters', () => {
+	const result = createExpressionParser({ positional: ['z', 'w'], namedParams: { 'from': ['x', 'y'] } })(
+		'oneIndentifier, from(123,  456)');
+	expect(result.errors).toMatchObject([ 'Argument "w" at position 2 shouldn\'t be a named parameter.' ]);
 });
 
 /*
