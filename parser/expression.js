@@ -145,9 +145,9 @@ const createExpressionParserObject = config => {
 const isFlagArgument = argument => argument && argument[0] === 'Flag';
 const isNamedArgument = argument => argument && argument[0] === 'NamedParam';
 
-const collectPositionalArguments = (result, config, errors) =>
-	(config.positional || []).map((paramName, index) => {
-		const argument = result.value[index];
+const collectPositionalArguments = (paramValues, paramNames, errors) =>
+	(paramNames || []).map((paramName, index) => {
+		const argument = paramValues[index];
 		if (!argument) {
 			errors.push(`Missing argument for "${paramName}" at position ${index + 1}.`);
 		} else if (isFlagArgument(argument)) {
@@ -173,21 +173,23 @@ const collectFlags = (result, config, errors) =>
 
 const buildResultObject = (result, lineNumber, config) => {
 	const errors = [];
-	
-	const positional = collectPositionalArguments(result, config, errors);	
-	const flags = collectFlags(result, config, errors);
-	
-	validateTooManyArguments(result, config, errors);
-	
-	// Check if there are too many arguments
-		 
 	const params = {};
+
+	const positional = collectPositionalArguments(result.value, config.positional, errors);	
+	validateTooManyArguments(result, config, errors);
 	if (positional.length) {
 		params.positional = Object.fromEntries(positional);
 	}
+
+	const flags = collectFlags(result, config, errors);
 	if (flags.length) {
 		params.flags = Object.fromEntries(flags.map(name => [name, true]));
 	}
+
+	/*
+	// Collect named params
+	const named = Object.entries(config.named || {});
+	*/
 
 	const returnValue = { line: lineNumber, params };
 	if (errors.length) {

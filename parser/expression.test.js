@@ -83,7 +83,7 @@ test('should validate if there is no flag placed on the positional parameters', 
 
 
 test('should validate if there is no named parameter placed where there should be positional parameters', () => {
-	const result = createExpressionParser({ positional: ['z', 'w'], namedParams: { 'from': ['x', 'y'] } })(
+	const result = createExpressionParser({ positional: ['z', 'w'], named: { 'from': ['x', 'y'] } })(
 		'oneIndentifier, from(123,  456)');
 	expect(result.errors).toMatchObject([ 'Argument "w" at position 2 shouldn\'t be a named parameter.' ]);
 });
@@ -100,17 +100,20 @@ test('should parse flag', () => {
 
 
 /*
+
 test('should parse single named parameter', () => {
-	const result = createExpressionParser({ namedParams: { 'from': ['x', 'y'] } })('from( 123, 456)');
+	const result = createExpressionParser({ named: { 'from': ['x', 'y'] } })('from( 123, 456)');
 	expect(result.errors).toBeFalsy();
-	expect(result).toMatchObject({ params: [ [ 
-		'NamedParam', 'from', [ [ 'NumberConstant', 123 ], [ 'NumberConstant', 456 ] ] 
-	] ] });
+	expect(result).toMatchObject({ params: {  
+		named: {
+			from: { x: 123, y: 456 }
+		}
+	} });
 });
 
 
 test('should parse multiple named parameters', () => {
-	const result = createExpressionParser({ namedParams: { 'from': ['x', 'y'] } })('from( 123, 456), to(789)');
+	const result = createExpressionParser({ named: { 'from': ['x', 'y'] } })('from( 123, 456), to(789)');
 	expect(result.errors).toBeFalsy();
 	expect(result).toMatchObject({ params: [ 
 		[ 'NamedParam', 'from', [ [ 'NumberConstant', 123 ], [ 'NumberConstant', 456 ] ] ],
