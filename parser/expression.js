@@ -169,6 +169,20 @@ const validateTooManyArguments = (result, config, errors) => {
 	
 const collectFlags = (result, config, errors) => 
 	result.value.filter(isFlagArgument).map(([type, flagName]) => flagName);
+	
+const collectNamedParams = (result, config, errors) => {
+	const lowerCaseParams = Object.fromEntries(Object.keys(config.named || {}).map(k => [k.toLowerCase(), k]));
+	return result.value.filter(isNamedArgument).map(([type, paramName, paramArgs]) => {
+		const realParamName = lowerCaseParams[paramName.toLowerCase()];
+		const paramArgNames = config.named && config.named[realParamName];
+		if (!realParamName) {
+			errors.push(`Unknown named parameter: "${paramName}"`);
+		}
+		const args = collectPositionalArguments(paramArgs, paramArgNames.map(argName => realParamName + '.' + argName), errors)
+			.map(([k, v]) => [k.split('.')[1], v]);
+		return [ realParamName, Object.fromEntries(args) ];
+	});
+}
 
 
 const buildResultObject = (result, lineNumber, config) => {
@@ -186,20 +200,9 @@ const buildResultObject = (result, lineNumber, config) => {
 		params.flags = Object.fromEntries(flags.map(name => [name, true]));
 	}
 
-	// Collect named params
-	const lowerCaseParams = Object.fromEntries(Object.keys(config.named || {}).map(k => [k.toLowerCase(), k]));
-	const named = result.value.filter(isNamedArgument).map(([type, paramName, paramArgs]) => {
-		const realParamName = lowerCaseParams[paramName.toLowerCase()];
-		const paramArgNames = config.named && config.named[realParamName];
-		if (!realParamName) {
-			errors.push(`Unknown named parameter: "${paramName}"`);
-		}
-		const args = collectPositionalArguments(paramArgs, paramArgNames.map(argName => realParamName + '.' + argName), errors)
-			.map(([k, v]) => [k.split('.')[1], v]);
-		return [ realParamName, Object.fromEntries(args) ];
-	});
-	if (named.length) {
-		params.named = Object.fromEntries(named);
+	const namedParams = collectNamedParams(result, config, errors);
+	if (namedParams.length) {
+		params.named = Object.fromEntries(namedParams);
 	}
 
 	const returnValue = { line: lineNumber, params };
