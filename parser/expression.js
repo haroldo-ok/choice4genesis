@@ -158,6 +158,7 @@ const collectPositionalArguments = (paramValues, paramNames, errors) =>
 		return [ paramName, argument ]
 	});
 	
+	
 const validateTooManyArguments = (result, config, errors) => {
 	const positionalLength = (config.positional || []).length;
 	const hasTooManyArguments = !!result.value.find((argument, index) => 
@@ -167,8 +168,10 @@ const validateTooManyArguments = (result, config, errors) => {
 	}
 };
 	
+	
 const collectFlags = (result, config, errors) => 
 	result.value.filter(isFlagArgument).map(([type, flagName]) => flagName);
+	
 	
 const collectNamedParams = (result, config, errors) => {
 	const lowerCaseParams = Object.fromEntries(Object.keys(config.named || {}).map(k => [k.toLowerCase(), k]));

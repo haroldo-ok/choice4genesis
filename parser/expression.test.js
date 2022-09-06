@@ -113,13 +113,18 @@ test('should parse single named parameter', () => {
 });
 
 
-/*
 test('should parse multiple named parameters', () => {
-	const result = createExpressionParser({ named: { 'from': ['x', 'y'] } })('from( 123, 456), to(789)');
+	const result = createExpressionParser({ named: { 'from': ['x', 'y'], to: ['z'] } })('from( 123, 456), to(789)');
 	expect(result.errors).toBeFalsy();
-	expect(result).toMatchObject({ params: [ 
-		[ 'NamedParam', 'from', [ [ 'NumberConstant', 123 ], [ 'NumberConstant', 456 ] ] ],
-		[ 'NamedParam', 'to', [ [ 'NumberConstant', 789 ] ] ] 
-	] });
+	expect(result).toMatchObject({ params: {
+		named: {
+			from: { 
+				x: [ 'NumberConstant', 123 ], 
+				y: [ 'NumberConstant', 456 ]
+			},
+			to: {
+				z: [ 'NumberConstant', 789 ]
+			}
+		}
+	} });
 });
-*/
