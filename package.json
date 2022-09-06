@@ -27,5 +27,8 @@
   "homepage": "https://github.com/haroldo-ok/choice4genesis#readme",
   "devDependencies": {
     "jest": "^29.0.1"
+  },
+  "dependencies": {
+    "parsimmon": "^1.18.1"
   }
 }
