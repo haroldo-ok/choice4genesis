@@ -149,11 +149,11 @@ const collectPositionalArguments = (paramValues, paramNames, errors) =>
 	(paramNames || []).map((paramName, index) => {
 		const argument = paramValues[index];
 		if (!argument) {
-			errors.push(`Missing argument for "${paramName}" at position ${index + 1}.`);
+			errors.push(`Missing argument: "${paramName}".`);
 		} else if (isFlagArgument(argument)) {
-			errors.push(`Argument "${paramName}" at position ${index + 1} shouldn't be a flag.`);
+			errors.push(`Argument "${paramName}" shouldn't be a flag.`);
 		} else if (isNamedArgument(argument)) {
-			errors.push(`Argument "${paramName}" at position ${index + 1} shouldn't be a named parameter.`);
+			errors.push(`Argument "${paramName}" shouldn't be a named parameter.`);
 		}
 		return [ paramName, argument ]
 	});

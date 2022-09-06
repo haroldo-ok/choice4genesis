@@ -64,7 +64,7 @@ test('should parse identifier', () => {
 
 test('should validate if there are too few parameters', () => {
 	const result = createExpressionParser({ positional: ['z', 'w'] })('oneIndentifier');
-	expect(result.errors).toMatchObject([ 'Missing argument for "w" at position 2.' ]);
+	expect(result.errors).toMatchObject([ 'Missing argument: "w".' ]);
 });
 
 
@@ -78,14 +78,14 @@ test('should validate if there are too many parameters', () => {
 test('should validate if there is no flag placed on the positional parameters', () => {
 	const result = createExpressionParser({ positional: ['z', 'w'], flags: ['someFlag'] })(
 		'oneIndentifier, someFlag');
-	expect(result.errors).toMatchObject([ 'Argument "w" at position 2 shouldn\'t be a flag.' ]);
+	expect(result.errors).toMatchObject([ 'Argument "w" shouldn\'t be a flag.' ]);
 });
 
 
 test('should validate if there is no named parameter placed where there should be positional parameters', () => {
 	const result = createExpressionParser({ positional: ['z', 'w'], named: { 'from': ['x', 'y'] } })(
 		'oneIndentifier, from(123,  456)');
-	expect(result.errors).toMatchObject([ 'Argument "w" at position 2 shouldn\'t be a named parameter.' ]);
+	expect(result.errors).toMatchObject([ 'Argument "w" shouldn\'t be a named parameter.' ]);
 });
 
 
