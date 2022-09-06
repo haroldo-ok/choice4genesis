@@ -20,6 +20,19 @@ test('should parse simple addition', () => {
 });
 
 
+test('should parse simple inequality', () => {
+	const result = createExpressionParser({ positional: ['a']  })('1 < 3');
+	expect(result.errors).toBeFalsy();
+	expect(result).toMatchObject({ 
+		params: {
+			positional: {
+				a: [ 'LessThan', [ 'NumberConstant', 1 ], [ 'NumberConstant', 3 ] ]
+			}
+		}			
+	});
+});
+
+
 test('should parse a list of two expressions', () => {
 	const result = createExpressionParser({ positional: ['x', 'y'] })('(1), (2)');
 	expect(result.errors).toBeFalsy();

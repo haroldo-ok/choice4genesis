@@ -93,7 +93,8 @@ const colon = P.string(":");
 const table = [
   { type: PREFIX, ops: operators({ Negate: "-" }) },
   { type: BINARY_LEFT, ops: operators({ Multiply: "*", Divide: "/" }) },
-  { type: BINARY_LEFT, ops: operators({ Add: "+", Subtract: "-" }) }
+  { type: BINARY_LEFT, ops: operators({ Add: "+", Subtract: "-" }) },
+  { type: BINARY_LEFT, ops: operators({ Equal: "=", NotEqual: "!=", GreaterThan: ">", LessThan: "<", GreaterEqual: ">=", LessEqual: "<=" }) }
 ];
 
 const createExpressionParserObject = config => {
