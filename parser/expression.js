@@ -159,12 +159,12 @@ const collectPositionalArguments = (paramValues, paramNames, errors) =>
 	});
 	
 	
-const validateTooManyArguments = (result, config, errors) => {
-	const positionalLength = (config.positional || []).length;
-	const hasTooManyArguments = !!result.value.find((argument, index) => 
+const validateTooManyArguments = (paramValues, paramNames, errors, errorMessage = 'Too many arguments.') => {
+	const positionalLength = (paramNames || []).length;
+	const hasTooManyArguments = !!paramValues.find((argument, index) => 
 		index >= positionalLength && !isFlagArgument(argument) && !isNamedArgument(argument));
 	if (hasTooManyArguments) {
-		errors.push('Too many arguments.');
+		errors.push(errorMessage);
 	}
 };
 	
@@ -180,6 +180,8 @@ const collectNamedParams = (result, config, errors) => {
 		const paramArgNames = config.named && config.named[realParamName];
 		if (!realParamName) {
 			errors.push(`Unknown named parameter: "${paramName}"`);
+		} else {
+			validateTooManyArguments(paramArgs, paramArgNames, errors, `Too many arguments for named parameter "${paramName}".`);
 		}
 		const args = collectPositionalArguments(paramArgs, paramArgNames.map(argName => realParamName + '.' + argName), errors)
 			.map(([k, v]) => [k.split('.')[1], v]);
@@ -193,7 +195,7 @@ const buildResultObject = (result, lineNumber, config) => {
 	const params = {};
 
 	const positional = collectPositionalArguments(result.value, config.positional, errors);	
-	validateTooManyArguments(result, config, errors);
+	validateTooManyArguments(result.value, config.positional, errors);
 	if (positional.length) {
 		params.positional = Object.fromEntries(positional);
 	}

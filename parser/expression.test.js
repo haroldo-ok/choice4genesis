@@ -128,3 +128,14 @@ test('should parse multiple named parameters', () => {
 		}
 	} });
 });
+
+
+test('should reject too few named parameters.', () => {
+	const result = createExpressionParser({ named: { 'from': ['x', 'y'] } })('from(123)');
+	expect(result.errors).toMatchObject([ 'Missing argument: "from.y".' ]);
+});
+
+test('should reject too many named parameters.', () => {
+	const result = createExpressionParser({ named: { 'from': ['x', 'y'] } })('from(123, 456, 789)');
+	expect(result.errors).toMatchObject([ 'Too many arguments for named parameter "from".' ]);
+});
