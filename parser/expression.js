@@ -75,6 +75,13 @@ const NumberConstant = P.regexp(/[0-9]+/)
 // End: Utility functions from "math.js", from Parsimmon's demos
 
 
+// A simple Boolean
+const BoolConstant = P.alt(
+		P.regexp(/true/i).map(str => ["BoolConstant", true]),
+		P.regexp(/false/i).map(str => ["BoolConstant", false])
+	)
+	.desc("boolean");
+
 // A simple string
 const StringConstant = P.regexp(/"((\\"|[^"])+)"/, 1)
 	.map(str => ["StringConstant", interpretEscapes(str)])
@@ -124,6 +131,7 @@ const createExpressionParserObject = config => {
 			.then(Expression)
 			.skip(P.string(")"))
 			.or(NumberConstant)
+			.or(BoolConstant)
 			.or(StringConstant)
 			.or(Identifier)
 	);

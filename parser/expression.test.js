@@ -50,14 +50,14 @@ test('should parse simple inequality', () => {
 
 
 test('should give priority to and over or', () => {
-	const result = createExpressionParser({ positional: ['a']  })('1 aNd 2 or 3 And 4');
+	const result = createExpressionParser({ positional: ['a']  })('true aNd false or true And false');
 	expect(result.errors).toBeFalsy();
 	expect(result).toMatchObject({ 
 		params: {
 			positional: {
 				a: [ 'Or', 
-					['And', [ 'NumberConstant', 1 ], [ 'NumberConstant', 2 ] ],
-					['And', [ 'NumberConstant', 3 ], [ 'NumberConstant', 4 ] ]
+					['And', [ 'BoolConstant', true ], [ 'BoolConstant', false ] ],
+					['And', [ 'BoolConstant', true ], [ 'BoolConstant', false ] ]
 				]
 			}
 		}			
