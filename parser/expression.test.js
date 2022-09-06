@@ -99,19 +99,21 @@ test('should parse flag', () => {
 });
 
 
-/*
-
 test('should parse single named parameter', () => {
 	const result = createExpressionParser({ named: { 'from': ['x', 'y'] } })('from( 123, 456)');
 	expect(result.errors).toBeFalsy();
 	expect(result).toMatchObject({ params: {  
 		named: {
-			from: { x: 123, y: 456 }
+			from: { 
+				x: [ 'NumberConstant', 123 ], 
+				y: [ 'NumberConstant', 456 ]
+			}
 		}
 	} });
 });
 
 
+/*
 test('should parse multiple named parameters', () => {
 	const result = createExpressionParser({ named: { 'from': ['x', 'y'] } })('from( 123, 456), to(789)');
 	expect(result.errors).toBeFalsy();

@@ -186,10 +186,21 @@ const buildResultObject = (result, lineNumber, config) => {
 		params.flags = Object.fromEntries(flags.map(name => [name, true]));
 	}
 
-	/*
 	// Collect named params
-	const named = Object.entries(config.named || {});
-	*/
+	const lowerCaseParams = Object.fromEntries(Object.keys(config.named || {}).map(k => [k.toLowerCase(), k]));
+	const named = result.value.filter(isNamedArgument).map(([type, paramName, paramArgs]) => {
+		const realParamName = lowerCaseParams[paramName.toLowerCase()];
+		const paramArgNames = config.named && config.named[realParamName];
+		if (!realParamName) {
+			errors.push(`Unknown named parameter: "${paramName}"`);
+		}
+		const args = collectPositionalArguments(paramArgs, paramArgNames.map(argName => realParamName + '.' + argName), errors)
+			.map(([k, v]) => [k.split('.')[1], v]);
+		return [ realParamName, Object.fromEntries(args) ];
+	});
+	if (named.length) {
+		params.named = Object.fromEntries(named);
+	}
 
 	const returnValue = { line: lineNumber, params };
 	if (errors.length) {
