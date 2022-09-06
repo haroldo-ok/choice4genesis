@@ -20,6 +20,22 @@ test('should parse simple addition', () => {
 });
 
 
+test('should give priority to multiplication over addition', () => {
+	const result = createExpressionParser({ positional: ['a']  })('1 * 2 + 3 * 4');
+	expect(result.errors).toBeFalsy();
+	expect(result).toMatchObject({ 
+		params: {
+			positional: {
+				a: [ 'Add', 
+					['Multiply', [ 'NumberConstant', 1 ], [ 'NumberConstant', 2 ] ],
+					['Multiply', [ 'NumberConstant', 3 ], [ 'NumberConstant', 4 ] ]
+				]
+			}
+		}			
+	});
+});
+
+
 test('should parse simple inequality', () => {
 	const result = createExpressionParser({ positional: ['a']  })('1 < 3');
 	expect(result.errors).toBeFalsy();
@@ -27,6 +43,53 @@ test('should parse simple inequality', () => {
 		params: {
 			positional: {
 				a: [ 'LessThan', [ 'NumberConstant', 1 ], [ 'NumberConstant', 3 ] ]
+			}
+		}			
+	});
+});
+
+
+test('should give priority to and over or', () => {
+	const result = createExpressionParser({ positional: ['a']  })('1 aNd 2 or 3 And 4');
+	expect(result.errors).toBeFalsy();
+	expect(result).toMatchObject({ 
+		params: {
+			positional: {
+				a: [ 'Or', 
+					['And', [ 'NumberConstant', 1 ], [ 'NumberConstant', 2 ] ],
+					['And', [ 'NumberConstant', 3 ], [ 'NumberConstant', 4 ] ]
+				]
+			}
+		}			
+	});
+});
+
+
+test('should parse logical and', () => {
+	const result = createExpressionParser({ positional: ['a']  })('1 > 3 and a < b');
+	expect(result.errors).toBeFalsy();
+	expect(result).toMatchObject({ 
+		params: {
+			positional: {
+				a: ['And', 
+					[ 'GreaterThan', [ 'NumberConstant', 1 ], [ 'NumberConstant', 3 ] ],
+					[ 'LessThan', [ 'Identifier', 'a' ], [ 'Identifier', 'b' ] ]
+				]
+			}
+		}			
+	});
+});
+
+
+test('should parse logical not', () => {
+	const result = createExpressionParser({ positional: ['a']  })('!(1 > 3)');
+	expect(result.errors).toBeFalsy();
+	expect(result).toMatchObject({ 
+		params: {
+			positional: {
+				a: ['Not', 
+					[ 'GreaterThan', [ 'NumberConstant', 1 ], [ 'NumberConstant', 3 ] ]
+				]
 			}
 		}			
 	});

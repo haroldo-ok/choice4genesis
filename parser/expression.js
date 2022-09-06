@@ -8,11 +8,12 @@ let _ = P.optWhitespace;
 
 const operators = ops => {
 	let keys = Object.keys(ops).sort();
-	let ps = keys.map(k =>
-		P.string(ops[k])
-		.trim(_)
-		.result(k)
-	);
+	let ps = keys.map(k => {
+		const op = ops[k];
+		return (op instanceof RegExp ? P.regexp(op) : P.string(op))
+			.trim(_)
+			.result(k);
+	});
 	return P.alt.apply(null, ps);
 }
 
@@ -91,10 +92,12 @@ const colon = P.string(":");
 
 
 const table = [
-  { type: PREFIX, ops: operators({ Negate: "-" }) },
+  { type: PREFIX, ops: operators({ Negate: "-", Not: "!" }) },
   { type: BINARY_LEFT, ops: operators({ Multiply: "*", Divide: "/" }) },
   { type: BINARY_LEFT, ops: operators({ Add: "+", Subtract: "-" }) },
-  { type: BINARY_LEFT, ops: operators({ Equal: "=", NotEqual: "!=", GreaterThan: ">", LessThan: "<", GreaterEqual: ">=", LessEqual: "<=" }) }
+  { type: BINARY_LEFT, ops: operators({ Equal: "=", NotEqual: "!=", GreaterThan: ">", LessThan: "<", GreaterEqual: ">=", LessEqual: "<=" }) },
+  { type: BINARY_LEFT, ops: operators({ And: /and/i }) },
+  { type: BINARY_LEFT, ops: operators({ Or: /or/i }) }
 ];
 
 const createExpressionParserObject = config => {
