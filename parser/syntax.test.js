@@ -166,6 +166,30 @@ const SOURCE = `
 });
 
 
+test('parse command with parameters', () => {
+	
+const SOURCE = `
+* if 1 = 2
+	Do something
+`
+
+	expect(parse(SOURCE)).toEqual({
+		type: 'script',
+		body: [
+			{ 
+				type: 'command', 
+				line: 2, 
+				command: 'if',
+				param: '1 = 2',
+				body: [
+					{ type: 'text', line: 3, text: 'Do something' },
+				]
+			},
+		]
+	});
+});
+
+
 test('check tab/space inconsinstency', () => {
 
 const SOURCE = '*example\n\tWith tab\n With space';

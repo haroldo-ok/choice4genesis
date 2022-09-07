@@ -22,7 +22,14 @@ const parseLine = ({ text, line}) => {
 	}
 	
 	if (text[0] === '*') {
-		return { type: 'command', line, command: text.substring(1).trim() };
+		const commandLine = text.substring(1).trim();
+		const command = commandLine.split(/\s+/g, 1)[0];
+		const param = commandLine.substring(command.length).trim();
+		const result = { type: 'command', line, command  };
+		if (param) {
+			result.param = param;
+		}
+		return result;
 	}
 	
 	if (text[0] === '#') {
