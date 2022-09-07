@@ -1,4 +1,4 @@
-const { parse } = require('./syntax');
+const { parse } = require('./syntax-base');
 
 
 test('parse simple lines', () => {
