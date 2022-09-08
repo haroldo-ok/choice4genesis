@@ -3,6 +3,13 @@
 const { parse: basicParse } = require('./syntax-base');
 const { createExpressionParser } = require('./expression');
 
+const COMMANDS = {
+	'create': { positional: ['variable', 'initialValue'] },
+	'if': { positional: ['condition'] }
+};
+
+const COMMAND_PARSERS = Object.fromEntries(Object.entries(COMMANDS).map(([command, config]) => [command, createExpressionParser(config)]));
+
 
 const completeCommands = (body, errors) => 
 	body.map(element => {
@@ -12,7 +19,12 @@ const completeCommands = (body, errors) =>
 		
 		const { type, line, command, param, ...rest } = element;
 		
-		const expressions = param ? createExpressionParser({ positional: ['condition'] })(param) : undefined;
+		const commandParser = COMMAND_PARSERS[command.toLowerCase()];
+		if (!commandParser) {
+			errors.push({ line, message: `Unknown command: "${command}"` })
+		}
+		
+		const expressions = commandParser && commandParser(param);
 		const params = expressions && expressions.params;
 		
 		expressions && (expressions.errors || []).forEach(message => errors.push({ line, message }));
