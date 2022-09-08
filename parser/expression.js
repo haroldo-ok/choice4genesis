@@ -244,7 +244,7 @@ const createExpressionParser = config => {
 	return (source, lineNumber) => {
 		const result = parser.parse(source);
 		if (!result.status) {
-			const errorMessage = `Error on the expression on column ${result.index.column}: ${ formatExpected(result.expected) }`;
+			const errorMessage = `Error on the expression: ${ formatExpected(result.expected) }`;
 			return { line: lineNumber, errors: [ errorMessage ] };
 		}
 		return buildResultObject(result, lineNumber, config);
