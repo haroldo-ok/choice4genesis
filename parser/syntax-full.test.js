@@ -123,6 +123,21 @@ test('should parse else command', () => {
 });
 
 
+test('should parse scene_list command', () => {
+	
+	const SOURCE = '* scene_list';
+	
+	const ast = parse(SOURCE);
+
+	expect(ast.errors).toBeFalsy();
+	expect(ast).toMatchObject({ body: [
+		{
+			command: 'scene_list'
+		}
+	] });
+});
+
+
 test('should parse finish command', () => {
 	
 	const SOURCE = '* finish';
@@ -169,6 +184,27 @@ test('should parse goto command', () => {
 	expect(ast).toMatchObject({ body: [
 		{
 			command: 'goto',
+			params: {
+				positional: {
+					target: [ 'Identifier', 'somewhere' ]
+				}
+			}
+		}
+	] });
+
+});
+
+
+test('should parse goto_scene command', () => {
+	
+	const SOURCE = '*goto_scene somewhere';
+
+	const ast = parse(SOURCE);
+
+	expect(ast.errors).toBeFalsy();
+	expect(ast).toMatchObject({ body: [
+		{
+			command: 'goto_scene',
 			params: {
 				positional: {
 					target: [ 'Identifier', 'somewhere' ]

@@ -13,8 +13,10 @@ const COMMANDS = {
 	
 	'label': { positional: ['name'] },
 	'goto': { positional: ['target'] },
+	'goto_scene': { positional: ['target'] },
 	
 	'choice': { },
+	'scene_list': { },
 	'finish': { }	
 };
 
