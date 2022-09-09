@@ -19,6 +19,9 @@ const COMMANDS = {
 	'title': { positional: ['name'] },
 	'author': { positional: ['name'] },
 
+	'background': { positional: ['fileName'] },
+	'window': { named: { 'from': ['x', 'y'], 'to': ['x', 'y'] }, flags: ['borderless', 'withborder'] },
+
 	'choice': { },
 	'scene_list': { },
 	'finish': { }	

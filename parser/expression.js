@@ -189,7 +189,7 @@ const collectNamedParams = (result, config, errors) => {
 	const lowerCaseParams = Object.fromEntries(Object.keys(config.named || {}).map(k => [k.toLowerCase(), k]));
 	return result.value.filter(isNamedArgument).map(([type, paramName, paramArgs]) => {
 		const realParamName = lowerCaseParams[paramName.toLowerCase()];
-		const paramArgNames = config.named && config.named[realParamName];
+		const paramArgNames = (config.named && config.named[realParamName]) || [];
 		if (!realParamName) {
 			errors.push(`Unknown named parameter: "${paramName}"`);
 		} else {

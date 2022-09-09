@@ -279,6 +279,57 @@ test('should parse author command', () => {
 });
 
 
+test('should parse background command', () => {
+	
+	const SOURCE = '*background "example.png"';
+
+	const ast = parse(SOURCE);
+
+	expect(ast.errors).toBeFalsy();
+	expect(ast).toMatchObject({ body: [
+		{
+			command: 'background',
+			params: {
+				positional: {
+					fileName: [ 'StringConstant', 'example.png' ]
+				}
+			}
+		}
+	] });
+
+});
+
+
+test('should parse window command', () => {
+	
+	const SOURCE = '*window from(123, 456), to(321, 654), borderless';
+
+	const ast = parse(SOURCE);
+
+	expect(ast.errors).toBeFalsy();
+	expect(ast).toMatchObject({ body: [
+		{
+			command: 'window',
+			params: {
+				named: {
+					from: { 
+						x: [ 'NumberConstant', 123 ], 
+						y: [ 'NumberConstant', 456 ]
+					},
+					to: {
+						x: [ 'NumberConstant', 321 ],
+						y: [ 'NumberConstant', 654 ]
+					}
+				},
+				
+				flags: { borderless: true }
+			}
+		}
+	] });
+
+});
+
+
 test('should check syntax of expression', () => {
 	
 	const SOURCE = '*if true = false, 123';
