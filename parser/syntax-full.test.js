@@ -123,6 +123,63 @@ test('should parse else command', () => {
 });
 
 
+test('should parse finish command', () => {
+	
+	const SOURCE = '* finish';
+	
+	const ast = parse(SOURCE);
+
+	expect(ast.errors).toBeFalsy();
+	expect(ast).toMatchObject({ body: [
+		{
+			command: 'finish'
+		}
+	] });
+});
+
+
+test('should parse label command', () => {
+	
+	const SOURCE = '*label somewhere';
+
+	const ast = parse(SOURCE);
+
+	expect(ast.errors).toBeFalsy();
+	expect(ast).toMatchObject({ body: [
+		{
+			command: 'label',
+			params: {
+				positional: {
+					name: [ 'Identifier', 'somewhere' ]
+				}
+			}
+		}
+	] });
+
+});
+
+
+test('should parse goto command', () => {
+	
+	const SOURCE = '*goto somewhere';
+
+	const ast = parse(SOURCE);
+
+	expect(ast.errors).toBeFalsy();
+	expect(ast).toMatchObject({ body: [
+		{
+			command: 'goto',
+			params: {
+				positional: {
+					target: [ 'Identifier', 'somewhere' ]
+				}
+			}
+		}
+	] });
+
+});
+
+
 test('should check syntax of expression', () => {
 	
 	const SOURCE = '*if true = false, 123';
