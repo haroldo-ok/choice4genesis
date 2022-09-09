@@ -22,6 +22,27 @@ test('should parse create command', () => {
 });
 
 
+test('should parse temp command', () => {
+	
+	const SOURCE = '* temp example, 1';
+
+	const ast = parse(SOURCE);
+	
+	expect(ast.errors).toBeFalsy();
+	expect(ast).toMatchObject({ body: [
+		{
+			command: 'temp',
+			params: {
+				positional: {
+					variable: [ 'Identifier', 'example' ],
+					initialValue: [ 'NumberConstant', 1 ]
+				}
+			}
+		}
+	] });
+});
+
+
 test('should parse set command', () => {
 	
 	const SOURCE = '* set example, 1';
@@ -208,6 +229,48 @@ test('should parse goto_scene command', () => {
 			params: {
 				positional: {
 					target: [ 'Identifier', 'somewhere' ]
+				}
+			}
+		}
+	] });
+
+});
+
+
+test('should parse title command', () => {
+	
+	const SOURCE = '*title "Name of the game"';
+
+	const ast = parse(SOURCE);
+
+	expect(ast.errors).toBeFalsy();
+	expect(ast).toMatchObject({ body: [
+		{
+			command: 'title',
+			params: {
+				positional: {
+					name: [ 'StringConstant', 'Name of the game' ]
+				}
+			}
+		}
+	] });
+
+});
+
+
+test('should parse author command', () => {
+	
+	const SOURCE = '*author "Your Name Here"';
+
+	const ast = parse(SOURCE);
+
+	expect(ast.errors).toBeFalsy();
+	expect(ast).toMatchObject({ body: [
+		{
+			command: 'author',
+			params: {
+				positional: {
+					name: [ 'StringConstant', 'Your Name Here' ]
 				}
 			}
 		}

@@ -5,6 +5,7 @@ const { createExpressionParser } = require('./expression');
 
 const COMMANDS = {
 	'create': { positional: ['variable', 'initialValue'] },
+	'temp': { positional: ['variable', 'initialValue'] },
 	'set': { positional: ['variable', 'newValue'] },
 	
 	'if': { positional: ['condition'] },
@@ -15,6 +16,9 @@ const COMMANDS = {
 	'goto': { positional: ['target'] },
 	'goto_scene': { positional: ['target'] },
 	
+	'title': { positional: ['name'] },
+	'author': { positional: ['name'] },
+
 	'choice': { },
 	'scene_list': { },
 	'finish': { }	
