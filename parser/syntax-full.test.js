@@ -300,6 +300,48 @@ test('should parse background command', () => {
 });
 
 
+test('should parse music command', () => {
+	
+	const SOURCE = '*music "example.xgm"';
+
+	const ast = parse(SOURCE);
+
+	expect(ast.errors).toBeFalsy();
+	expect(ast).toMatchObject({ body: [
+		{
+			command: 'music',
+			params: {
+				positional: {
+					fileName: [ 'StringConstant', 'example.xgm' ]
+				}
+			}
+		}
+	] });
+
+});
+
+
+test('should parse sound command', () => {
+	
+	const SOURCE = '*sound "example.wav"';
+
+	const ast = parse(SOURCE);
+
+	expect(ast.errors).toBeFalsy();
+	expect(ast).toMatchObject({ body: [
+		{
+			command: 'sound',
+			params: {
+				positional: {
+					fileName: [ 'StringConstant', 'example.wav' ]
+				}
+			}
+		}
+	] });
+
+});
+
+
 test('should parse window command', () => {
 	
 	const SOURCE = '*window from(123, 456), to(321, 654), borderless';

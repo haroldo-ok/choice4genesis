@@ -20,6 +20,8 @@ const COMMANDS = {
 	'author': { positional: ['name'] },
 
 	'background': { positional: ['fileName'] },
+	'music': { positional: ['fileName'] },
+	'sound': { positional: ['fileName'] },
 	'window': { named: { 'from': ['x', 'y'], 'to': ['x', 'y'] }, flags: ['borderless', 'withborder'] },
 
 	'choice': { },
