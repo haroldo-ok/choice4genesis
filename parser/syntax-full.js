@@ -5,7 +5,8 @@ const { createExpressionParser } = require('./expression');
 
 const COMMANDS = {
 	'create': { positional: ['variable', 'initialValue'] },
-	'if': { positional: ['condition'] }
+	'if': { positional: ['condition'] },
+	'choice': { }
 };
 
 const COMMAND_PARSERS = Object.fromEntries(Object.entries(COMMANDS).map(([command, config]) => [command, createExpressionParser(config)]));

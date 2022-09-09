@@ -242,7 +242,7 @@ const createExpressionParser = config => {
 	const parser = createExpressionParserObject(config);
 	
 	return (source, lineNumber) => {
-		const result = parser.parse(source);
+		const result = parser.parse(source || '');
 		if (!result.status) {
 			const errorMessage = `Error on the expression: ${ formatExpected(result.expected) }`;
 			return { line: lineNumber, errors: [ errorMessage ] };
