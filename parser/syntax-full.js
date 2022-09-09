@@ -5,7 +5,10 @@ const { createExpressionParser } = require('./expression');
 
 const COMMANDS = {
 	'create': { positional: ['variable', 'initialValue'] },
+	'set': { positional: ['variable', 'newValue'] },
 	'if': { positional: ['condition'] },
+	'elseif': { positional: ['condition'] },
+	'else': { },
 	'choice': { }
 };
 

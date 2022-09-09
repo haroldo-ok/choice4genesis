@@ -22,6 +22,27 @@ test('should parse create command', () => {
 });
 
 
+test('should parse set command', () => {
+	
+	const SOURCE = '* set example, 1';
+
+	const ast = parse(SOURCE);
+	
+	expect(ast.errors).toBeFalsy();
+	expect(ast).toMatchObject({ body: [
+		{
+			command: 'set',
+			params: {
+				positional: {
+					variable: [ 'Identifier', 'example' ],
+					newValue: [ 'NumberConstant', 1 ]
+				}
+			}
+		}
+	] });
+});
+
+
 test('should parse choice command', () => {
 	
 	const SOURCE = '* choice';
@@ -32,6 +53,71 @@ test('should parse choice command', () => {
 	expect(ast).toMatchObject({ body: [
 		{
 			command: 'choice'
+		}
+	] });
+});
+
+
+test('should parse if command', () => {
+	
+	const SOURCE = '*if true = false';
+
+	const ast = parse(SOURCE);
+
+	expect(ast.errors).toBeFalsy();
+	expect(ast).toMatchObject({ body: [
+		{
+			command: 'if',
+			params: {
+				positional: {
+					condition: [
+						'Equal',
+						[ 'BoolConstant', true ],
+						[ 'BoolConstant', false ]
+					]
+				}
+			}
+		}
+	] });
+
+});
+
+
+test('should parse elseif command', () => {
+	
+	const SOURCE = '*elseif true = false';
+
+	const ast = parse(SOURCE);
+
+	expect(ast.errors).toBeFalsy();
+	expect(ast).toMatchObject({ body: [
+		{
+			command: 'elseif',
+			params: {
+				positional: {
+					condition: [
+						'Equal',
+						[ 'BoolConstant', true ],
+						[ 'BoolConstant', false ]
+					]
+				}
+			}
+		}
+	] });
+
+});
+
+
+test('should parse else command', () => {
+	
+	const SOURCE = '* else';
+	
+	const ast = parse(SOURCE);
+
+	expect(ast.errors).toBeFalsy();
+	expect(ast).toMatchObject({ body: [
+		{
+			command: 'else'
 		}
 	] });
 });
