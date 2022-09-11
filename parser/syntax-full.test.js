@@ -423,6 +423,39 @@ test('should parse window command', () => {
 });
 
 
+test('should parse nested commands', () => {
+	
+const SOURCE = `
+*if a > b
+	* if b < c
+`;
+
+	const ast = parse(SOURCE);
+
+	expect(ast.errors).toBeFalsy();
+	expect(ast).toMatchObject({ body: [
+		{
+			command: 'if',
+			body: [ 
+				{ 
+					command: 'if',
+					params: {
+						positional: {
+							condition: [
+								'LessThan',
+								[ 'Identifier', 'b' ],
+								[ 'Identifier', 'c' ]
+							]
+						}
+					}
+				} 
+			]
+		}
+	] });
+
+});
+
+
 test('should check syntax of expression', () => {
 	
 	const SOURCE = '*if true = false, 123';
