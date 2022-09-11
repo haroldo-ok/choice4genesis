@@ -29,6 +29,7 @@
     "jest": "^29.0.1"
   },
   "dependencies": {
+    "lodash": "^4.17.21",
     "parsimmon": "^1.18.1"
   }
 }

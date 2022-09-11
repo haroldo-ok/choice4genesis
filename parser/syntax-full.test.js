@@ -166,6 +166,35 @@ const SOURCE = `
 });
 
 
+test('should find siblings of an if command', () => {
+	
+const SOURCE = `
+* if 1 = 2
+	Something
+* elseif 2 > 3
+	Something more
+* else
+	Something else
+`;
+	
+	const ast = parse(SOURCE);
+
+	expect(ast.errors).toBeFalsy();
+	expect(ast).toMatchObject({ body: [
+		{ 
+			command: 'if',
+			siblings: {
+				'elseif': [ { command: 'elseif' } ],
+				'else': [ { command: 'else' } ]
+			}
+		},
+		{ command: 'elseif' },
+		{ command: 'else' }
+	] });
+});
+
+
+
 test('should parse scene_list command', () => {
 	
 	const SOURCE = '* scene_list';

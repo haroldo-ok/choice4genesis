@@ -2,13 +2,14 @@
 
 const { parse: basicParse } = require('./syntax-base');
 const { createExpressionParser } = require('./expression');
+const { groupBy } = require('lodash');
 
 const COMMANDS = {
 	'create': { positional: ['variable', 'initialValue'] },
 	'temp': { positional: ['variable', 'initialValue'] },
 	'set': { positional: ['variable', 'newValue'] },
 	
-	'if': { positional: ['condition'] },
+	'if': { positional: ['condition'], siblings: [ ['elseif'], ['else'] ] },
 	'elseif': { positional: ['condition'], onlyAfter: ['if', 'elseif'] },
 	'else': { onlyAfter: ['if', 'elseif'] },
 	
@@ -32,7 +33,7 @@ const COMMANDS = {
 const COMMAND_PARSERS = Object.fromEntries(Object.entries(COMMANDS).map(([command, config]) => [command, createExpressionParser(config)]));
 
 
-const checkSiblingCommands = (body, errors) => 
+const checkOnlyAfter = (body, errors) => 
 	body.map((element, index) => {
 		if (element.type !== 'command') {
 			return element;
@@ -49,10 +50,42 @@ const checkSiblingCommands = (body, errors) =>
 				line: element.line,
 				message: `The command "${element.command}" can only be used after ${info.onlyAfter.map(s => `"${s}"`).join(' or ')}.` 
 			});
-		}
+		}				
 		
 		return element;
 	});
+	
+	
+const checkSiblings = (body, errors) =>
+	body.map((element, index) => {
+		if (element.type !== 'command') {
+			return element;
+		}
+		
+		const info = COMMANDS[element.command.toLowerCase()];
+		if (!info || !info.siblings) {
+			return element;
+		}
+		
+		const typesOfSiblings = info.siblings.flat();
+		
+		
+		const siblingsList = [];
+		for (let i = index + 1; i < body.length; i++) {
+			const sibling = body[i];
+			if (!sibling || sibling.type !== 'command' || !typesOfSiblings.includes(sibling.command.toLowerCase())) {
+				break;
+			}
+			siblingsList.push(sibling);
+		}
+		
+		const siblings = groupBy(siblingsList, ({command}) => command.toLowerCase());
+		
+		return { ...element, siblings };
+	});
+	
+	
+const checkSiblingCommands = (body, errors) => checkSiblings(checkOnlyAfter(body, errors), errors);
 
 
 const completeCommands = (body, errors) => {
