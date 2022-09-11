@@ -206,6 +206,12 @@ test('should parse multiple named parameters', () => {
 });
 
 
+test('should parse empty expression', () => {
+	const result = createExpressionParser({})(null);
+	expect(result.errors).toBeFalsy();
+});
+
+
 test('should reject too few named parameters.', () => {
 	const result = createExpressionParser({ named: { 'from': ['x', 'y'] } })('from(123)');
 	expect(result.errors).toMatchObject([ 'Missing argument: "from.y".' ]);

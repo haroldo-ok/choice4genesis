@@ -1,4 +1,4 @@
-const { parse } = require('./syntax');
+const { parse } = require('./syntax-base');
 
 
 test('parse simple lines', () => {
@@ -159,6 +159,30 @@ const SOURCE = `
 				body: [
 					{ type: 'text', line: 9, text: 'One more line' },
 					{ type: 'text', line: 10, text: 'Yet another line' },
+				]
+			},
+		]
+	});
+});
+
+
+test('parse command with parameters', () => {
+	
+const SOURCE = `
+* if 1 = 2
+	Do something
+`
+
+	expect(parse(SOURCE)).toEqual({
+		type: 'script',
+		body: [
+			{ 
+				type: 'command', 
+				line: 2, 
+				command: 'if',
+				param: '1 = 2',
+				body: [
+					{ type: 'text', line: 3, text: 'Do something' },
 				]
 			},
 		]
