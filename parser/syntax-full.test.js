@@ -106,12 +106,30 @@ test('should parse if command', () => {
 
 test('should parse elseif command', () => {
 	
-	const SOURCE = '*elseif true = false';
+const SOURCE = `
+*if a < b
+	One line
+	Another line
+*elseif true = false
+	Something else
+`;
 
 	const ast = parse(SOURCE);
 
 	expect(ast.errors).toBeFalsy();
 	expect(ast).toMatchObject({ body: [
+		{
+			command: 'if',
+			params: {
+				positional: {
+					condition: [
+						'LessThan',
+						[ 'Identifier', 'a' ],
+						[ 'Identifier', 'b' ]
+					]
+				}
+			}
+		},
 		{
 			command: 'elseif',
 			params: {
@@ -389,6 +407,17 @@ test('should reject unknown command', () => {
 
 	expect(parse(SOURCE).errors).toEqual([
 		{ line: 1, message: 'Unknown command: "nonexistent"' }
+	]);
+
+});
+
+
+test('should reject elseif without if', () => {
+	
+	const SOURCE = '*elseif true = false';
+
+	expect(parse(SOURCE).errors).toEqual([
+		{ line: 1, message: 'The command "elseif" can only be used after "if" or "elseif".' }
 	]);
 
 });

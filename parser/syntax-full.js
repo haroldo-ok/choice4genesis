@@ -9,7 +9,7 @@ const COMMANDS = {
 	'set': { positional: ['variable', 'newValue'] },
 	
 	'if': { positional: ['condition'] },
-	'elseif': { positional: ['condition'] },
+	'elseif': { positional: ['condition'], onlyAfter: ['if', 'elseif'] },
 	'else': { },
 	
 	'label': { positional: ['name'] },
@@ -32,8 +32,31 @@ const COMMANDS = {
 const COMMAND_PARSERS = Object.fromEntries(Object.entries(COMMANDS).map(([command, config]) => [command, createExpressionParser(config)]));
 
 
-const completeCommands = (body, errors) => 
-	body.map(element => {
+const checkSiblingCommands = (body, errors) => 
+	body.map((element, index) => {
+		if (element.type !== 'command') {
+			return element;
+		}
+		
+		const info = COMMANDS[element.command.toLowerCase()];
+		if (!info || !info.onlyAfter) {
+			return element;
+		}
+		
+		const previous = body[index - 1];
+		if (!previous || previous.type !== 'command' || !info.onlyAfter.includes(previous.command.toLowerCase())) {
+			errors.push({ 
+				line: element.line,
+				message: `The command "${element.command}" can only be used after ${info.onlyAfter.map(s => `"${s}"`).join(' or ')}.` 
+			});
+		}
+		
+		return element;
+	});
+
+
+const completeCommands = (body, errors) => {
+	const completedCommands = body.map(element => {
 		if (element.type !== 'command') {
 			return element;
 		}
@@ -53,6 +76,8 @@ const completeCommands = (body, errors) =>
 		return { type, line, command, params, ...rest };
 	});
 	
+	return checkSiblingCommands(completedCommands, errors);
+};
 
 const parse = source => {
 	let { type, body, errors } = basicParse(source);	
