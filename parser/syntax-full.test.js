@@ -149,15 +149,19 @@ const SOURCE = `
 
 test('should parse else command', () => {
 	
-	const SOURCE = '* else';
+const SOURCE = `
+* if 1 = 2
+	Something
+* else
+	Something else
+`;
 	
 	const ast = parse(SOURCE);
 
 	expect(ast.errors).toBeFalsy();
 	expect(ast).toMatchObject({ body: [
-		{
-			command: 'else'
-		}
+		{ command: 'if' },
+		{ command: 'else' }
 	] });
 });
 
@@ -418,6 +422,17 @@ test('should reject elseif without if', () => {
 
 	expect(parse(SOURCE).errors).toEqual([
 		{ line: 1, message: 'The command "elseif" can only be used after "if" or "elseif".' }
+	]);
+
+});
+
+
+test('should reject else without if', () => {
+	
+	const SOURCE = '*else';
+
+	expect(parse(SOURCE).errors).toEqual([
+		{ line: 1, message: 'The command "else" can only be used after "if" or "elseif".' }
 	]);
 
 });

@@ -10,7 +10,7 @@ const COMMANDS = {
 	
 	'if': { positional: ['condition'] },
 	'elseif': { positional: ['condition'], onlyAfter: ['if', 'elseif'] },
-	'else': { },
+	'else': { onlyAfter: ['if', 'elseif'] },
 	
 	'label': { positional: ['name'] },
 	'goto': { positional: ['target'] },
