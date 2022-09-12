@@ -20,3 +20,5 @@ if (result.errors) {
 	result.errors.forEach(({line, message}) => console.error(`Line ${line}: ${message}`));
 	return;
 }
+
+console.info(result);
