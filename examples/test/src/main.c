@@ -1,16 +1,15 @@
 #include "genesis.h"
+#include "vn_engine.h"
 
+extern void *VS_startup();
 
 int main(bool hardReset)
 {
-    VDP_drawText("Hello world !", 12, 12);
+	scriptFunction nextScript = VS_startup;
 
     while(TRUE)
     {
-        // nothing to do here
-        // ...
-
-        // always call this method at the end of the frame
+		nextScript = nextScript();
         SYS_doVBlankProcess();
     }
 
