@@ -2,5 +2,5 @@
 #include "vn_engine.h"
 
 void VN_text(char *text) {
-	VDP_drawText("text", 0, 12);
+	VDP_drawText(text, 0, 12);
 }

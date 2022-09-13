@@ -8,9 +8,12 @@ const generateFromSource = (sourceName, fileSystem) => {
 	}
 
 	const generated = ast.body.filter(({ type }) => type === 'text').map(({ text }) => `	VN_text("${text}");`).join('\n');
+	const functionName = `VS_${sourceName}`;
+	
 	const generatedFunction = [
-		`void *VS_${sourceName}() {`,
+		`void *${functionName}() {`,
 		generated,
+		`	return ${functionName};`,
 		'}'
 	].join('\n');
 	
