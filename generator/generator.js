@@ -8,22 +8,21 @@ const generateFromSource = (sourceName, fileSystem) => {
 	}
 
 	const generated = ast.body.filter(({ type }) => type === 'text').map(({ text }) => `	VN_text("${text}");`).join('\n');
-	return [
+	const generatedFunction = [
 		`void *VS_${sourceName}() {`,
 		generated,
 		'}'
 	].join('\n');
+	
+	return {
+		sources: {
+			'generated_scripts.c': generatedFunction
+		}
+	}
 };
 
 const generate = fileSystem => {
-	const ast = generateFromSource('startup', fileSystem);
-	if (ast.errors) {
-		return { errors: ast.errors };
-	}
-	
-	return { 
-		scripts: { startup: ast }
-	};
+	return generateFromSource('startup', fileSystem);
 };
 
 module.exports = { generate };

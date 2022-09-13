@@ -104,3 +104,4 @@ dist
 .tern-port
 /examples/test/out
 /examples/test/src/boot
+/examples/test/src/generated_scripts.c

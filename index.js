@@ -1,4 +1,4 @@
-const { readFileSync } = require('fs');
+const { readFileSync, writeFileSync } = require('fs');
 
 const { generate } = require('./generator/generator');
 
@@ -21,4 +21,7 @@ if (result.errors) {
 	return;
 }
 
-console.info(result);
+// TODO: Refactor support asynchronous file writing
+Object.entries(result.sources).forEach(([fileName, content]) => {
+	writeFileSync(projectFolder + 'src/' + fileName, content, {encoding: 'utf8'});
+});
