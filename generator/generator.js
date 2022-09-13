@@ -16,7 +16,7 @@ const generateFromSource = (sourceName, fileSystem) => {
 	
 	return {
 		sources: {
-			'generated_scripts.c': generatedFunction
+			'generated_scripts.c': '#include "vn_engine.h"\n' + generatedFunction
 		}
 	}
 };
