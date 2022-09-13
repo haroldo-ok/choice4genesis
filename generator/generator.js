@@ -13,6 +13,7 @@ const generateFromSource = (sourceName, fileSystem) => {
 	const generatedFunction = [
 		`void *${functionName}() {`,
 		generated,
+		`	VN_flushText();`,
 		`	return ${functionName};`,
 		'}'
 	].join('\n');

@@ -5,6 +5,8 @@ extern void *VS_startup();
 
 int main(bool hardReset)
 {
+	VN_init();
+
 	scriptFunction nextScript = VS_startup;
 
     while(TRUE)
