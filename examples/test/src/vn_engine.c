@@ -20,6 +20,11 @@ void VN_init() {
 }
 
 void VN_background(const Image *image) {
+	VDP_loadTileSet(image->tileset, 256, DMA);
+    TileMap *tmap = unpackTileMap(image->tilemap, NULL);
+	VDP_setTileMapEx(BG_A, tmap, TILE_ATTR_FULL(PAL1, FALSE, FALSE, FALSE, 256), 0, 0,  0, 0, 40, 28, CPU);
+	VDP_setPaletteColors(16, (u16*)image->palette->data, 32);
+	free(tmap);
 }
 
 void VN_text(char *text) {
