@@ -3,6 +3,8 @@
 const { compact } = require('lodash');
 const { parse } = require('../parser/syntax-full');
 
+const buildEntityError = ({ line }, message) => ({ line, message });
+
 const generateFromSource = (sourceName, context) => {
 	const source = context.fileSystem.readSource(sourceName);
 	const ast = parse(source);
@@ -16,12 +18,24 @@ const generateFromSource = (sourceName, context) => {
 		}
 		if (entity.type === 'command') {
 			if (entity.command === 'background') {
-				return `	VN_background("${entity.text}");`;
+				const fileName = entity.params.positional.fileName;
+				if (fileName[0] !== 'StringConstant') {
+					context.errors.push(buildEntityError(entity, 'Image filename must be a string constant.'));
+				}
+				const imageFileName = fileName[1];
+				const imageVariable = 'img_' + imageFileName.trim().replace(/\.png$/, '').replace(/\W+/g, '_');
+				context.res.gfx.push(`IMAGE ${imageVariable} "../${imageFileName}" APLIB`);
+				return `	VN_background(${imageVariable});`;
 			}
 		}
 	})).join('\n');
-	const functionName = `VS_${sourceName}`;
 	
+	if (context.errors && context.errors.length) {
+		return { errors: context.errors };
+	}
+	
+	const functionName = `VS_${sourceName}`;
+			
 	const generatedFunction = [
 		`void *${functionName}() {`,
 		generated,
@@ -33,12 +47,16 @@ const generateFromSource = (sourceName, context) => {
 	return {
 		sources: {
 			'generated_scripts.c': '#include "vn_engine.h"\n' + generatedFunction
+		},
+		
+		resources: {
+			'gfx.res': context.res.gfx.join('\n')
 		}
 	}
 };
 
 const generate = fileSystem => {
-	const context = { fileSystem, generatedScripts: [] };
+	const context = { fileSystem, generatedScripts: [],  errors: [], res: { gfx: [] } };
 	return generateFromSource('startup', context);
 };
 
