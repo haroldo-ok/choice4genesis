@@ -19,6 +19,9 @@ void VN_init() {
 	window.h = 4;
 }
 
+void VN_background(const Image *image) {
+}
+
 void VN_text(char *text) {
 	if (textBuffer[0]) strcat(textBuffer, "\n");
 	strcat(textBuffer, text);

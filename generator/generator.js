@@ -24,8 +24,8 @@ const generateFromSource = (sourceName, context) => {
 				}
 				const imageFileName = fileName[1];
 				const imageVariable = 'img_' + imageFileName.trim().replace(/\.png$/, '').replace(/\W+/g, '_');
-				context.res.gfx.push(`IMAGE ${imageVariable} "../${imageFileName}" APLIB`);
-				return `	VN_background(${imageVariable});`;
+				context.res.gfx.push(`IMAGE ${imageVariable} "../project/${imageFileName}" APLIB`);
+				return `	VN_background(&${imageVariable});`;
 			}
 		}
 	})).join('\n');
