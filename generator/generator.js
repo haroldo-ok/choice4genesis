@@ -1,13 +1,25 @@
+'use strict'
+
+const { compact } = require('lodash');
 const { parse } = require('../parser/syntax-full');
 
-const generateFromSource = (sourceName, fileSystem) => {
-	const source = fileSystem.readSource(sourceName);
+const generateFromSource = (sourceName, context) => {
+	const source = context.fileSystem.readSource(sourceName);
 	const ast = parse(source);
 	if (ast.errors) {
 		return { errors: ast.errors };
 	}
 
-	const generated = ast.body.filter(({ type }) => type === 'text').map(({ text }) => `	VN_text("${text}");`).join('\n');
+	const generated = compact(ast.body.map(entity => {
+		if (entity.type === 'text') {
+			return `	VN_text("${entity.text}");`
+		}
+		if (entity.type === 'command') {
+			if (entity.command === 'background') {
+				return `	VN_background("${entity.text}");`;
+			}
+		}
+	})).join('\n');
 	const functionName = `VS_${sourceName}`;
 	
 	const generatedFunction = [
@@ -26,7 +38,8 @@ const generateFromSource = (sourceName, fileSystem) => {
 };
 
 const generate = fileSystem => {
-	return generateFromSource('startup', fileSystem);
+	const context = { fileSystem, generatedScripts: [] };
+	return generateFromSource('startup', context);
 };
 
 module.exports = { generate };
