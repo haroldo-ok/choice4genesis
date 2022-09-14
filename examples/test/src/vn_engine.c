@@ -11,6 +11,8 @@ struct {
 } window;
 
 void VN_init() {
+	VDP_setTextPlane(BG_B);
+	
 	memset(textBuffer, 0, TEXT_BUFFER_LEN);
 	
 	window.x = 1;
