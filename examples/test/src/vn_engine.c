@@ -30,11 +30,12 @@ void VN_init() {
 	imageInfo.tileNumber = 256;
 }
 
+
 void VN_showImage(const Image *image, u16 palNum, u16 x, u16 y) {
 	VDP_loadTileSet(image->tileset, imageInfo.tileNumber, DMA);
     TileMap *tmap = unpackTileMap(image->tilemap, NULL);
 	VDP_setTileMapEx(BG_A, tmap, TILE_ATTR_FULL(palNum, FALSE, FALSE, FALSE, imageInfo.tileNumber), 
-		0, 0,  x, y, tmap->w, tmap->h, CPU);
+		x, y,  0, 0, tmap->w, tmap->h, CPU);
 	VDP_setPalette(palNum, (u16*)image->palette->data);
 	imageInfo.tileNumber += image->tileset->numTile;
 	free(tmap);
@@ -46,8 +47,14 @@ void VN_background(const Image *image) {
 }
 
 void VN_image(const Image *image) {
-	VN_showImage(image, PAL2, 0, 0);
+	VN_showImage(image, PAL2, imageInfo.x, imageInfo.y);
 }
+
+void VN_imageAt(u16 x, u16 y) {
+	imageInfo.x = x;
+	imageInfo.y = y;
+}
+
 
 void VN_text(char *text) {
 	if (textBuffer[0]) strcat(textBuffer, "\n");

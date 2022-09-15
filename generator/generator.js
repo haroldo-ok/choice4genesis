@@ -33,10 +33,15 @@ const generateFromSource = (sourceName, context) => {
 				if (fileName[0] !== 'StringConstant') {
 					context.errors.push(buildEntityError(entity, 'Image filename must be a string constant.'));
 				}
+												
 				const imageFileName = fileName[1];
-				const imageVariable = 'img_' + imageFileName.trim().replace(/\.png$/, '').replace(/\W+/g, '_');
+				const imageVariable = 'img_' + imageFileName.trim().replace(/\.png$/, '').replace(/\W+/g, '_');				
 				context.res.gfx.push(`IMAGE ${imageVariable} "../project/${imageFileName}" APLIB`);
-				return `	VN_image(&${imageVariable});`;
+				
+				const position = entity.params.named && entity.params.named.at;
+				const positionSrc = position ? `	VN_imageAt(${position.x[1]}, ${position.y[1]});` + '\n' : '';
+				
+				return positionSrc + `	VN_image(&${imageVariable});`;
 			}
 		}
 	})).join('\n');
