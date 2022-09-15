@@ -10,6 +10,11 @@ struct {
 	u16 x, y, w, h;
 } window;
 
+struct {
+	u16 x, y;
+	u16 tileNumber;
+} imageInfo;
+
 void VN_init() {
 	VDP_setTextPlane(BG_B);
 	
@@ -19,14 +24,29 @@ void VN_init() {
 	window.y = 20;
 	window.w = 38;
 	window.h = 4;
+
+	imageInfo.x = 0;
+	imageInfo.y = 0;
+	imageInfo.tileNumber = 256;
+}
+
+void VN_showImage(const Image *image, u16 palNum, u16 x, u16 y) {
+	VDP_loadTileSet(image->tileset, imageInfo.tileNumber, DMA);
+    TileMap *tmap = unpackTileMap(image->tilemap, NULL);
+	VDP_setTileMapEx(BG_A, tmap, TILE_ATTR_FULL(palNum, FALSE, FALSE, FALSE, imageInfo.tileNumber), 
+		0, 0,  x, y, tmap->w, tmap->h, CPU);
+	VDP_setPalette(palNum, (u16*)image->palette->data);
+	imageInfo.tileNumber += image->tileset->numTile;
+	free(tmap);
 }
 
 void VN_background(const Image *image) {
-	VDP_loadTileSet(image->tileset, 256, DMA);
-    TileMap *tmap = unpackTileMap(image->tilemap, NULL);
-	VDP_setTileMapEx(BG_A, tmap, TILE_ATTR_FULL(PAL1, FALSE, FALSE, FALSE, 256), 0, 0,  0, 0, 40, 28, CPU);
-	VDP_setPaletteColors(16, (u16*)image->palette->data, 32);
-	free(tmap);
+	imageInfo.tileNumber = 256;
+	VN_showImage(image, PAL1, 0, 0);
+}
+
+void VN_image(const Image *image) {
+	VN_showImage(image, PAL2, 0, 0);
 }
 
 void VN_text(char *text) {

@@ -5,7 +5,10 @@
 #include "gfx.h"
 
 extern void VN_init();
+
 extern void VN_background(const Image *image);
+extern void VN_image(const Image *image);
+
 extern void VN_text(char *text);
 extern void VN_flushText();
 

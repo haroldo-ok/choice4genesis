@@ -27,6 +27,17 @@ const generateFromSource = (sourceName, context) => {
 				context.res.gfx.push(`IMAGE ${imageVariable} "../project/${imageFileName}" APLIB`);
 				return `	VN_background(&${imageVariable});`;
 			}
+			
+			if (entity.command === 'image') {
+				const fileName = entity.params.positional.fileName;
+				if (fileName[0] !== 'StringConstant') {
+					context.errors.push(buildEntityError(entity, 'Image filename must be a string constant.'));
+				}
+				const imageFileName = fileName[1];
+				const imageVariable = 'img_' + imageFileName.trim().replace(/\.png$/, '').replace(/\W+/g, '_');
+				context.res.gfx.push(`IMAGE ${imageVariable} "../project/${imageFileName}" APLIB`);
+				return `	VN_image(&${imageVariable});`;
+			}
 		}
 	})).join('\n');
 	
