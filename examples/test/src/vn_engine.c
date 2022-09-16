@@ -56,6 +56,11 @@ void VN_imageAt(u16 x, u16 y) {
 }
 
 
+void VN_music(const u8 *music) {
+	// TODO: Implement it
+}
+
+
 void VN_text(char *text) {
 	if (textBuffer[0]) strcat(textBuffer, "\n");
 	strcat(textBuffer, text);

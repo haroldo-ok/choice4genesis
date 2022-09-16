@@ -43,6 +43,17 @@ const generateFromSource = (sourceName, context) => {
 				
 				return positionSrc + `	VN_image(&${imageVariable});`;
 			}
+			
+			if (entity.command === 'music') {
+				const fileName = entity.params.positional.fileName;
+				if (fileName[0] !== 'StringConstant') {
+					context.errors.push(buildEntityError(entity, 'Music filename must be a string constant.'));
+				}
+				const musicFileName = fileName[1];
+				const musicVariable = 'xgm_' + musicFileName.trim().replace(/\..gm$/, '').replace(/\W+/g, '_');
+				context.res.music.push(`XGM ${musicVariable} "../project/${musicFileName}" APLIB`);
+				return `	VN_music(${musicVariable});`;
+			}
 		}
 	})).join('\n');
 	
@@ -66,13 +77,14 @@ const generateFromSource = (sourceName, context) => {
 		},
 		
 		resources: {
-			'gfx.res': context.res.gfx.join('\n')
+			'gfx.res': context.res.gfx.join('\n'),
+			'music.res': context.res.music.join('\n')
 		}
 	}
 };
 
 const generate = fileSystem => {
-	const context = { fileSystem, generatedScripts: [],  errors: [], res: { gfx: [] } };
+	const context = { fileSystem, generatedScripts: [],  errors: [], res: { gfx: [], music: [] } };
 	return generateFromSource('startup', context);
 };
 
