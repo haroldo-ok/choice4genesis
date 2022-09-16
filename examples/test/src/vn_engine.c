@@ -28,6 +28,9 @@ void VN_init() {
 	imageInfo.x = 0;
 	imageInfo.y = 0;
 	imageInfo.tileNumber = 256;
+	
+	XGM_setLoopNumber(-1);
+	XGM_setForceDelayDMA(TRUE);
 }
 
 
@@ -57,7 +60,7 @@ void VN_imageAt(u16 x, u16 y) {
 
 
 void VN_music(const u8 *music) {
-	// TODO: Implement it
+	XGM_startPlay(music);
 }
 
 
