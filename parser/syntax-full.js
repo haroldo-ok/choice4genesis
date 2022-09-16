@@ -13,6 +13,8 @@ const COMMANDS = {
 	'elseif': { positional: ['condition'], onlyAfter: ['if', 'elseif'] },
 	'else': { onlyAfter: ['if', 'elseif'] },
 	
+	'wait': { positional: ['duration'] },
+
 	'label': { positional: ['name'] },
 	'goto': { positional: ['target'] },
 	'goto_scene': { positional: ['target'] },

@@ -6,8 +6,23 @@ const { parse } = require('../parser/syntax-full');
 const buildEntityError = ({ line }, message) => ({ line, message });
 
 const getStringConstant = (entity, parameter, context, name) => {
+	if (!parameter) {
+		context.errors.push(buildEntityError(entity, name + ' was not informed.'));
+		return null;
+	}
 	if (parameter[0] !== 'StringConstant') {
 		context.errors.push(buildEntityError(entity, name + ' must be a string constant.'));
+	}
+	return parameter[1];
+}
+
+const getNumber = (entity, parameter, context, name) => {
+	if (!parameter) {
+		context.errors.push(buildEntityError(entity, name + ' was not informed.'));
+		return null;
+	}
+	if (parameter[0] !== 'NumberConstant') {
+		context.errors.push(buildEntityError(entity, name + ' must be a number.'));
 	}
 	return parameter[1];
 }
@@ -58,6 +73,11 @@ const generateFromSource = (sourceName, context) => {
 				const musicVariable = 'xgm_' + musicFileName.trim().replace(/\..gm$/, '').replace(/\W+/g, '_');
 				context.res.music.push(`XGM ${musicVariable} "../project/${musicFileName}" APLIB`);
 				return `VN_music(${musicVariable});`;
+			}
+
+			if (entity.command === 'wait') {
+				const duration = getNumber(entity, entity.params.positional.duration, context, 'Wait duration');
+				return `VN_wait(${duration});`;
 			}
 		}
 	})).join('\n');

@@ -15,6 +15,7 @@ extern void VN_music(const u8 *music);
 
 extern void VN_text(char *text);
 extern void VN_flushText();
+extern void VN_wait(u16 duration);
 
 typedef void * (*scriptFunction)();
 

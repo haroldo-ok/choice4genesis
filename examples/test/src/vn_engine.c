@@ -70,6 +70,8 @@ void VN_text(char *text) {
 }
 
 void VN_flushText() {
+	if (!textBuffer[0]) return;
+	
 	char lineBuffer[41];
 	char *o = textBuffer;
 	u16 y = window.y;
@@ -84,4 +86,7 @@ void VN_flushText() {
 		y++;
 	}
 	strclr(textBuffer);
+}
+
+void VN_wait(u16 duration) {
 }
