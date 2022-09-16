@@ -5,6 +5,13 @@ const { parse } = require('../parser/syntax-full');
 
 const buildEntityError = ({ line }, message) => ({ line, message });
 
+const getStringConstant = (entity, parameter, context, name) => {
+	if (parameter[0] !== 'StringConstant') {
+		context.errors.push(buildEntityError(entity, name + ' must be a string constant.'));
+	}
+	return parameter[1];
+}
+
 const generateFromSource = (sourceName, context) => {
 	const source = context.fileSystem.readSource(sourceName);
 	const ast = parse(source);
@@ -18,23 +25,14 @@ const generateFromSource = (sourceName, context) => {
 		}
 		if (entity.type === 'command') {
 			if (entity.command === 'background') {
-				const fileName = entity.params.positional.fileName;
-				if (fileName[0] !== 'StringConstant') {
-					context.errors.push(buildEntityError(entity, 'Image filename must be a string constant.'));
-				}
-				const imageFileName = fileName[1];
+				const imageFileName = getStringConstant(entity, entity.params.positional.fileName, context, 'Image filename');
 				const imageVariable = 'img_' + imageFileName.trim().replace(/\.png$/, '').replace(/\W+/g, '_');
 				context.res.gfx.push(`IMAGE ${imageVariable} "../project/${imageFileName}" APLIB`);
 				return `	VN_background(&${imageVariable});`;
 			}
 			
 			if (entity.command === 'image') {
-				const fileName = entity.params.positional.fileName;
-				if (fileName[0] !== 'StringConstant') {
-					context.errors.push(buildEntityError(entity, 'Image filename must be a string constant.'));
-				}
-												
-				const imageFileName = fileName[1];
+				const imageFileName = getStringConstant(entity, entity.params.positional.fileName, context, 'Image filename');
 				const imageVariable = 'img_' + imageFileName.trim().replace(/\.png$/, '').replace(/\W+/g, '_');				
 				context.res.gfx.push(`IMAGE ${imageVariable} "../project/${imageFileName}" APLIB`);
 				
@@ -45,11 +43,7 @@ const generateFromSource = (sourceName, context) => {
 			}
 			
 			if (entity.command === 'music') {
-				const fileName = entity.params.positional.fileName;
-				if (fileName[0] !== 'StringConstant') {
-					context.errors.push(buildEntityError(entity, 'Music filename must be a string constant.'));
-				}
-				const musicFileName = fileName[1];
+				const musicFileName = getStringConstant(entity, entity.params.positional.fileName, context, 'Music filename');
 				const musicVariable = 'xgm_' + musicFileName.trim().replace(/\..gm$/, '').replace(/\W+/g, '_');
 				context.res.music.push(`XGM ${musicVariable} "../project/${musicFileName}" APLIB`);
 				return `	VN_music(${musicVariable});`;
