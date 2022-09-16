@@ -89,4 +89,8 @@ void VN_flushText() {
 }
 
 void VN_wait(u16 duration) {
+	VN_flushText();
+	for (u16 remainining = duration; remainining; remainining--) {
+		for (u16 i = 60; i; i--) SYS_doVBlankProcess();		
+	}
 }
