@@ -39,10 +39,30 @@ const indent = (...params) =>
 	.map(s => '\t' + s)
 	.join('\n');
 	
+const addResource = (map, fileName, generator) => {
+	// Does it already exist on the resources?
+	if (map[fileName]) return map[fileName].variable;
+	
+	// No; add to the map
+	const variable = fileName.trim().replace(/\W+/g, '_');
+	map[fileName] = {
+		variable,
+		content: generator(variable)
+	};
+	
+	return variable;
+};
+
+const generateResource = map => Object.values(map).map(({ content }) => content).join('\n');
+	
 const generateImageCommand = (functionName, entity, context, mapOption = 'ALL') => {
 	const imageFileName = getStringConstant(entity, entity.params.positional.fileName, context, 'Image filename');
+	/*
 	const imageVariable = 'img_' + imageFileName.trim().replace(/\.png$/, '').replace(/\W+/g, '_');				
 	context.res.gfx.push(`IMAGE ${imageVariable} "../project/${imageFileName}" APLIB ${mapOption}`);
+	*/
+	const imageVariable = addResource(context.res.gfx, imageFileName, imageVariable => 
+		`IMAGE ${imageVariable} "../project/${imageFileName}" APLIB ${mapOption}`);
 	
 	const position = entity.params.named && entity.params.named.at;
 	const positionSrc = position ? `VN_imageAt(${position.x[1]}, ${position.y[1]});` + '\n' : '';
@@ -60,8 +80,9 @@ const COMMAND_GENERATORS = {
 	
 	'music': (entity, context) => {
 		const musicFileName = getStringConstant(entity, entity.params.positional.fileName, context, 'Music filename');
-		const musicVariable = 'xgm_' + musicFileName.trim().replace(/\..gm$/, '').replace(/\W+/g, '_');
-		context.res.music.push(`XGM ${musicVariable} "../project/${musicFileName}" APLIB`);
+		const musicVariable = addResource(context.res.music, musicFileName, musicVariable => 
+			`XGM ${musicVariable} "../project/${musicFileName}" APLIB`);
+
 		return `VN_music(${musicVariable});`;
 	},
 	
@@ -71,7 +92,14 @@ const COMMAND_GENERATORS = {
 	},
 	
 	'choice': (entity, context) => {
-		
+		return [
+			'{',
+			indent(
+				'u8 choice = 0;',
+				generateFromBody(entity.body, context)
+			),
+			'}'
+		].join('\n');
 	}
 };
 
@@ -80,6 +108,9 @@ generateFromBody = (body, context) =>
 	compact(body.map(entity => {
 		if (entity.type === 'text') {
 			return `VN_text("${entity.text}");`
+		}
+		if (entity.type === 'option') {
+			return `VN_option("${entity.text}");`
 		}
 		if (entity.type === 'command') {
 			const generator = COMMAND_GENERATORS[entity.command];
@@ -118,14 +149,14 @@ const generateFromSource = (sourceName, context) => {
 		},
 		
 		resources: {
-			'gfx.res': context.res.gfx.join('\n'),
-			'music.res': context.res.music.join('\n')
+			'gfx.res': generateResource(context.res.gfx),
+			'music.res': generateResource(context.res.music)
 		}
 	}
 };
 
 const generate = fileSystem => {
-	const context = { fileSystem, generatedScripts: [],  errors: [], res: { gfx: [], music: [] } };
+	const context = { fileSystem, generatedScripts: [],  errors: [], res: { gfx: {}, music: {} } };
 	return generateFromSource('startup', context);
 };
 

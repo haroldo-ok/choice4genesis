@@ -8,8 +8,11 @@ Second line.
 Third line.
 * choice
 	# First choice
+		You chose the first one
 	# Second choice
+		You chose the second one
 	# Third choice
+		You chose the third one
 * wait 3
 One more line
 * wait 30
