@@ -66,6 +66,10 @@ void VN_music(const u8 *music) {
 }
 
 
+void VN_clearWindow() {
+	VDP_clearTextArea(window.x, window.y, window.w, window.h);
+}
+
 void VN_text(char *text) {
 	if (textBuffer[0]) strcat(textBuffer, "\n");
 	strcat(textBuffer, text);
@@ -73,6 +77,8 @@ void VN_text(char *text) {
 
 void VN_flushText() {
 	if (!textBuffer[0]) return;
+	
+	VN_clearWindow();
 	
 	char lineBuffer[41];
 	char *o = textBuffer;
