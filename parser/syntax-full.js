@@ -28,8 +28,12 @@ const COMMANDS = {
 
 	'music': { positional: ['fileName'] },
 	'sound': { positional: ['fileName'] },
-	'window': { named: { 'from': ['x', 'y'], 'to': ['x', 'y'] }, flags: ['borderless', 'withborder'] },
 
+	'window': { named: { 'from': ['x', 'y'], 'to': ['x', 'y'] }, flags: ['borderless', 'withborder'] },
+	'clear': { flags: ['background', 'foreground', 'window'] },
+
+	'video': { positional: ['fileName', 'frameRate'] },
+	
 	'choice': { },
 	'scene_list': { },
 	'finish': { }	
