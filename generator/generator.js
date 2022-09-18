@@ -66,6 +66,10 @@ const COMMAND_GENERATORS = {
 	'wait': (entity, context) => {
 		const duration = getNumber(entity, entity.params.positional.duration, context, 'Wait duration');
 		return `VN_wait(${duration});`;
+	},
+	
+	'choice': (entity, context) => {
+		
 	}
 };
 

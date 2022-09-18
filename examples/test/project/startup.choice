@@ -5,6 +5,10 @@
 This is a test.
 Second line.
 Third line.
+* choice
+	# First choice
+	# Second choice
+	# Third choice
 * wait 3
 One more line
 * wait 30
