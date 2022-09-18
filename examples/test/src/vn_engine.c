@@ -21,7 +21,7 @@ void VN_init() {
 	window.x = 1;
 	window.y = 20;
 	window.w = 38;
-	window.h = 4;
+	window.h = 6;
 
 	imageInfo.x = 0;
 	imageInfo.y = 0;
