@@ -112,6 +112,8 @@ void VN_text(char *text) {
 void VN_flushText() {
 	if (!textBuffer[0]) return;
 	
+	VN_waitJoyRelease();
+
 	VN_clearWindow();
 	
 	char lineBuffer[41];

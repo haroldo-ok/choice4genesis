@@ -1,20 +1,19 @@
 * font "damieng.com - Hourglass font.png"
 * background "Blue Hedgehog.png"
-* background "Blue Hedgehog.png"
-* image "Smiley.png", at(30, 3)
-* music "Actraiser - Fillmore.vgm"
-This is a test.
-Second line.
-Third line.
 * choice
-	# First choice
-		You chose the first one
+	# Play some music
+		* music "Actraiser - Fillmore.vgm"
+		OK, playing Fillmore, from Actraiser.
+	# Show a smiley
+		* image "Smiley.png", at(30, 3)
+		OK... showing a smiley!
+	# Third choice
+		You chose the third one
 		* choice
 			# Yet another choice
 				You chose this.
 			# One more choice
 				You chose that.
-	# Second choice
-	# Third choice
-		You chose the third one
-One more line
+This is a test.
+Second line.
+Third line.
