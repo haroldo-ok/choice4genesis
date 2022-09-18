@@ -51,6 +51,24 @@ const generateImageCommand = (functionName, entity, context) => {
 };
 
 
+const COMMAND_GENERATORS = {
+	'background': (entity, context) => generateImageCommand('VN_background', entity, context),
+	'image': (entity, context) => generateImageCommand('VN_image', entity, context),
+	
+	'music': (entity, context) => {
+		const musicFileName = getStringConstant(entity, entity.params.positional.fileName, context, 'Music filename');
+		const musicVariable = 'xgm_' + musicFileName.trim().replace(/\..gm$/, '').replace(/\W+/g, '_');
+		context.res.music.push(`XGM ${musicVariable} "../project/${musicFileName}" APLIB`);
+		return `VN_music(${musicVariable});`;
+	},
+	
+	'wait': (entity, context) => {
+		const duration = getNumber(entity, entity.params.positional.duration, context, 'Wait duration');
+		return `VN_wait(${duration});`;
+	}
+};
+
+
 const generateFromSource = (sourceName, context) => {
 	const source = context.fileSystem.readSource(sourceName);
 	const ast = parse(source);
@@ -63,25 +81,8 @@ const generateFromSource = (sourceName, context) => {
 			return `VN_text("${entity.text}");`
 		}
 		if (entity.type === 'command') {
-			if (entity.command === 'background') {
-				return generateImageCommand('VN_background', entity, context);
-			}
-			
-			if (entity.command === 'image') {
-				return generateImageCommand('VN_image', entity, context);
-			}
-			
-			if (entity.command === 'music') {
-				const musicFileName = getStringConstant(entity, entity.params.positional.fileName, context, 'Music filename');
-				const musicVariable = 'xgm_' + musicFileName.trim().replace(/\..gm$/, '').replace(/\W+/g, '_');
-				context.res.music.push(`XGM ${musicVariable} "../project/${musicFileName}" APLIB`);
-				return `VN_music(${musicVariable});`;
-			}
-
-			if (entity.command === 'wait') {
-				const duration = getNumber(entity, entity.params.positional.duration, context, 'Wait duration');
-				return `VN_wait(${duration});`;
-			}
+			const generator = COMMAND_GENERATORS[entity.command];
+			return generator && generator(entity, context);
 		}
 	})).join('\n');
 	
