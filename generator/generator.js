@@ -50,6 +50,8 @@ const generateImageCommand = (functionName, entity, context, mapOption = 'ALL') 
 	return positionSrc + `${functionName}(&${imageVariable});`;
 };
 
+let generateFromBody;
+
 
 const COMMAND_GENERATORS = {
 	'background': (entity, context) => generateImageCommand('VN_background', entity, context),
@@ -74,14 +76,8 @@ const COMMAND_GENERATORS = {
 };
 
 
-const generateFromSource = (sourceName, context) => {
-	const source = context.fileSystem.readSource(sourceName);
-	const ast = parse(source);
-	if (ast.errors) {
-		return { errors: ast.errors };
-	}
-
-	const generated = compact(ast.body.map(entity => {
+generateFromBody = (body, context) => 
+	compact(body.map(entity => {
 		if (entity.type === 'text') {
 			return `VN_text("${entity.text}");`
 		}
@@ -90,6 +86,15 @@ const generateFromSource = (sourceName, context) => {
 			return generator && generator(entity, context);
 		}
 	})).join('\n');
+
+const generateFromSource = (sourceName, context) => {
+	const source = context.fileSystem.readSource(sourceName);
+	const ast = parse(source);
+	if (ast.errors) {
+		return { errors: ast.errors };
+	}
+
+	const generated = generateFromBody(ast.body, context);
 	
 	if (context.errors && context.errors.length) {
 		return { errors: context.errors };
