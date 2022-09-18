@@ -24,6 +24,7 @@ const COMMANDS = {
 
 	'background': { positional: ['fileName'] },
 	'image': { positional: ['fileName'], named: { 'at': ['x', 'y'] } },
+	'font': { positional: ['fileName'] },
 
 	'music': { positional: ['fileName'] },
 	'sound': { positional: ['fileName'] },

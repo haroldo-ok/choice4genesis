@@ -39,10 +39,10 @@ const indent = (...params) =>
 	.map(s => '\t' + s)
 	.join('\n');
 	
-const generateImageCommand = (functionName, entity, context) => {
+const generateImageCommand = (functionName, entity, context, mapOption = 'ALL') => {
 	const imageFileName = getStringConstant(entity, entity.params.positional.fileName, context, 'Image filename');
 	const imageVariable = 'img_' + imageFileName.trim().replace(/\.png$/, '').replace(/\W+/g, '_');				
-	context.res.gfx.push(`IMAGE ${imageVariable} "../project/${imageFileName}" APLIB`);
+	context.res.gfx.push(`IMAGE ${imageVariable} "../project/${imageFileName}" APLIB ${mapOption}`);
 	
 	const position = entity.params.named && entity.params.named.at;
 	const positionSrc = position ? `VN_imageAt(${position.x[1]}, ${position.y[1]});` + '\n' : '';
@@ -54,6 +54,7 @@ const generateImageCommand = (functionName, entity, context) => {
 const COMMAND_GENERATORS = {
 	'background': (entity, context) => generateImageCommand('VN_background', entity, context),
 	'image': (entity, context) => generateImageCommand('VN_image', entity, context),
+	'font': (entity, context) => generateImageCommand('VN_font', entity, context, 'NONE'),
 	
 	'music': (entity, context) => {
 		const musicFileName = getStringConstant(entity, entity.params.positional.fileName, context, 'Music filename');

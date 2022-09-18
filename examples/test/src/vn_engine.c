@@ -60,6 +60,11 @@ void VN_imageAt(u16 x, u16 y) {
 	imageInfo.y = y;
 }
 
+void VN_font(const Image *image) {
+	VDP_loadFont(image->tileset, DMA);
+	VDP_setPalette(PAL0, (u16*)image->palette->data);
+}
+
 
 void VN_music(const u8 *music) {
 	XGM_startPlay(music);
@@ -67,7 +72,7 @@ void VN_music(const u8 *music) {
 
 
 void VN_clearWindow() {
-	VDP_clearTextArea(window.x, window.y, window.w, window.h);
+	VDP_clearTextAreaEx(BG_B, TILE_ATTR_FULL(PAL0, TRUE, FALSE, FALSE, 0x05A0), window.x, window.y, window.w, window.h, DMA);
 }
 
 void VN_text(char *text) {
