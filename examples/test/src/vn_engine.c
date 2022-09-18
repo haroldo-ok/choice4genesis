@@ -16,8 +16,6 @@ struct {
 } imageInfo;
 
 void VN_init() {
-	VDP_setTextPlane(BG_B);
-	
 	memset(textBuffer, 0, TEXT_BUFFER_LEN);
 	
 	window.x = 1;
@@ -39,7 +37,7 @@ void VN_init() {
 void VN_showImage(const Image *image, u16 palNum, u16 x, u16 y) {
 	VDP_loadTileSet(image->tileset, imageInfo.tileNumber, DMA);
     TileMap *tmap = unpackTileMap(image->tilemap, NULL);
-	VDP_setTileMapEx(BG_A, tmap, TILE_ATTR_FULL(palNum, FALSE, FALSE, FALSE, imageInfo.tileNumber), 
+	VDP_setTileMapEx(BG_B, tmap, TILE_ATTR_FULL(palNum, FALSE, FALSE, FALSE, imageInfo.tileNumber), 
 		x, y,  0, 0, tmap->w, tmap->h, CPU);
 	VDP_setPalette(palNum, (u16*)image->palette->data);
 	imageInfo.tileNumber += image->tileset->numTile;
@@ -72,7 +70,7 @@ void VN_music(const u8 *music) {
 
 
 void VN_clearWindow() {
-	VDP_clearTextAreaEx(BG_B, TILE_ATTR_FULL(PAL0, TRUE, FALSE, FALSE, 0x05A0), window.x, window.y, window.w, window.h, DMA);
+	VDP_clearTextAreaEx(BG_A, TILE_ATTR_FULL(PAL0, FALSE, FALSE, FALSE, 0x05A0), window.x, window.y, window.w, window.h, DMA);
 }
 
 void VN_text(char *text) {
