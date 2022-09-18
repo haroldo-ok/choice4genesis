@@ -31,6 +31,8 @@ void VN_init() {
 	
 	XGM_setLoopNumber(-1);
 	XGM_setForceDelayDMA(TRUE);
+
+	VDP_drawText("choice4genesis v0.0.1", 18, 27);
 }
 
 
