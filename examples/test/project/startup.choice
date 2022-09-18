@@ -9,8 +9,12 @@ Third line.
 * choice
 	# First choice
 		You chose the first one
+		* choice
+			# Yet another choice
+				You chose this.
+			# One more choice
+				You chose that.
 	# Second choice
-		You chose the second one
 	# Third choice
 		You chose the third one
 * wait 3

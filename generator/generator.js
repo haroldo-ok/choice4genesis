@@ -32,7 +32,7 @@ const indent = (...params) =>
 	params
 	.map(o => 
 		!o ? '' : 
-		o.split() ? o.split('\n') : 
+		o.split ? o.split('\n') : 
 		o.flat ? o.flat() : 
 		`// Unknown value of type ${typeof o}: ${o}`)
 	.flat()
@@ -92,11 +92,23 @@ const COMMAND_GENERATORS = {
 	},
 	
 	'choice': (entity, context) => {
+		context.choices.push([]);
+		const generated = generateFromBody(entity.body, context);
+		const optionsContent = context.choices.pop();
+		
 		return [
 			'{',
 			indent(
-				'u8 choice = 0;',
-				generateFromBody(entity.body, context)
+				'VN_flushText();',
+				generated,
+				'switch (VN_choice()) {',
+				optionsContent.map((content, index) => [
+					`case ${index + 1}:`,
+					indent(content),
+					'\tbreak;'
+				]),
+				'}',
+				'VN_flushText();'
 			),
 			'}'
 		].join('\n');
@@ -105,12 +117,21 @@ const COMMAND_GENERATORS = {
 
 
 generateFromBody = (body, context) => 
-	compact(body.map(entity => {
+	compact((body || []).map(entity => {
 		if (entity.type === 'text') {
 			return `VN_text("${entity.text}");`
 		}
 		if (entity.type === 'option') {
-			return `VN_option("${entity.text}");`
+			const len = context.choices.length;
+			let optionNumber = -1;
+			if (len) {
+				context.choices[len - 1].push(generateFromBody(entity.body, context));
+				optionNumber = context.choices[len - 1].length;
+			} else {
+				context.errors.push(buildEntityError(entity, 'Can\'t declare an option outside the body of a "choice" command.'));
+			}			
+			
+			return `VN_option(${optionNumber}, "${entity.text}");`
 		}
 		if (entity.type === 'command') {
 			const generator = COMMAND_GENERATORS[entity.command];
@@ -156,7 +177,7 @@ const generateFromSource = (sourceName, context) => {
 };
 
 const generate = fileSystem => {
-	const context = { fileSystem, generatedScripts: [],  errors: [], res: { gfx: {}, music: {} } };
+	const context = { fileSystem, generatedScripts: [],  errors: [], res: { gfx: {}, music: {} }, choices: [] };
 	return generateFromSource('startup', context);
 };
 
