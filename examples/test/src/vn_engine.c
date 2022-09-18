@@ -23,10 +23,6 @@ struct {
 } input;
 
 void VN_joyHandler(u16 joy, u16 changed, u16 state) {
-	char buf[32];
-	sprintf(buf, "joy %d changed %d state %d       ", joy, changed, state);
-	VDP_drawText(buf, 1, 1);	
-	
 	if (joy != JOY_1) return;
 	
 	input.up = !!(state & BUTTON_UP);
@@ -38,6 +34,13 @@ void VN_waitJoyRelease() {
 	do {
 		SYS_doVBlankProcess();
 	} while(input.up || input.down || input.next);
+}
+
+void VN_waitPressNext() {
+	do {
+		SYS_doVBlankProcess();
+	} while(!input.next);
+	VN_waitJoyRelease();
 }
 
 void VN_init() {
@@ -125,6 +128,8 @@ void VN_flushText() {
 		y++;
 	}
 	strclr(textBuffer);
+	
+	VN_waitPressNext();
 }
 
 void VN_wait(u16 duration) {
@@ -151,8 +156,8 @@ u8 VN_choice() {
 	
 	VN_clearWindow();
 
-	u8 choiceNumber = 1;
-	u8 cursorPositons[CHOICE_MAX];
+	u8 choiceCount = 0;
+	u16 cursorPositons[CHOICE_MAX];
 	u8 choiceValues[CHOICE_MAX];
 	
 	char lineBuffer[41];
@@ -161,9 +166,18 @@ u8 VN_choice() {
 	
 	while (*o) {
 		char *d = lineBuffer;
-		for (;*o && *o != '\n'; o++, d++) *d = *o;
+		for (;*o && *o != '\n' && *o != 1; o++, d++) *d = *o;
 		*d = 0;
-		if (*o) o++;
+		
+		if (*o == 1) {
+			o++;			
+			cursorPositons[choiceCount] = y;
+			choiceValues[choiceCount] = *o;
+			choiceCount++;
+			o++;
+		}
+		
+		if (*o) o++;				
 		
 		VDP_drawText(lineBuffer, window.x + 1, y);
 		y++;
@@ -172,8 +186,31 @@ u8 VN_choice() {
 	
 	VN_waitJoyRelease();
 	
+	u8 choiceNumber = 0;
+	VDP_drawText(">", window.x, cursorPositons[0]);
 	while (!input.next) {
-		SYS_doVBlankProcess();		
+		SYS_doVBlankProcess();
+		if (input.up || input.down) {
+			VDP_drawText(" ", window.x, cursorPositons[choiceNumber]);
+
+			// Previous choice?
+			if (input.up) {
+				if (choiceNumber) {
+					choiceNumber--;
+				} else {
+					choiceNumber = choiceCount - 1;
+				}
+			}
+			
+			// Next choice?
+			if (input.down) {
+				choiceNumber++;
+				if (choiceNumber >= choiceCount) choiceNumber = 0;
+			}
+
+			VDP_drawText(">", window.x, cursorPositons[choiceNumber]);			
+			VN_waitJoyRelease();
+		}
 	}
 	
 	VN_waitJoyRelease();
