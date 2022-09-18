@@ -3,6 +3,7 @@
 #include "vn_engine.h"
 
 #define TEXT_BUFFER_LEN (8192)
+#define CHOICE_MAX (8)
 
 char textBuffer[TEXT_BUFFER_LEN];
 
@@ -15,7 +16,34 @@ struct {
 	u16 tileNumber;
 } imageInfo;
 
+struct {
+	bool up;
+	bool down;
+	bool next;
+} input;
+
+void VN_joyHandler(u16 joy, u16 changed, u16 state) {
+	char buf[32];
+	sprintf(buf, "joy %d changed %d state %d       ", joy, changed, state);
+	VDP_drawText(buf, 1, 1);	
+	
+	if (joy != JOY_1) return;
+	
+	input.up = !!(state & BUTTON_UP);
+	input.down = !!(state & BUTTON_DOWN);
+	input.next = !!(state & (BUTTON_A | BUTTON_B | BUTTON_C));
+}
+
+void VN_waitJoyRelease() {
+	do {
+		SYS_doVBlankProcess();
+	} while(input.up || input.down || input.next);
+}
+
 void VN_init() {
+	JOY_init();
+	JOY_setEventHandler(&VN_joyHandler);
+	
 	memset(textBuffer, 0, TEXT_BUFFER_LEN);
 	
 	window.x = 1;
@@ -104,4 +132,51 @@ void VN_wait(u16 duration) {
 	for (u16 remainining = duration; remainining; remainining--) {
 		for (u16 i = 60; i; i--) SYS_doVBlankProcess();		
 	}
+}
+
+void VN_option(u8 number, char *text) {
+	VN_text(text);
+	
+	char *d = textBuffer + strlen(textBuffer);
+	
+	*d = 1;
+	d++;
+	*d = number;
+	d++;
+	*d = 0;
+}
+
+u8 VN_choice() {
+	if (!textBuffer[0]) return 0;
+	
+	VN_clearWindow();
+
+	u8 choiceNumber = 1;
+	u8 cursorPositons[CHOICE_MAX];
+	u8 choiceValues[CHOICE_MAX];
+	
+	char lineBuffer[41];
+	char *o = textBuffer;
+	u16 y = window.y;
+	
+	while (*o) {
+		char *d = lineBuffer;
+		for (;*o && *o != '\n'; o++, d++) *d = *o;
+		*d = 0;
+		if (*o) o++;
+		
+		VDP_drawText(lineBuffer, window.x + 1, y);
+		y++;
+	}
+	strclr(textBuffer);
+	
+	VN_waitJoyRelease();
+	
+	while (!input.next) {
+		SYS_doVBlankProcess();		
+	}
+	
+	VN_waitJoyRelease();
+	
+	return choiceValues[choiceNumber];
 }

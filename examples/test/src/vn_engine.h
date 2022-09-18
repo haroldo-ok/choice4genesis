@@ -18,6 +18,9 @@ extern void VN_text(char *text);
 extern void VN_flushText();
 extern void VN_wait(u16 duration);
 
+extern void VN_option(u8 number, char *text);
+extern u8 VN_choice();
+
 typedef void * (*scriptFunction)();
 
 #endif /* _VN_ENGINE_H */
