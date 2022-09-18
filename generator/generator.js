@@ -3,6 +3,7 @@
 const { compact } = require('lodash');
 const { parse } = require('../parser/syntax-full');
 
+
 const buildEntityError = ({ line }, message) => ({ line, message });
 
 const getStringConstant = (entity, parameter, context, name) => {
@@ -37,6 +38,18 @@ const indent = (...params) =>
 	.flat()
 	.map(s => '\t' + s)
 	.join('\n');
+	
+const generateImageCommand = (functionName, entity, context) => {
+	const imageFileName = getStringConstant(entity, entity.params.positional.fileName, context, 'Image filename');
+	const imageVariable = 'img_' + imageFileName.trim().replace(/\.png$/, '').replace(/\W+/g, '_');				
+	context.res.gfx.push(`IMAGE ${imageVariable} "../project/${imageFileName}" APLIB`);
+	
+	const position = entity.params.named && entity.params.named.at;
+	const positionSrc = position ? `VN_imageAt(${position.x[1]}, ${position.y[1]});` + '\n' : '';
+	
+	return positionSrc + `${functionName}(&${imageVariable});`;
+};
+
 
 const generateFromSource = (sourceName, context) => {
 	const source = context.fileSystem.readSource(sourceName);
@@ -51,21 +64,11 @@ const generateFromSource = (sourceName, context) => {
 		}
 		if (entity.type === 'command') {
 			if (entity.command === 'background') {
-				const imageFileName = getStringConstant(entity, entity.params.positional.fileName, context, 'Image filename');
-				const imageVariable = 'img_' + imageFileName.trim().replace(/\.png$/, '').replace(/\W+/g, '_');
-				context.res.gfx.push(`IMAGE ${imageVariable} "../project/${imageFileName}" APLIB`);
-				return `VN_background(&${imageVariable});`;
+				return generateImageCommand('VN_background', entity, context);
 			}
 			
 			if (entity.command === 'image') {
-				const imageFileName = getStringConstant(entity, entity.params.positional.fileName, context, 'Image filename');
-				const imageVariable = 'img_' + imageFileName.trim().replace(/\.png$/, '').replace(/\W+/g, '_');				
-				context.res.gfx.push(`IMAGE ${imageVariable} "../project/${imageFileName}" APLIB`);
-				
-				const position = entity.params.named && entity.params.named.at;
-				const positionSrc = position ? `VN_imageAt(${position.x[1]}, ${position.y[1]});` + '\n' : '';
-				
-				return positionSrc + `VN_image(&${imageVariable});`;
+				return generateImageCommand('VN_image', entity, context);
 			}
 			
 			if (entity.command === 'music') {
