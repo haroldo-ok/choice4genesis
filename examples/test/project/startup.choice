@@ -1,4 +1,19 @@
+* font "damieng.com - Hourglass font.png"
 * background "Blue Hedgehog.png"
+* choice
+	# Play some music
+		* music "Actraiser - Fillmore.vgm"
+		OK, playing Fillmore, from Actraiser.
+	# Show a smiley
+		* image "Smiley.png", at(30, 3)
+		OK... showing a smiley!
+	# Third choice
+		You chose the third one
+		* choice
+			# Yet another choice
+				You chose this.
+			# One more choice
+				You chose that.
 This is a test.
 Second line.
 Third line.

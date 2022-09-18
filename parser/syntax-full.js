@@ -13,6 +13,8 @@ const COMMANDS = {
 	'elseif': { positional: ['condition'], onlyAfter: ['if', 'elseif'] },
 	'else': { onlyAfter: ['if', 'elseif'] },
 	
+	'wait': { positional: ['duration'] },
+
 	'label': { positional: ['name'] },
 	'goto': { positional: ['target'] },
 	'goto_scene': { positional: ['target'] },
@@ -21,10 +23,17 @@ const COMMANDS = {
 	'author': { positional: ['name'] },
 
 	'background': { positional: ['fileName'] },
+	'image': { positional: ['fileName'], named: { 'at': ['x', 'y'] } },
+	'font': { positional: ['fileName'] },
+
 	'music': { positional: ['fileName'] },
 	'sound': { positional: ['fileName'] },
-	'window': { named: { 'from': ['x', 'y'], 'to': ['x', 'y'] }, flags: ['borderless', 'withborder'] },
 
+	'window': { named: { 'from': ['x', 'y'], 'to': ['x', 'y'] }, flags: ['borderless', 'withborder'] },
+	'clear': { flags: ['background', 'foreground', 'window'] },
+
+	'video': { positional: ['fileName', 'frameRate'] },
+	
 	'choice': { },
 	'scene_list': { },
 	'finish': { }	
