@@ -107,6 +107,9 @@ void VN_sound(const u8 *sound, const u16 length) {
 	XGM_startPlayPCM(PCM_CHANNEL, 1, SOUND_PCM_CH2);
 }
 
+void VN_stop(const u8 flags) {
+}
+
 
 void VN_clearWindow() {
 	VDP_clearTextAreaEx(BG_A, TILE_ATTR_FULL(PAL0, FALSE, FALSE, FALSE, 0x05A0), window.x, window.y, window.w, window.h, DMA);

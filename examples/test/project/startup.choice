@@ -4,6 +4,9 @@
 	# Play some music
 		* music "Actraiser - Fillmore.vgm"
 		OK, playing Fillmore, from Actraiser.
+	# Stop the music
+		* stop music, sound
+		OK, music is stopped.
 	# Play a voice
 		* sound "ready.wav"
 		OK, playing a digital voice.

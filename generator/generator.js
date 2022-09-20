@@ -94,6 +94,13 @@ const COMMAND_GENERATORS = {
 		return `VN_sound(${soundVariable}, sizeof(${soundVariable}));`;
 	},
 	
+	'stop': (entity, context) => {
+		const flags = entity.params.flags || {};
+		const flagExpression = Object.entries(flags).filter(([k, v]) => v).map(([name, v]) => 
+			`STOP_${name.toUpperCase()}`).join('|');
+		return `VN_stop(${flagExpression || 0});`;			
+	},
+	
 	'wait': (entity, context) => {
 		const duration = getNumber(entity, entity.params.positional.duration, context, 'Wait duration');
 		return `VN_wait(${duration});`;

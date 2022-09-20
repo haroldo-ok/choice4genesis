@@ -28,6 +28,7 @@ const COMMANDS = {
 
 	'music': { positional: ['fileName'] },
 	'sound': { positional: ['fileName'] },
+	'stop': { flags: ['music', 'sound'] },
 
 	'window': { named: { 'from': ['x', 'y'], 'to': ['x', 'y'] }, flags: ['borderless', 'withborder'] },
 	'clear': { flags: ['background', 'foreground', 'window'] },
