@@ -25,6 +25,10 @@ Starts playing a `.vgm`/`.xgm` music in the background.
 ### `sound`
 Plays a digitized sound.
 
+### `stop`
+
+Stops the music and/or sound.
+
 ### `image`
 Allows drawing a small image in `.png` format somewhere in the background. Note that the image must be paletized, with 16 colors. Future versions of this tool will probably convert the image *automagically*.
 
