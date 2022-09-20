@@ -169,10 +169,8 @@ const generateFromSource = (sourceName, context) => {
 			'generated_scripts.c': '#include "vn_engine.h"\n' + generatedFunction
 		},
 		
-		resources: {
-			'gfx.res': generateResource(context.res.gfx),
-			'music.res': generateResource(context.res.music)
-		}
+		resources: Object.fromEntries(Object.entries(context.res).map(([name, resource]) => 
+			[ `${name}.res`,  generateResource(resource)]))
 	}
 };
 
