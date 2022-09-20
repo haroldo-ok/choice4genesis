@@ -91,7 +91,7 @@ const COMMAND_GENERATORS = {
 		const soundVariable = addResource(context.res.music, soundFileName, soundVariable => 
 			`WAV ${soundVariable} "../project/${soundFileName}" XGM`);
 
-		return `VN_sound(${soundVariable});`;
+		return `VN_sound(${soundVariable}, sizeof(${soundVariable}));`;
 	},
 	
 	'wait': (entity, context) => {
