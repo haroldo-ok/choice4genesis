@@ -108,6 +108,8 @@ void VN_sound(const u8 *sound, const u16 length) {
 }
 
 void VN_stop(const u8 flags) {
+	if (!flags || (flags & STOP_MUSIC)) XGM_stopPlay();
+	if (!flags || (flags & STOP_SOUND)) XGM_stopPlayPCM (SOUND_PCM_CH2);
 }
 
 
