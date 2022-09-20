@@ -4,11 +4,14 @@
 	# Play some music
 		* music "Actraiser - Fillmore.vgm"
 		OK, playing Fillmore, from Actraiser.
+	# Play a voice
+		* sound "ready.wav"
+		OK, playing a digital voice.
 	# Show a smiley
 		* image "Smiley.png", at(30, 3)
 		OK... showing a smiley!
-	# Third choice
-		You chose the third one
+	# Fourth choice
+		You chose the last one
 		* choice
 			# Yet another choice
 				You chose this.
