@@ -5,6 +5,8 @@
 #define TEXT_BUFFER_LEN (8192)
 #define CHOICE_MAX (8)
 
+#define PCM_CHANNEL (64)
+
 char textBuffer[TEXT_BUFFER_LEN];
 
 struct {
@@ -61,7 +63,7 @@ void VN_init() {
 	XGM_setLoopNumber(-1);
 	XGM_setForceDelayDMA(TRUE);
 
-	VDP_drawText("choice4genesis v0.0.1", 18, 27);
+	VDP_drawText("choice4genesis v0.1.0", 18, 27);
 }
 
 
@@ -97,6 +99,17 @@ void VN_font(const Image *image) {
 
 void VN_music(const u8 *music) {
 	XGM_startPlay(music);
+}
+
+void VN_sound(const u8 *sound, const u16 length) {
+	XGM_stopPlayPCM (SOUND_PCM_CH2);
+	XGM_setPCM(PCM_CHANNEL, sound, length);
+	XGM_startPlayPCM(PCM_CHANNEL, 1, SOUND_PCM_CH2);
+}
+
+void VN_stop(const u8 flags) {
+	if (!flags || (flags & STOP_MUSIC)) XGM_stopPlay();
+	if (!flags || (flags & STOP_SOUND)) XGM_stopPlayPCM (SOUND_PCM_CH2);
 }
 
 

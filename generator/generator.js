@@ -86,6 +86,21 @@ const COMMAND_GENERATORS = {
 		return `VN_music(${musicVariable});`;
 	},
 	
+	'sound': (entity, context) => {
+		const soundFileName = getStringConstant(entity, entity.params.positional.fileName, context, 'Sound filename');
+		const soundVariable = addResource(context.res.music, soundFileName, soundVariable => 
+			`WAV ${soundVariable} "../project/${soundFileName}" XGM`);
+
+		return `VN_sound(${soundVariable}, sizeof(${soundVariable}));`;
+	},
+	
+	'stop': (entity, context) => {
+		const flags = entity.params.flags || {};
+		const flagExpression = Object.entries(flags).filter(([k, v]) => v).map(([name, v]) => 
+			`STOP_${name.toUpperCase()}`).join('|');
+		return `VN_stop(${flagExpression || 0});`;			
+	},
+	
 	'wait': (entity, context) => {
 		const duration = getNumber(entity, entity.params.positional.duration, context, 'Wait duration');
 		return `VN_wait(${duration});`;
@@ -169,15 +184,19 @@ const generateFromSource = (sourceName, context) => {
 			'generated_scripts.c': '#include "vn_engine.h"\n' + generatedFunction
 		},
 		
-		resources: {
-			'gfx.res': generateResource(context.res.gfx),
-			'music.res': generateResource(context.res.music)
-		}
+		resources: Object.fromEntries(Object.entries(context.res).map(([name, resource]) => 
+			[ `${name}.res`,  generateResource(resource)]))
 	}
 };
 
 const generate = fileSystem => {
-	const context = { fileSystem, generatedScripts: [],  errors: [], res: { gfx: {}, music: {} }, choices: [] };
+	const context = {
+		fileSystem,
+		generatedScripts: [], 
+		errors: [],
+		res: { gfx: {}, music: {}, sound: {} },
+		choices: []
+	};
 	return generateFromSource('startup', context);
 };
 
