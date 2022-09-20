@@ -13,7 +13,7 @@ extern void VN_imageAt(u16 x, u16 y);
 extern void VN_font(const Image *image);
 
 extern void VN_music(const u8 *music);
-extern void VN_sound(const u8 *sound);
+extern void VN_sound(const u8 *sound, const u16 length);
 
 extern void VN_text(char *text);
 extern void VN_flushText();

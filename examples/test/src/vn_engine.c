@@ -5,6 +5,8 @@
 #define TEXT_BUFFER_LEN (8192)
 #define CHOICE_MAX (8)
 
+#define PCM_CHANNEL (64)
+
 char textBuffer[TEXT_BUFFER_LEN];
 
 struct {
@@ -99,7 +101,10 @@ void VN_music(const u8 *music) {
 	XGM_startPlay(music);
 }
 
-void VN_sound(const u8 *sound) {
+void VN_sound(const u8 *sound, const u16 length) {
+	XGM_stopPlayPCM (SOUND_PCM_CH2);
+	XGM_setPCM(PCM_CHANNEL, sound, length);
+	XGM_startPlayPCM(PCM_CHANNEL, 1, SOUND_PCM_CH2);
 }
 
 
