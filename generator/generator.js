@@ -86,6 +86,14 @@ const COMMAND_GENERATORS = {
 		return `VN_music(${musicVariable});`;
 	},
 	
+	'sound': (entity, context) => {
+		const soundFileName = getStringConstant(entity, entity.params.positional.fileName, context, 'Sound filename');
+		const soundVariable = addResource(context.res.music, soundFileName, soundVariable => 
+			`WAV ${soundVariable} "../project/${soundFileName}" XGM`);
+
+		return `VN_sound(${soundVariable});`;
+	},
+	
 	'wait': (entity, context) => {
 		const duration = getNumber(entity, entity.params.positional.duration, context, 'Wait duration');
 		return `VN_wait(${duration});`;
@@ -175,7 +183,13 @@ const generateFromSource = (sourceName, context) => {
 };
 
 const generate = fileSystem => {
-	const context = { fileSystem, generatedScripts: [],  errors: [], res: { gfx: {}, music: {} }, choices: [] };
+	const context = {
+		fileSystem,
+		generatedScripts: [], 
+		errors: [],
+		res: { gfx: {}, music: {}, sound: {} },
+		choices: []
+	};
 	return generateFromSource('startup', context);
 };
 

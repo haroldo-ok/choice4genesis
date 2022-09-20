@@ -99,6 +99,9 @@ void VN_music(const u8 *music) {
 	XGM_startPlay(music);
 }
 
+void VN_sound(const u8 *sound) {
+}
+
 
 void VN_clearWindow() {
 	VDP_clearTextAreaEx(BG_A, TILE_ATTR_FULL(PAL0, FALSE, FALSE, FALSE, 0x05A0), window.x, window.y, window.w, window.h, DMA);
