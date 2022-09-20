@@ -22,6 +22,9 @@ Presents a menu to the user, allowing to choose between multiple options.
 ### `music`
 Starts playing a `.vgm`/`.xgm` music in the background.
 
+### `sound`
+Plays a digitized sound.
+
 ### `image`
 Allows drawing a small image in `.png` format somewhere in the background. Note that the image must be paletized, with 16 colors. Future versions of this tool will probably convert the image *automagically*.
 
@@ -52,9 +55,6 @@ Will jump to a given label from anywhere on the same scene.
 
 ### `goto_scene`
 Will jump to a different scene.
-
-### `sound`
-Will play a digitized sound.
 
 ### `scene_list`
 Will configure the default sequence in which the scenes will be played.
