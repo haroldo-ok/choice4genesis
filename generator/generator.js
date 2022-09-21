@@ -2,6 +2,7 @@
 
 const { compact } = require('lodash');
 const { parse } = require('../parser/syntax-full');
+const { createNamespace } = require('./namespace');
 
 
 const buildEntityError = ({ line }, message) => ({ line, message });
@@ -26,6 +27,39 @@ const getNumber = (entity, parameter, context, name) => {
 		context.errors.push(buildEntityError(entity, name + ' must be a number.'));
 	}
 	return parameter[1];
+}
+
+const getIdentifier = (entity, parameter, context, name) => {
+	if (!parameter) {
+		context.errors.push(buildEntityError(entity, name + ' was not informed.'));
+		return null;
+	}
+	if (parameter[0] !== 'Identifier') {
+		context.errors.push(buildEntityError(entity, name + ' must be an identifier.'));
+	}
+	return parameter[1];
+}
+
+const getConstant = (entity, parameter, context, name) => {
+	if (!parameter) {
+		context.errors.push(buildEntityError(entity, name + ' was not informed.'));
+		return null;
+	}
+	
+	const type = parameter[0] == 'NumberConstant' ? 'int':
+		parameter[0] == 'BoolConstant' ? 'bool' : 
+		null;
+		
+	if (!type) {
+		context.errors.push(buildEntityError(entity, name + ' must be an integer or boolean constant.'));
+	}
+	
+	const value = parameter[1];
+	const code = type === 'bool' ? 
+		value.toString().toUpperCase() : 
+		value.toString();
+	
+	return { type, value, code };
 }
 
 const indent = (...params) =>
@@ -69,6 +103,9 @@ const generateImageCommand = (functionName, entity, context, mapOption = 'ALL') 
 	
 	return positionSrc + `${functionName}(&${imageVariable});`;
 };
+
+const generateVariableDeclarations = namespace =>
+	namespace.list().map(({ value }) => value.code).join('\n');
 
 let generateFromBody;
 
@@ -127,6 +164,59 @@ const COMMAND_GENERATORS = {
 			),
 			'}'
 		].join('\n');
+	},
+	
+	'create': (entity, context) => {
+		const varName = getIdentifier(entity, entity.params.positional.variable, context, 'Variable name');
+		const initialValue = getConstant(entity, entity.params.positional.initialValue, context, 'Initial value') || {};
+		
+		const existingValue = context.globals.get(varName);
+		if (existingValue) {
+			context.errors.push(buildEntityError(entity, 
+				`There's already a variable named "${varName}" on line ${existingValue.value.line}.`));
+			return null;
+		}
+		
+		const internalVar = 'VG_' + varName;
+		context.globals.put(varName, {
+			line: entity.line, 
+			internalVar,
+			code: `${initialValue.type} ${internalVar} = ${initialValue.code};` 
+		});
+		return null;
+	},
+	
+	'temp': (entity, context) => {
+		const varName = getIdentifier(entity, entity.params.positional.variable, context, 'Variable name');
+		const initialValue = getConstant(entity, entity.params.positional.initialValue, context, 'Initial value') || {};
+		
+		const existingValue = context.locals.get(varName);
+		if (existingValue) {
+			context.errors.push(buildEntityError(entity, 
+				`There's already a variable named "${varName}" on line ${existingValue.value.line}.`));
+			return null;
+		}
+		
+		const internalVar = 'VL_' + varName;
+		context.locals.put(varName, {
+			line: entity.line, 
+			internalVar,
+			code: `${initialValue.type} ${internalVar} = ${initialValue.code};` 
+		});
+		return null;
+	},
+	
+	'set': (entity, context) => {
+		const varName = getIdentifier(entity, entity.params.positional.variable, context, 'Variable name');
+		const newValue = getConstant(entity, entity.params.positional.newValue, context, 'New value') || {};
+		
+		const existingVar = context.locals.get(varName) || context.globals.get(varName);
+		if (!existingVar) {
+			context.errors.push(buildEntityError(entity, `Couldn't find a variable named "${varName}".`));
+			return null;
+		}
+		
+		return `${existingVar.value.internalVar} = ${newValue.code};`;
 	}
 };
 
@@ -160,6 +250,8 @@ const generateFromSource = (sourceName, context) => {
 	if (ast.errors) {
 		return { errors: ast.errors };
 	}
+	
+	context.locals = createNamespace();
 
 	const generated = generateFromBody(ast.body, context);
 	
@@ -172,6 +264,7 @@ const generateFromSource = (sourceName, context) => {
 	const generatedFunction = [
 		`void *${functionName}() {`,
 		indent(
+			generateVariableDeclarations(context.locals),
 			generated,
 			'VN_flushText();',
 			`return ${functionName};`
@@ -181,7 +274,11 @@ const generateFromSource = (sourceName, context) => {
 	
 	return {
 		sources: {
-			'generated_scripts.c': '#include "vn_engine.h"\n' + generatedFunction
+			'generated_scripts.c': [
+				'#include "vn_engine.h"',
+				generateVariableDeclarations(context.globals),
+				generatedFunction
+			].join('\n\n\n')
 		},
 		
 		resources: Object.fromEntries(Object.entries(context.res).map(([name, resource]) => 
@@ -195,7 +292,9 @@ const generate = fileSystem => {
 		generatedScripts: [], 
 		errors: [],
 		res: { gfx: {}, music: {}, sound: {} },
-		choices: []
+		choices: [],
+		globals: createNamespace(),
+		locals: null
 	};
 	return generateFromSource('startup', context);
 };
