@@ -204,6 +204,19 @@ const COMMAND_GENERATORS = {
 			code: `${initialValue.type} ${internalVar} = ${initialValue.code};` 
 		});
 		return null;
+	},
+	
+	'set': (entity, context) => {
+		const varName = getIdentifier(entity, entity.params.positional.variable, context, 'Variable name');
+		const newValue = getConstant(entity, entity.params.positional.newValue, context, 'New value') || {};
+		
+		const existingVar = context.locals.get(varName) || context.globals.get(varName);
+		if (!existingVar) {
+			context.errors.push(buildEntityError(entity, `Couldn't find a variable named "${varName}".`));
+			return null;
+		}
+		
+		return `${existingVar.value.internalVar} = ${newValue.code};`;
 	}
 };
 

@@ -5,6 +5,9 @@
 * create boolVar, true
 * temp localInt, 2
 
+* set intVar, 3
+* set localInt, 4
+
 * choice
 	# Play some music
 		* music "Actraiser - Fillmore.vgm"
