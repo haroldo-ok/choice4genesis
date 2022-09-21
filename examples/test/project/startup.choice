@@ -1,5 +1,9 @@
 * font "damieng.com - Hourglass font.png"
 * background "Blue Hedgehog.png"
+
+* create intVar, 1
+* create boolVar, true
+
 * choice
 	# Play some music
 		* music "Actraiser - Fillmore.vgm"
