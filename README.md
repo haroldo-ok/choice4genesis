@@ -35,18 +35,21 @@ Allows drawing a small image in `.png` format somewhere in the background. Note 
 ### `wait`
 Waits for a few seconds.
 
+### `create`
+
+Creates a global variable.
+
+### `temp`
+
+Creates a local variable. `temp` variables are only visible inside the scene file that created them.
+
+### `set`
+
+Changes the current value of an existing variable.
+
 ## Planned commands
 
 The tool accepts those commands, but, at the moment, they don't do anything.
-
-### `create`
-Will create a global variable.
-
-### `temp`
-Will create a local variable. `temp` variables are only visible inside the scene file that created them.
-
-### `set`
-Will change the current value of an existing variable.
 
 ### `if`/`elseif`/`else`
 Will allow a certain block of code to only be executed on a given condition.
