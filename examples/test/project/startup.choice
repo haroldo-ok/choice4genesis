@@ -3,6 +3,7 @@
 
 * create intVar, 1
 * create boolVar, true
+* temp localInt, 2
 
 * choice
 	# Play some music

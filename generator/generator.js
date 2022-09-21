@@ -104,6 +104,9 @@ const generateImageCommand = (functionName, entity, context, mapOption = 'ALL') 
 	return positionSrc + `${functionName}(&${imageVariable});`;
 };
 
+const generateVariableDeclarations = namespace =>
+	namespace.list().map(({ value }) => value.code).join('\n');
+
 let generateFromBody;
 
 
@@ -181,6 +184,26 @@ const COMMAND_GENERATORS = {
 			code: `${initialValue.type} ${internalVar} = ${initialValue.code};` 
 		});
 		return null;
+	},
+	
+	'temp': (entity, context) => {
+		const varName = getIdentifier(entity, entity.params.positional.variable, context, 'Variable name');
+		const initialValue = getConstant(entity, entity.params.positional.initialValue, context, 'Initial value') || {};
+		
+		const existingValue = context.locals.get(varName);
+		if (existingValue) {
+			context.errors.push(buildEntityError(entity, 
+				`There's already a variable named "${varName}" on line ${existingValue.value.line}.`));
+			return null;
+		}
+		
+		const internalVar = 'VL_' + varName;
+		context.locals.put(varName, {
+			line: entity.line, 
+			internalVar,
+			code: `${initialValue.type} ${internalVar} = ${initialValue.code};` 
+		});
+		return null;
 	}
 };
 
@@ -214,6 +237,8 @@ const generateFromSource = (sourceName, context) => {
 	if (ast.errors) {
 		return { errors: ast.errors };
 	}
+	
+	context.locals = createNamespace();
 
 	const generated = generateFromBody(ast.body, context);
 	
@@ -226,6 +251,7 @@ const generateFromSource = (sourceName, context) => {
 	const generatedFunction = [
 		`void *${functionName}() {`,
 		indent(
+			generateVariableDeclarations(context.locals),
 			generated,
 			'VN_flushText();',
 			`return ${functionName};`
@@ -235,11 +261,11 @@ const generateFromSource = (sourceName, context) => {
 	
 	return {
 		sources: {
-			'generated_scripts.c': 
-				'#include "vn_engine.h"\n\n' + 
-				context.globals.list().map(({ value }) => value.code).join('\n') +
-				'\n\n' +
+			'generated_scripts.c': [
+				'#include "vn_engine.h"',
+				generateVariableDeclarations(context.globals),
 				generatedFunction
+			].join('\n\n\n')
 		},
 		
 		resources: Object.fromEntries(Object.entries(context.res).map(([name, resource]) => 
@@ -254,7 +280,8 @@ const generate = fileSystem => {
 		errors: [],
 		res: { gfx: {}, music: {}, sound: {} },
 		choices: [],
-		globals: createNamespace()
+		globals: createNamespace(),
+		locals: null
 	};
 	return generateFromSource('startup', context);
 };
