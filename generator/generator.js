@@ -80,6 +80,8 @@ const indent = (...params) =>
 		o.flat ? o.flat() : 
 		`// Unknown value of type ${typeof o}: ${o}`)
 	.flat()
+	.map(o => o.split ? o.split('\n') : o)
+	.flat()
 	.map(s => '\t' + s)
 	.join('\n');
 	
