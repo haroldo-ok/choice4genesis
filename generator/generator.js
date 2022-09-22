@@ -80,6 +80,8 @@ const indent = (...params) =>
 		o.flat ? o.flat() : 
 		`// Unknown value of type ${typeof o}: ${o}`)
 	.flat()
+	.map(o => o.split ? o.split('\n') : o)
+	.flat()
 	.map(s => '\t' + s)
 	.join('\n');
 	
@@ -228,6 +230,38 @@ const COMMAND_GENERATORS = {
 		}
 		
 		return `${existingVar.value.internalVar} = ${newValue.code};`;
+	},
+	
+	'if': (entity, context) => {		
+		const condition = getExpression(entity, entity.params.positional.condition, context, 'Condition') || {};
+		const generatedBody = generateFromBody(entity.body, context);
+
+		return [
+			`if (${condition.code}) {`,
+			indent(generatedBody),
+			'}'
+		].join('\n');
+	},	
+	
+	'elseif': (entity, context) => {		
+		const condition = getExpression(entity, entity.params.positional.condition, context, 'Condition') || {};
+		const generatedBody = generateFromBody(entity.body, context);
+
+		return [
+			`else if (${condition.code}) {`,
+			indent(generatedBody),
+			'}'
+		].join('\n');
+	},
+	
+	'else': (entity, context) => {		
+		const generatedBody = generateFromBody(entity.body, context);
+
+		return [
+			'else {',
+			indent(generatedBody),
+			'}'
+		].join('\n');
 	}
 };
 
