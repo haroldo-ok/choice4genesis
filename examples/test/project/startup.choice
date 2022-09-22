@@ -8,13 +8,23 @@
 * set intVar, 3
 * set localInt, intVar + 3
 
+* create playingMusic, false
+
 * choice
-	# Play some music
-		* music "Actraiser - Fillmore.vgm"
-		OK, playing Fillmore, from Actraiser.
-	# Stop the music
-		* stop music, sound
-		OK, music is stopped.
+	* if playingMusic
+		# Stop the music
+			* stop music, sound
+			OK, music is stopped.
+			* set playingMusic, false
+	* elseif false
+		This should not appear
+		This should not appear, either
+	* else
+		# Play some music
+			* music "Actraiser - Fillmore.vgm"
+			OK, playing Fillmore, from Actraiser.
+			* set playingMusic, true
+		
 	# Play a voice
 		* sound "ready.wav"
 		OK, playing a digital voice.

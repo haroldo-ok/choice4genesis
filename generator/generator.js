@@ -230,6 +230,36 @@ const COMMAND_GENERATORS = {
 		}
 		
 		return `${existingVar.value.internalVar} = ${newValue.code};`;
+	},
+	
+	'if': (entity, context) => {		
+		const ifCondition = getExpression(entity, entity.params.positional.condition, context, 'Condition') || {};
+		const ifBody = generateFromBody(entity.body, context);
+		
+		const generatedElseIf = (entity.siblings && entity.siblings.elseif || []).map(elseIf => {
+			const elseIfCondition = getExpression(elseIf, elseIf.params.positional.condition, context, 'Condition') || {};
+			const elseIfBody = generateFromBody(elseIf.body, context);
+			return [
+				`} else if (${elseIfCondition.code}) {`,
+				indent(elseIfBody)
+			].join('\n');
+		});
+
+		const generatedElse = (entity.siblings && entity.siblings['else'] || []).map(elseEntity => {
+			const elseBody = generateFromBody(elseEntity.body, context);
+			return [
+				'} else {',
+				indent(elseBody)
+			].join('\n');
+		});
+
+		return [
+			`if (${ifCondition.code}) {`,
+			indent(ifBody),
+			generatedElseIf,
+			generatedElse,
+			'}'
+		].join('\n');
 	}
 };
 
