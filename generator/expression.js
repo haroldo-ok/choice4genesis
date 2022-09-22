@@ -2,7 +2,18 @@
 
 const buildEntityError = ({ line }, message) => ({ line, message });
 
-const CONVERTERS = { 
+let generateExpression;
+
+
+const PREFIX_CONVERTERS = Object.fromEntries(Object.entries({ Negate: "-", Not: "!" }).map(([ key, op ]) => { 
+	const converter = (entity, [nodeType, next], context, name) => {
+		const converted = generateExpression(entity, next, context, name);
+		return { type: converted.type, value: nodeType, code: `(${op} ${converted.code})`, isConstant: converted.isConstant };		
+	};
+	return [key, converter];
+}));
+
+const TERMINAL_CONVERTERS = { 
 	'NumberConstant': (entity, [nodeType, value], context, name) => 
 		({ type: 'int', value, code: `${value}`, isConstant: true }),
 	'BoolConstant': (entity, [nodeType, value], context, name) => 
@@ -22,7 +33,10 @@ const CONVERTERS = {
 	}
 };
 
-const generateExpression = (entity, node, context, name) => {
+const CONVERTERS = { ...TERMINAL_CONVERTERS, ...PREFIX_CONVERTERS };
+
+
+generateExpression = (entity, node, context, name) => {
 	const nodeType = node[0];
 	const converter = CONVERTERS[nodeType];
 	if (!converter) {
