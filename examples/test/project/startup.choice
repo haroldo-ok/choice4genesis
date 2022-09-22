@@ -6,7 +6,7 @@
 * temp localInt, 2
 
 * set intVar, 3
-* set localInt, !intVar
+* set localInt, intVar + 3
 
 * choice
 	# Play some music
