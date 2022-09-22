@@ -3,6 +3,7 @@
 const { compact } = require('lodash');
 const { parse } = require('../parser/syntax-full');
 const { createNamespace } = require('./namespace');
+const { generateExpression } = require('./expression');
 
 
 const buildEntityError = ({ line }, message) => ({ line, message });
@@ -60,6 +61,15 @@ const getConstant = (entity, parameter, context, name) => {
 		value.toString();
 	
 	return { type, value, code };
+}
+
+const getExpression = (entity, parameter, context, name) => {
+	if (!parameter) {
+		context.errors.push(buildEntityError(entity, name + ' was not informed.'));
+		return null;
+	}
+
+	return generateExpression(entity, parameter, context);
 }
 
 const indent = (...params) =>
@@ -208,7 +218,7 @@ const COMMAND_GENERATORS = {
 	
 	'set': (entity, context) => {
 		const varName = getIdentifier(entity, entity.params.positional.variable, context, 'Variable name');
-		const newValue = getConstant(entity, entity.params.positional.newValue, context, 'New value') || {};
+		const newValue = getExpression(entity, entity.params.positional.newValue, context, 'New value') || {};
 		
 		const existingVar = context.locals.get(varName) || context.globals.get(varName);
 		if (!existingVar) {
