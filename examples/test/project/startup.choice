@@ -16,10 +16,7 @@
 			* stop music, sound
 			OK, music is stopped.
 			* set playingMusic, false
-	* elseif false
-		This should not appear
-		This should not appear, either
-	* else
+	* if !playingMusic
 		# Play some music
 			* music "Actraiser - Fillmore.vgm"
 			OK, playing Fillmore, from Actraiser.

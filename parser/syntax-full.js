@@ -99,9 +99,6 @@ const checkSiblingCommands = (body, errors) => checkSiblings(checkOnlyAfter(body
 
 
 const completeCommands = (body, errors) => {
-	if (!body.map) {
-		console.log({ body });
-	}
 	const completedCommands = body.map(element => {
 		if (element.type !== 'command') {
 			return element;
@@ -139,6 +136,7 @@ const parse = source => {
 	
 	const completedErrors = [...(errors || [])];
 	const completedBody = completeCommands(body, completedErrors);
+	debugger;
 	
 	return { 
 		type,
