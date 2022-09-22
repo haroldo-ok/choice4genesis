@@ -8,7 +8,18 @@ const CONVERTERS = {
 	'BoolConstant': (entity, [nodeType, value], context, name) => 
 		({ type: 'bool', value, code: `${value}`.toUpperCase(), isConstant: true }),
 	'StringConstant': (entity, [nodeType, value], context, name) => 
-		({ type: 'string', value, code: `"${value}"`, isConstant: true })
+		({ type: 'string', value, code: `"${value}"`, isConstant: true }),
+		
+	'Identifier': (entity, [nodeType, varName], context, name) =>  {
+		const existingVar = context.locals.get(varName) || context.globals.get(varName);
+		if (!existingVar) {
+			context.errors.push(buildEntityError(entity, `Couldn't find a variable named "${varName}".`));
+			return null;
+		}
+		
+		const { value: { type, internalVar } } = existingVar;		
+		return { type, value: varName, code: internalVar, isConstant: false };
+	}
 };
 
 const generateExpression = (entity, node, context, name) => {

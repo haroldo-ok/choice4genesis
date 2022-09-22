@@ -190,6 +190,7 @@ const COMMAND_GENERATORS = {
 		const internalVar = 'VG_' + varName;
 		context.globals.put(varName, {
 			line: entity.line, 
+			type: initialValue.type,
 			internalVar,
 			code: `${initialValue.type} ${internalVar} = ${initialValue.code};` 
 		});
