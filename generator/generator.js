@@ -233,31 +233,33 @@ const COMMAND_GENERATORS = {
 	},
 	
 	'if': (entity, context) => {		
-		const ifCondition = getExpression(entity, entity.params.positional.condition, context, 'Condition') || {};
-		const ifBody = generateFromBody(entity.body, context);
-		
-		const generatedElseIf = (entity.siblings && entity.siblings.elseif || []).map(elseIf => {
-			const elseIfCondition = getExpression(elseIf, elseIf.params.positional.condition, context, 'Condition') || {};
-			const elseIfBody = generateFromBody(elseIf.body, context);
-			return [
-				`} else if (${elseIfCondition.code}) {`,
-				indent(elseIfBody)
-			].join('\n');
-		});
-
-		const generatedElse = (entity.siblings && entity.siblings['else'] || []).map(elseEntity => {
-			const elseBody = generateFromBody(elseEntity.body, context);
-			return [
-				'} else {',
-				indent(elseBody)
-			].join('\n');
-		});
+		const condition = getExpression(entity, entity.params.positional.condition, context, 'Condition') || {};
+		const generatedBody = generateFromBody(entity.body, context);
 
 		return [
-			`if (${ifCondition.code}) {`,
-			indent(ifBody),
-			generatedElseIf,
-			generatedElse,
+			`if (${condition.code}) {`,
+			indent(generatedBody),
+			'}'
+		].join('\n');
+	},	
+	
+	'elseif': (entity, context) => {		
+		const condition = getExpression(entity, entity.params.positional.condition, context, 'Condition') || {};
+		const generatedBody = generateFromBody(entity.body, context);
+
+		return [
+			`else if (${condition.code}) {`,
+			indent(generatedBody),
+			'}'
+		].join('\n');
+	},
+	
+	'else': (entity, context) => {		
+		const generatedBody = generateFromBody(entity.body, context);
+
+		return [
+			'else {',
+			indent(generatedBody),
 			'}'
 		].join('\n');
 	}
