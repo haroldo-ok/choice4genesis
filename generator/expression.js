@@ -3,7 +3,12 @@
 const buildEntityError = ({ line }, message) => ({ line, message });
 
 const CONVERTERS = { 
-	'NumberConstant': (entity, [nodeType, value], context, name) => ({ type: 'int', value, code: `${value}` })
+	'NumberConstant': (entity, [nodeType, value], context, name) => 
+		({ type: 'int', value, code: `${value}`, isConstant: true }),
+	'BoolConstant': (entity, [nodeType, value], context, name) => 
+		({ type: 'bool', value, code: `${value}`.toUpperCase(), isConstant: true }),
+	'StringConstant': (entity, [nodeType, value], context, name) => 
+		({ type: 'string', value, code: `"${value}"`, isConstant: true })
 };
 
 const generateExpression = (entity, node, context, name) => {
