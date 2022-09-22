@@ -8,10 +8,41 @@ let generateExpression;
 const PREFIX_CONVERTERS = Object.fromEntries(Object.entries({ Negate: "-", Not: "!" }).map(([ key, op ]) => { 
 	const converter = (entity, [nodeType, next], context, name) => {
 		const converted = generateExpression(entity, next, context, name);
+		if (!converted) {
+			return null;
+		}
+
 		return { type: converted.type, value: nodeType, code: `(${op} ${converted.code})`, isConstant: converted.isConstant };		
 	};
 	return [key, converter];
 }));
+
+
+const INFIX_OPERATIONS = {
+  Multiply: "*", Divide: "/",
+  Add: "+", Subtract: "-",
+  Equal: "==", NotEqual: "!=", GreaterThan: ">", LessThan: "<", GreaterEqual: ">=", LessEqual: "<=",
+  And: '&&', Or: '||'
+};
+
+const INFIX_CONVERTERS = Object.fromEntries(Object.entries(INFIX_OPERATIONS).map(([ key, op ]) => { 
+	const converter = (entity, [nodeType, param1, param2], context, name) => {
+		const converted1 = generateExpression(entity, param1, context, name);
+		const converted2 = generateExpression(entity, param2, context, name);
+		if (!converted1 || !converted2) {
+			return null;
+		}
+		
+		return { 
+			type: converted1.type,
+			value: nodeType,
+			code: `(${converted1.code} ${op} ${converted2.code})`,
+			isConstant: converted1.isConstant && converted2.isConstant
+		};
+	};
+	return [key, converter];
+}));
+
 
 const TERMINAL_CONVERTERS = { 
 	'NumberConstant': (entity, [nodeType, value], context, name) => 
@@ -33,7 +64,8 @@ const TERMINAL_CONVERTERS = {
 	}
 };
 
-const CONVERTERS = { ...TERMINAL_CONVERTERS, ...PREFIX_CONVERTERS };
+
+const CONVERTERS = { ...TERMINAL_CONVERTERS, ...PREFIX_CONVERTERS, ...INFIX_CONVERTERS };
 
 
 generateExpression = (entity, node, context, name) => {
