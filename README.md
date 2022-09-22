@@ -8,6 +8,8 @@ The syntax of the scripts is somewhat based on ChoiceScript, but it is not exact
 
 *Please note that this is an early work and progress, and it is not as stable or user-friendly as it is planned to become.*
 
+
+
 ## Commands implemented so far
 
 ### `font`
@@ -47,12 +49,15 @@ Creates a local variable. `temp` variables are only visible inside the scene fil
 
 Changes the current value of an existing variable.
 
+### `if`/`elseif`/`else`
+
+Allows a certain block of code to only be executed on a given condition.
+
+
+
 ## Planned commands
 
 The tool accepts those commands, but, at the moment, they don't do anything.
-
-### `if`/`elseif`/`else`
-Will allow a certain block of code to only be executed on a given condition.
 
 ### `label`
 Will allow to mark a place where the `goto` command can jump to.
