@@ -53,6 +53,9 @@ Changes the current value of an existing variable.
 
 Allows a certain block of code to only be executed on a given condition.
 
+### `goto_scene`
+Jumps to a different scene. The scene files are located on the script directory, and have the `.choice` extension.
+
 
 
 ## Planned commands
@@ -64,9 +67,6 @@ Will allow to mark a place where the `goto` command can jump to.
 
 ### `goto`
 Will jump to a given label from anywhere on the same scene.
-
-### `goto_scene`
-Will jump to a different scene.
 
 ### `scene_list`
 Will configure the default sequence in which the scenes will be played.
