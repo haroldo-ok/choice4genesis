@@ -335,15 +335,25 @@ const generateFromSource = (mainSourceName, context) => {
 		const sourceName = context.scenesToProcess.shift();
 		if (!processedScenes[sourceName]) {
 			const generatedFunction = generateScene(sourceName, context);		
-			const errors = context.errors;
+			const errors = [
+				...context.errors, 
+				...(generatedFunction && generatedFunction.errors ? generatedFunction.errors : [])
+			];
 			
 			context.errors = [];
 			processedScenes[sourceName] = { sourceName, generatedFunction, errors };
 		}
 	}
 	
+	
 	const generatedForwards = Object.keys(processedScenes).map(sceneName => `void *VS_${sceneName}();`);
 	const generatedFunctions = Object.values(processedScenes).map(scene => scene.generatedFunction);
+
+	const errors = Object.values(processedScenes).map(({ sourceName, errors }) => 
+		errors.map(error => ({ sourceName, ...error }))).flat();
+	if (errors.length) {
+		return { errors };
+	}
 	
 	return {
 		sources: {

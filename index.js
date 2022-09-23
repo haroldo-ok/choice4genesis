@@ -16,8 +16,8 @@ const fileSystem = {
 
 const result = generate(fileSystem);
 
-if (result.errors) {
-	result.errors.forEach(({line, message}) => console.error(`Line ${line}: ${message}`));
+if (result.errors && result.errors.length) {
+	result.errors.forEach(({sourceName, line, message}) => console.error(`${sourceName}.choice: Error at line ${line}: ${message}`));
 	return;
 }
 
