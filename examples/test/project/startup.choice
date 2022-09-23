@@ -39,7 +39,7 @@
 				You chose this.
 			# One more choice
 				You chose that.
-	# Go to anothe scene
+	# Go to another scene
 		* goto_scene test
 This is a test.
 Second line.
