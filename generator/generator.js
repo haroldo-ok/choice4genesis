@@ -262,6 +262,13 @@ const COMMAND_GENERATORS = {
 			indent(generatedBody),
 			'}'
 		].join('\n');
+	},
+	
+	'goto_scene': (entity, context) => {
+		const sceneName = getIdentifier(entity, entity.params.positional.target, context, 'Target scene name');
+		context.scenesToProcess.push(sceneName);
+		return 'VN_flushText();\n' + 
+			`return VS_${sceneName};`;
 	}
 };
 
@@ -288,8 +295,8 @@ generateFromBody = (body, context) =>
 			return generator && generator(entity, context);
 		}
 	})).join('\n');
-
-const generateFromSource = (sourceName, context) => {
+	
+const generateScene = (sourceName, context) => {
 	const source = context.fileSystem.readSource(sourceName);
 	const ast = parse(source);
 	if (ast.errors) {
@@ -317,12 +324,44 @@ const generateFromSource = (sourceName, context) => {
 		'}'
 	].join('\n');
 	
+	return generatedFunction;
+}
+
+const generateFromSource = (mainSourceName, context) => {
+	context.scenesToProcess.push(mainSourceName);
+	
+	const processedScenes = {};
+	while (context.scenesToProcess.length) {
+		const sourceName = context.scenesToProcess.shift();
+		if (!processedScenes[sourceName]) {
+			const generatedFunction = generateScene(sourceName, context);		
+			const errors = [
+				...context.errors, 
+				...(generatedFunction && generatedFunction.errors ? generatedFunction.errors : [])
+			];
+			
+			context.errors = [];
+			processedScenes[sourceName] = { sourceName, generatedFunction, errors };
+		}
+	}
+	
+	
+	const generatedForwards = Object.keys(processedScenes).map(sceneName => `void *VS_${sceneName}();`);
+	const generatedFunctions = Object.values(processedScenes).map(scene => scene.generatedFunction);
+
+	const errors = Object.values(processedScenes).map(({ sourceName, errors }) => 
+		errors.map(error => ({ sourceName, ...error }))).flat();
+	if (errors.length) {
+		return { errors };
+	}
+	
 	return {
 		sources: {
 			'generated_scripts.c': [
 				'#include "vn_engine.h"',
 				generateVariableDeclarations(context.globals),
-				generatedFunction
+				generatedForwards.join('\n'),
+				...generatedFunctions
 			].join('\n\n\n')
 		},
 		
@@ -334,6 +373,7 @@ const generateFromSource = (sourceName, context) => {
 const generate = fileSystem => {
 	const context = {
 		fileSystem,
+		scenesToProcess: [],
 		generatedScripts: [], 
 		errors: [],
 		res: { gfx: {}, music: {}, sound: {} },
