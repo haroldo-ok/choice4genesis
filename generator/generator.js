@@ -262,6 +262,11 @@ const COMMAND_GENERATORS = {
 			indent(generatedBody),
 			'}'
 		].join('\n');
+	},
+	
+	'goto_scene': (entity, context) => {
+		const sceneName = getIdentifier(entity, entity.params.positional.target, context, 'Target scene name');
+		return `return VS_${sceneName};`;
 	}
 };
 
