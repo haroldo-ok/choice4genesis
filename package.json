@@ -30,6 +30,7 @@
   },
   "dependencies": {
     "lodash": "^4.17.21",
-    "parsimmon": "^1.18.1"
+    "parsimmon": "^1.18.1",
+    "yargs": "^17.5.1"
   }
 }

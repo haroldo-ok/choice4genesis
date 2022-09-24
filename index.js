@@ -1,6 +1,10 @@
 const { mkdirSync, readFileSync, writeFileSync } = require('fs');
 
 const { generate } = require('./generator/generator');
+const { readCommandLine } = require('./generator/commandline');
+
+const commandLine = readCommandLine();
+console.log(commandLine);
 
 // TODO: Allow to choose project folder
 const projectFolder = './examples/test/';
