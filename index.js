@@ -1,13 +1,16 @@
-const { mkdirSync, readFileSync, writeFileSync } = require('fs');
+const { existsSync, mkdirSync, readFileSync, writeFileSync } = require('fs');
+const { normalize } = require('path');
 
 const { generate } = require('./generator/generator');
 const { readCommandLine } = require('./generator/commandline');
 
 const commandLine = readCommandLine();
-console.log(commandLine);
 
-// TODO: Allow to choose project folder
-const projectFolder = './examples/test/';
+const projectFolder = normalize(`${commandLine.projectDir}/${commandLine.project}/`);
+if (!existsSync(projectFolder)) {
+	console.error('Directory does not exist: ' + projectFolder);
+	process.exit(-1);
+}
 
 // TODO: Refactor generator to support asynchronous file reading
 const fileSystem = {
@@ -22,7 +25,7 @@ const result = generate(fileSystem);
 
 if (result.errors && result.errors.length) {
 	result.errors.forEach(({sourceName, line, message}) => console.error(`${sourceName}.choice: Error at line ${line}: ${message}`));
-	return;
+	process.exit(-1);
 }
 
 // TODO: Refactor support asynchronous file writing

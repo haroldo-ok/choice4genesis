@@ -18,7 +18,7 @@ const readCommandLine = () => yargs
 			type: 'string'
 		}
 	})
-	.demandCommand(1, 'You need at least one command before moving on')
+	.demandCommand(1, 'You need to inform at least one command before moving on')
 	.strict()
 	.help()
 	.alias('transpile', 't')
