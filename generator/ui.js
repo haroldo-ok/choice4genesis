@@ -7,7 +7,7 @@ const menu = require('node-menu');
 
 
 // TODO: Use async file access
-const showMenu = commandLine => {
+const showMenu = (commandLine, executeCommands) => {
 	const projectsFolder = normalize(commandLine.projectDir);
 	if (!existsSync(projectsFolder)) {
 		return { errors: [{ message: 'Directory does not exist: ' + projectsFolder }] };
@@ -24,7 +24,10 @@ const showMenu = commandLine => {
 			
 		files
 			.filter(fileName => lstatSync(`${projectsFolder}/${fileName}`).isDirectory())
-			.forEach(fileName => menu.addItem(fileName));
+			.forEach(projectName => menu.addItem(projectName, () => {
+				commandLine.project = projectName;
+				return executeCommands();
+			}));
 			
 		menu.start();
 	});

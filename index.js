@@ -31,12 +31,10 @@ const handleErrors = result => {
 
 const COMMANDS = { transpile, compile, emulate };
 
-if (commandLine._.includes('menu')) {
-	showMenu(commandLine);
-}
-
 const executeCommands = async () => {
-	const commandsToExecute = compact(commandLine._.map(command => COMMANDS[command]));
+	const commandNames = commandLine._.filter(command => command !== 'menu');
+	const commandsToExecute = compact((commandNames.length ? commandNames : ['transpile', 'compile', 'emulate'])
+		.map(command => COMMANDS[command]));
 
 	for (execute of commandsToExecute) {
 		const result = await execute(commandLine);
@@ -47,7 +45,9 @@ const executeCommands = async () => {
 	}
 }
 
-if (commandLine.watch) {
+if (commandLine._.includes('menu')) {
+	showMenu(commandLine, executeCommands);
+} else if (commandLine.watch) {
 	console.warn('The "watch" option is a bit unstable, right now.');
 	watchProject(commandLine, executeCommands);
 } else {
