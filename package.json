@@ -6,7 +6,8 @@
   "scripts": {
     "test": "jest",
     "test_watch": "jest --watch",
-	"transpile_test": "node . transpile test"
+	"transpile_test": "node . transpile test",
+	"transpile_compile_test": "node . transpile test -- compile"
   },
   "repository": {
     "type": "git",
