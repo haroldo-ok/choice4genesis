@@ -2,7 +2,8 @@
 
 const { existsSync } = require('fs');
 const { normalize } = require('path');
-const { spawn } = require('child_process');
+
+const { execute } = require('./executor');
 
 const compile = async commandLine =>
 	new Promise((resolve, reject) => {
@@ -16,20 +17,8 @@ const compile = async commandLine =>
 			resolve({ errors: [{ message: `Could not find "${makeFile}"; please check your SGDK installation.` }] });
 		}
 		
-		const proc = spawn(`${commandLine.sgdkDir}/bin/make`, [ '-f', makeFile ], {
-			cwd: projectFolder
-		});
-		proc.stdout.on('data', data => console.log(`${data}`.trimRight()))
-		proc.stderr.on('data', data => console.error(`${data}`.trimRight()))
-		proc.on('error', data => console.error(`${data}`.trimRight()))
-		proc.on('close', code => {
-			if (!code) {
-				resolve({});
-			}
-			
-			console.error(`SGDK exited with code ${code}`);
-			resolve({ errors: [{ message: 'SGDK compiler returned an error.' }] });
-		});		
+		execute(`${commandLine.sgdkDir}/bin/make`, [ '-f', makeFile ], { appName: 'SGDK compiler', cwd: projectFolder })
+			.then(resolve).catch(reject);
 	});
 
 module.exports = { compile };
