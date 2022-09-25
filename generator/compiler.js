@@ -3,10 +3,14 @@
 const { existsSync } = require('fs');
 const { normalize } = require('path');
 
+const chalk = require('chalk');
+
 const { execute } = require('./executor');
 
 const compile = async commandLine =>
 	new Promise((resolve, reject) => {
+		console.log(chalk.blue('Calling the compiler...'));
+		
 		const projectFolder = normalize(`${commandLine.projectDir}/${commandLine.project}/`);
 		if (!existsSync(projectFolder)) {
 			resolve({ errors: [{ message: 'Directory does not exist: ' + projectFolder }] });
