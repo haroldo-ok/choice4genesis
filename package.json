@@ -6,9 +6,9 @@
   "scripts": {
     "test": "jest",
     "test_watch": "jest --watch",
-	"transpile_test": "node . transpile test",
-	"transpile_compile_test": "node . transpile test -- compile",
-	"compile_run_test": "node . transpile test -- compile emulate"
+    "transpile_test": "node . transpile test",
+    "transpile_compile_test": "node . transpile test -- compile",
+    "compile_run_test": "node . transpile test -- compile emulate"
   },
   "repository": {
     "type": "git",
@@ -33,6 +33,7 @@
   },
   "dependencies": {
     "lodash": "^4.17.21",
+    "node-menu": "^1.3.2",
     "parsimmon": "^1.18.1",
     "yargs": "^17.5.1"
   }

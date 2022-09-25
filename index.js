@@ -7,6 +7,7 @@ const { compile } = require('./generator/compiler');
 const { emulate } = require('./generator/emulator');
 const { readCommandLine } = require('./generator/commandline');
 const { watchProject } = require('./generator/watcher');
+const { showMenu } = require('./generator/ui')
 
 
 const commandLine = readCommandLine();
@@ -29,6 +30,10 @@ const handleErrors = result => {
 
 
 const COMMANDS = { transpile, compile, emulate };
+
+if (commandLine._.includes('menu')) {
+	showMenu(commandLine);
+}
 
 const executeCommands = async () => {
 	const commandsToExecute = compact(commandLine._.map(command => COMMANDS[command]));
