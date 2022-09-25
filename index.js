@@ -4,6 +4,7 @@ const { compact } = require('lodash');
 
 const { transpile } = require('./generator/transpiler');
 const { compile } = require('./generator/compiler');
+const { emulate } = require('./generator/emulator');
 const { readCommandLine } = require('./generator/commandline');
 
 
@@ -25,7 +26,7 @@ const handleErrors = result => {
 }
 
 
-const COMMANDS = { transpile, compile };
+const COMMANDS = { transpile, compile, emulate };
 const commandsToExecute = compact(commandLine._.map(command => COMMANDS[command]));
 
 const executeCommands = async () => {
