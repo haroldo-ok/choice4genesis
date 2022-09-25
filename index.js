@@ -1,6 +1,7 @@
 const { existsSync, mkdirSync, readFileSync, writeFileSync } = require('fs');
 const { normalize } = require('path');
 const { compact } = require('lodash');
+const chalk = require('chalk');
 
 const { transpile } = require('./generator/transpiler');
 const { compile } = require('./generator/compiler');
@@ -18,11 +19,11 @@ const handleErrors = result => {
 	}
 	
 	result.errors.forEach(({sourceName, line, message}) => {
-		console.error(compact([
+		console.error(chalk.red(compact([
 			sourceName && `${sourceName}.choice`,
 			line && `Error at line ${line}`,
 			message
-		]).join(': '));
+		]).join(': ')));
 	});
 	
 	return -1;
