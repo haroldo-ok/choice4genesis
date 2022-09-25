@@ -7,7 +7,8 @@
     "test": "jest",
     "test_watch": "jest --watch",
 	"transpile_test": "node . transpile test",
-	"transpile_compile_test": "node . transpile test -- compile"
+	"transpile_compile_test": "node . transpile test -- compile",
+	"compile_run_test": "node . transpile test -- compile emulate"
   },
   "repository": {
     "type": "git",

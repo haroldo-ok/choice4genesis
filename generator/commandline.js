@@ -49,7 +49,9 @@ const readCommandLine = () => yargs
 	.example([
 		['$0 transpile test', 'Transpiles the project called "test"'],
 		['$0 compile test', 'Compiles, without transpiling, the project called "test"'],
-		['$0 transpile test -- compile', 'Compiles, without transpiling, the project called "test"']
+		['$0 emulate test', 'Executes the existing ROM of the project called "test"'],
+		['$0 transpile test -- compile', 'Transpiles and compiles the project called "test"'],
+		['$0 transpile test -- compile emulate', 'Transpiles, compiles and runs the project called "test"']
 	])
 	.strict()
 	.help()
