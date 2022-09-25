@@ -1,6 +1,6 @@
 const { existsSync, mkdirSync, readFileSync, watch, writeFileSync } = require('fs');
 const { normalize } = require('path');
-const { compact } = require('lodash');
+const { compact, debounce } = require('lodash');
 
 const { transpile } = require('./generator/transpiler');
 const { compile } = require('./generator/compiler');
@@ -44,13 +44,18 @@ const executeCommands = async () => {
 if (commandLine.watch) {
 	let inProgress = false;
 	const filesChanged = new Set();
-	const executeChangedFiles = async () => {
+	const executeChangedFiles = debounce(() => {
 		if (inProgress) {
 			console.log('Already in progress.');
 			return;
 		}
 
 		const checkNeedsReexecution = () => {
+			console.log('Checking if needs reexecution.');
+			if (inProgress) {
+				console.log('Already in progress (2).');
+			}
+			
 			if (!filesChanged.length) {
 				console.log('No files changed.')
 				return;
@@ -64,16 +69,18 @@ if (commandLine.watch) {
 		
 		inProgress = true;
 		console.log('Executing....');
-		return executeCommands()
+		executeCommands()
 			.then(() => {
 				inProgress = false;
+				console.log('1');
 				checkNeedsReexecution();
 			})
 			.catch(() => {
 				inProgress = false;
+				console.log('2');
 				checkNeedsReexecution();
 			});
-	}
+	}, 300);
 	
 	const projectFolder = normalize(`${commandLine.projectDir}/${commandLine.project}/project/`);
 	if (!existsSync(projectFolder)) {
@@ -81,12 +88,12 @@ if (commandLine.watch) {
 	}
 
 	console.log('First execution....');
-	executeChangedFiles().then(() => {});
+	executeChangedFiles();
 		
 	watch(projectFolder, {}, (eventType, fileName) => {
 		console.log('File changed: ' + fileName);
 		filesChanged.add(fileName);
-		executeChangedFiles().then(() => {});
+		executeChangedFiles();
 	});
 } else {
 	executeCommands().then(finalResult => {
