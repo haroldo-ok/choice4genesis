@@ -10,21 +10,27 @@ const watchProject = (commandLine, executeCommands) => {
 	const executeChangedFiles = debounce(() => {
 		if (inProgress) {
 			console.log('Already in progress.');
-			return;
+			return Promise.resolve();
+		}
+
+		if (!filesChanged.size) {
+			console.log('No files changed.')
+			return Promise.resolve();
 		}
 
 		const checkNeedsReexecution = () => {
 			console.log('Checking if needs reexecution.');
 			if (inProgress) {
 				console.log('Already in progress (2).');
+				return Promise.resolve();
 			}
-			
-			if (!filesChanged.length) {
-				console.log('No files changed.')
-				return;
+						
+			if (!filesChanged.size) {
+				console.log('No files changed (2).')
+				return Promise.resolve();
 			}
-			
-			console.log('Changed files: ' + filesChanged);
+
+			console.log('Changed files: ' + Array.from(filesChanged).join(', '));
 			console.log('Reexecuting actions: ' + commandLine._);
 			filesChanged.clear();
 			return executeChangedFiles().then(checkNeedsReexecution).catch(checkNeedsReexecution);
@@ -32,7 +38,7 @@ const watchProject = (commandLine, executeCommands) => {
 		
 		inProgress = true;
 		console.log('Executing....');
-		executeCommands()
+		return executeCommands()
 			.then(() => {
 				inProgress = false;
 				console.log('1');
@@ -51,7 +57,17 @@ const watchProject = (commandLine, executeCommands) => {
 	}
 
 	console.log('First execution....');
-	executeChangedFiles();
+	executeCommands()
+		.then(() => {
+			inProgress = false;
+			console.log('2');
+			executeChangedFiles();
+		})
+		.catch(() => {
+			inProgress = false;
+			console.log('3');
+			executeChangedFiles();
+		});
 		
 	watch(projectFolder, {}, (eventType, fileName) => {
 		console.log('File changed: ' + fileName);
