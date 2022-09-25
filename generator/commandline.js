@@ -43,6 +43,12 @@ const readCommandLine = () => yargs
 			normalize: true,
 			describe: 'Executable of the emulator',
 			type: 'string'
+		},
+		'watch': {
+			alias: 'w',
+			default: false,
+			boolean: true,
+			describe: 'Watch project for changes, and recompile if changed.'
 		}
 	})
 	.demandCommand(1, 'You need to inform at least one command before moving on')
