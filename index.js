@@ -6,13 +6,14 @@ const { transpile } = require('./generator/transpiler');
 const { compile } = require('./generator/compiler');
 const { emulate } = require('./generator/emulator');
 const { readCommandLine } = require('./generator/commandline');
+const { watchProject } = require('./generator/watcher');
 
 
 const commandLine = readCommandLine();
 
 const handleErrors = result => {
 	if (!result.errors || !result.errors.length) {
-		return;
+		return 0;
 	}
 	
 	result.errors.forEach(({sourceName, line, message}) => {
@@ -22,19 +23,32 @@ const handleErrors = result => {
 			message
 		]).join(': '));
 	});
-	process.exit(-1);
+	
+	return -1;
 }
 
 
 const COMMANDS = { transpile, compile, emulate };
-const commandsToExecute = compact(commandLine._.map(command => COMMANDS[command]));
 
 const executeCommands = async () => {
+	const commandsToExecute = compact(commandLine._.map(command => COMMANDS[command]));
+
 	for (execute of commandsToExecute) {
 		const result = await execute(commandLine);
-		handleErrors(result);
+		const exitCode = handleErrors(result);
+		if (exitCode) {
+			return { exitCode };
+		}
 	}
 }
 
-executeCommands().then(() => {});
-
+if (commandLine.watch) {
+	console.warn('The "watch" option is a bit unstable, right now.');
+	watchProject(commandLine, executeCommands);
+} else {
+	executeCommands().then(finalResult => {
+		if (finalResult && finalResult.exitCode) {
+			process.exit(-1);
+		}
+	});
+}
