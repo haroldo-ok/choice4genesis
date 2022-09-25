@@ -33,6 +33,11 @@ const readCommandLine = () => yargs
 		}
 	})
 	.demandCommand(1, 'You need to inform at least one command before moving on')
+	.example([
+		['$0 transpile test', 'Transpiles the project called "test"'],
+		['$0 compile test', 'Compiles, without transpiling, the project called "test"'],
+		['$0 transpile test -- compile', 'Compiles, without transpiling, the project called "test"']
+	])
 	.strict()
 	.help()
 	.alias('transpile', 't')
