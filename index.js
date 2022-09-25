@@ -43,6 +43,7 @@ const executeCommands = async () => {
 }
 
 if (commandLine.watch) {
+	console.warn('The "watch" option is a bit unstable, right now.');
 	watchProject(commandLine, executeCommands);
 } else {
 	executeCommands().then(finalResult => {
