@@ -22,6 +22,7 @@ const readCommandLine = () => yargs
 			type: 'string'
 		})
 	})
+	.command('menu', 'show an interactive menu')
 	.options({
 		'project-dir': {
 			alias: 'pd',
