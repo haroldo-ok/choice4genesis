@@ -28,7 +28,12 @@ const handleErrors = result => {
 const COMMANDS = { transpile, compile };
 const commandsToExecute = compact(commandLine._.map(command => COMMANDS[command]));
 
-commandsToExecute.forEach(exec => {
-	const result = exec(commandLine);
-	handleErrors(result);
-});
+const executeCommands = async () => {
+	for (execute of commandsToExecute) {
+		const result = await execute(commandLine);
+		handleErrors(result);
+	}
+}
+
+executeCommands().then(() => {});
+
