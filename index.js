@@ -1,4 +1,4 @@
-const { existsSync, mkdirSync, readFileSync, writeFileSync } = require('fs');
+const { existsSync, mkdirSync, readFileSync, watch, writeFileSync } = require('fs');
 const { normalize } = require('path');
 const { compact } = require('lodash');
 
@@ -41,9 +41,57 @@ const executeCommands = async () => {
 	}
 }
 
-executeCommands().then(finalResult => {
-	if (finalResult && finalResult.exitCode) {
-		process.exit(-1);
-	}
-});
+if (commandLine.watch) {
+	let inProgress = false;
+	const filesChanged = new Set();
+	const executeChangedFiles = async () => {
+		if (inProgress) {
+			console.log('Already in progress.');
+			return;
+		}
 
+		const checkNeedsReexecution = () => {
+			if (!filesChanged.length) {
+				console.log('No files changed.')
+				return;
+			}
+			
+			console.log('Changed files: ' + filesChanged);
+			console.log('Reexecuting actions: ' + commandLine._);
+			filesChanged.clear();
+			return executeChangedFiles().then(checkNeedsReexecution).catch(checkNeedsReexecution);
+		}
+		
+		inProgress = true;
+		console.log('Executing....');
+		return executeCommands()
+			.then(() => {
+				inProgress = false;
+				checkNeedsReexecution();
+			})
+			.catch(() => {
+				inProgress = false;
+				checkNeedsReexecution();
+			});
+	}
+	
+	const projectFolder = normalize(`${commandLine.projectDir}/${commandLine.project}/project/`);
+	if (!existsSync(projectFolder)) {
+		return { errors: [{ message: 'Directory does not exist: ' + projectFolder }] };
+	}
+
+	console.log('First execution....');
+	executeChangedFiles().then(() => {});
+		
+	watch(projectFolder, {}, (eventType, fileName) => {
+		console.log('File changed: ' + fileName);
+		filesChanged.add(fileName);
+		executeChangedFiles().then(() => {});
+	});
+} else {
+	executeCommands().then(finalResult => {
+		if (finalResult && finalResult.exitCode) {
+			process.exit(-1);
+		}
+	});
+}
