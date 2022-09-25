@@ -10,7 +10,13 @@ const readCommandLine = () => yargs
 			type: 'string'
 		})
 	})
-	.command('compile <project>', 'transpiles the project first, then compiles it using SGDK', (yargs) => {
+	.command('compile <project>', 'compiles the transpiled project using SGDK', (yargs) => {
+		yargs.positional('project', {
+			describe: 'name of the project to be transpiled',
+			type: 'string'
+		})
+	})
+	.command('emulate <project>', 'runs the compiled ROM on the emulator', (yargs) => {
 		yargs.positional('project', {
 			describe: 'name of the project to be transpiled',
 			type: 'string'
@@ -30,6 +36,13 @@ const readCommandLine = () => yargs
 			normalize: true,
 			describe: 'Directory where SGDK is located',
 			type: 'string'
+		},
+		'emulator-exe': {
+			alias: 'ee',
+			default: normalize(__dirname + '/../../Gens_KMod_v0.7.3/gens.exe'),
+			normalize: true,
+			describe: 'Executable of the emulator',
+			type: 'string'
 		}
 	})
 	.demandCommand(1, 'You need to inform at least one command before moving on')
@@ -41,6 +54,8 @@ const readCommandLine = () => yargs
 	.strict()
 	.help()
 	.alias('transpile', 't')
+	.alias('compile', 'c')
+	.alias('emulate', 'e')
 	.argv;
 
 module.exports = { readCommandLine };
