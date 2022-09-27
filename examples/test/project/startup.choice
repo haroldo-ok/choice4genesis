@@ -39,6 +39,9 @@
 				You chose this.
 			# One more choice
 				You chose that.
+	# Increment a number
+		* set intVar, intVar + 1
+		The value is now ${intVar}!
 	# Go to another scene
 		* goto_scene test
 This is a test.
