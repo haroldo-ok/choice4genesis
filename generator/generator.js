@@ -276,6 +276,19 @@ const COMMAND_GENERATORS = {
 generateFromBody = (body, context) => 
 	compact((body || []).map(entity => {
 		if (entity.type === 'text') {
+			if (entity.expressions) {
+				return [
+					'VN_textStart();',
+					...entity.expressions.map(o => {
+						if (o.params && o.params.positional && o.params.positional.expression) {
+							const expr = getExpression(entity, o.params.positional.expression, context, 'Expression');
+							return `VN_textInt(${expr.code});`;
+						}
+						return `VN_textString("${o}");`;
+					})
+				].join('\n');
+			}
+			
 			return `VN_text("${entity.text}");`
 		}
 		if (entity.type === 'option') {
