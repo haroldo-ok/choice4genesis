@@ -125,11 +125,11 @@ void VN_textString(char *text) {
 	strcat(textBuffer, text);
 }
 
-/*
-void VN_textInt(int value) {
-	strcat(textBuffer, text);
+void VN_textInt(int number) {
+	char number_buffer[12];
+	sprintf(number_buffer, "%d", number);
+	VN_textString(number_buffer);
 }
-*/
 
 void VN_text(char *text) {
 	VN_textStart();
