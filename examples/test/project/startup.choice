@@ -5,7 +5,6 @@
 * create boolVar, true
 * temp localInt, 2
 
-* set intVar, 3
 * set localInt, intVar + 3
 
 * create playingMusic, false
@@ -33,14 +32,16 @@
 		* image "Smiley.png", at(30, 3)
 		OK... showing a smiley!
 	# Fourth choice
-		You chose the last one
+		This is a test.
+		Second line.
+		Third line.
 		* choice
 			# Yet another choice
 				You chose this.
 			# One more choice
 				You chose that.
+	# Increment a number
+		* set intVar, intVar + 1
+		The value is now ${intVar}!
 	# Go to another scene
 		* goto_scene test
-This is a test.
-Second line.
-Third line.

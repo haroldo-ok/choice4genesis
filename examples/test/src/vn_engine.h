@@ -19,6 +19,9 @@ extern void VN_music(const u8 *music);
 extern void VN_sound(const u8 *sound, const u16 length);
 extern void VN_stop(const u8 flags);
 
+extern void VN_textStart();
+extern void VN_textString(char *text);
+extern void VN_textInt(int number);
 extern void VN_text(char *text);
 extern void VN_flushText();
 extern void VN_wait(u16 duration);

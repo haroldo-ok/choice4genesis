@@ -63,7 +63,7 @@ void VN_init() {
 	XGM_setLoopNumber(-1);
 	XGM_setForceDelayDMA(TRUE);
 
-	VDP_drawText("choice4genesis v0.4.0", 18, 27);
+	VDP_drawText("choice4genesis v0.5.0", 18, 27);
 }
 
 
@@ -117,9 +117,23 @@ void VN_clearWindow() {
 	VDP_clearTextAreaEx(BG_A, TILE_ATTR_FULL(PAL0, FALSE, FALSE, FALSE, 0x05A0), window.x, window.y, window.w, window.h, DMA);
 }
 
-void VN_text(char *text) {
+void VN_textStart() {
 	if (textBuffer[0]) strcat(textBuffer, "\n");
+}
+
+void VN_textString(char *text) {
 	strcat(textBuffer, text);
+}
+
+void VN_textInt(int number) {
+	char number_buffer[12];
+	sprintf(number_buffer, "%d", number);
+	VN_textString(number_buffer);
+}
+
+void VN_text(char *text) {
+	VN_textStart();
+	VN_textString(text);
 }
 
 void VN_flushText() {

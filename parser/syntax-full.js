@@ -42,9 +42,23 @@ const COMMANDS = {
 
 const COMMAND_PARSERS = Object.fromEntries(Object.entries(COMMANDS).map(([command, config]) => [command, createExpressionParser(config)]));
 
+const stringInterpolationParser = createExpressionParser({ positional: ['expression'] });
+
 
 const checkOnlyAfter = (body, errors) => 
 	body.map((element, index) => {
+		if (element.type === 'text') {
+			const interpRegex = /\$\{(.*?)\}/g;
+			const parts = element.text.replace(interpRegex, a => '\n' + a + '\n').split('\n');
+			if (parts.length > 1 || interpRegex.test(parts[0] || '')) {
+				const expressions = parts.map(part => interpRegex.test(part) ? 
+					stringInterpolationParser(part.replace(interpRegex, '$1')) : 
+					part);
+				return { ...element, expressions };
+			}
+			return element;
+		}
+		
 		if (element.type !== 'command') {
 			return element;
 		}
