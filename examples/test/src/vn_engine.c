@@ -134,7 +134,7 @@ void VN_text(char *text) {
 }
 
 void VN_flushText() {
-	VN_flush(FLUSH_NOWAIT);
+	VN_flush(0);
 }
 
 void VN_flush(const u8 flags) {
