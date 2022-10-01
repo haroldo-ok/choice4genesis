@@ -284,13 +284,13 @@ const COMMAND_GENERATORS = {
 		
 		if (named.from) {
 			const x = getExpression(entity, named.from.x, context, 'Window X origin') || {};
-			const y = getExpression(entity, named.from.x, context, 'Window Y origin') || {};
+			const y = getExpression(entity, named.from.y, context, 'Window Y origin') || {};
 			generated.push(`VN_windowFrom(${x.code}, ${y.code});`);
 		}
 		
 		if (named.to) {
 			const x = getExpression(entity, named.to.x, context, 'Window X destination') || {};
-			const y = getExpression(entity, named.to.x, context, 'Window Y destination') || {};
+			const y = getExpression(entity, named.to.y, context, 'Window Y destination') || {};
 			generated.push(`VN_windowTo(${x.code}, ${y.code});`);
 		}
 		

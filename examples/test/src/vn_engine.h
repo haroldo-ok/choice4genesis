@@ -26,6 +26,11 @@ extern void VN_text(char *text);
 extern void VN_flushText();
 extern void VN_wait(u16 duration);
 
+extern void VN_windowDefault();
+extern void VN_windowFrom(u16 x, u16 y);
+extern void VN_windowTo(u16 x, u16 y);
+extern void VN_windowSize(u16 w, u16 h);
+
 extern void VN_option(u8 number, char *text);
 extern u8 VN_choice();
 
