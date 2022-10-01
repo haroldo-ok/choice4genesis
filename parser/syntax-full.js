@@ -32,6 +32,7 @@ const COMMANDS = {
 
 	'window': { named: { 'from': ['x', 'y'], 'to': ['x', 'y'], 'size': ['w', 'h'] }, flags: ['borderless', 'withborder', 'default'] },
 	'clear': { flags: ['background', 'foreground', 'window'] },
+	'flush': { flags: ['nowait'] },
 
 	'video': { positional: ['fileName', 'frameRate'] },
 	

@@ -272,7 +272,7 @@ const COMMAND_GENERATORS = {
 			`return VS_${sceneName};`;
 	},
 	
-	'window': (entity, context) => {		
+	'window': (entity, context) => {
 		const generated = ['VN_flushText();'];
 		
 		const flags = entity.params.flags || {};
@@ -301,7 +301,15 @@ const COMMAND_GENERATORS = {
 		}
 
 		return generated.join('\n');
-	}
+	},
+	
+	'flush': (entity, context) => {
+		const generatedFlags = Object.entries(entity.params.flags || {})
+			.filter(([k, v]) => v)
+			.map(([k, v]) => `FLUSH_${k.toUpperCase()}`);
+		
+		return `VN_flush(${generatedFlags.join('|') || 0})`;
+	}		
 };
 
 
