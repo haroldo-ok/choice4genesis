@@ -56,6 +56,12 @@ Allows a certain block of code to only be executed on a given condition.
 ### `goto_scene`
 Jumps to a different scene. The scene files are located on the script directory, and have the `.choice` extension.
 
+### `window`
+Allows to configure the region of the screen that will be used for the text popups and menus.
+
+### `flush`
+Immediately shows the contents of the current text buffer on the text window; if passed the flag `nowait`, does not wait for a button press.
+
 
 
 ## Planned commands
@@ -73,9 +79,6 @@ Will configure the default sequence in which the scenes will be played.
 
 ### `finish`
 Will jump to the next scene in the game.
-
-### `window`
-Will allow to configure the region of the screen that will be used for the text popups and menus.
 
 ### `clear`
 Will allow to clear regions of the screen.
