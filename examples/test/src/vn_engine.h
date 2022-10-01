@@ -8,6 +8,8 @@
 #define STOP_MUSIC (1)
 #define STOP_SOUND (2)
 
+#define FLUSH_NOWAIT (1)
+
 extern void VN_init();
 
 extern void VN_background(const Image *image);
@@ -24,6 +26,7 @@ extern void VN_textString(char *text);
 extern void VN_textInt(int number);
 extern void VN_text(char *text);
 extern void VN_flushText();
+extern void VN_flush(const u8 flags);
 extern void VN_wait(u16 duration);
 
 extern void VN_windowDefault();

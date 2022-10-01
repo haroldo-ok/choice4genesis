@@ -134,9 +134,15 @@ void VN_text(char *text) {
 }
 
 void VN_flushText() {
+	VN_flush(FLUSH_NOWAIT);
+}
+
+void VN_flush(const u8 flags) {
 	if (!textBuffer[0]) return;
 	
-	VN_waitJoyRelease();
+	bool shouldWait = !(flags & FLUSH_NOWAIT);
+	
+	if (shouldWait) VN_waitJoyRelease();
 
 	VN_clearWindow();
 	
@@ -155,7 +161,7 @@ void VN_flushText() {
 	}
 	strclr(textBuffer);
 	
-	VN_waitPressNext();
+	if (shouldWait) VN_waitPressNext();
 }
 
 void VN_wait(u16 duration) {

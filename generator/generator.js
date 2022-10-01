@@ -308,7 +308,7 @@ const COMMAND_GENERATORS = {
 			.filter(([k, v]) => v)
 			.map(([k, v]) => `FLUSH_${k.toUpperCase()}`);
 		
-		return `VN_flush(${generatedFlags.join('|') || 0})`;
+		return `VN_flush(${generatedFlags.join('|') || 0});`;
 	}		
 };
 
