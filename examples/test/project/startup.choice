@@ -43,5 +43,17 @@
 	# Increment a number
 		* set intVar, intVar + 1
 		The value is now ${intVar}!
-	# Go to another scene
-		* goto_scene test
+	# More options...
+		* choice
+			# Test window
+				* window from(1, 1), to(10, 4)
+				Window 1
+				* flush nowait
+				* window from(29, 1), size(10, 6)
+				Window 2
+				* flush nowait
+				* window default
+				Returning to the default window
+				* flush
+			# Go to another scene
+				* goto_scene test

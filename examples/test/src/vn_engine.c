@@ -50,11 +50,8 @@ void VN_init() {
 	JOY_setEventHandler(&VN_joyHandler);
 	
 	memset(textBuffer, 0, TEXT_BUFFER_LEN);
-	
-	window.x = 1;
-	window.y = 20;
-	window.w = 38;
-	window.h = 6;
+
+	VN_windowDefault();
 
 	imageInfo.x = 0;
 	imageInfo.y = 0;
@@ -137,9 +134,15 @@ void VN_text(char *text) {
 }
 
 void VN_flushText() {
+	VN_flush(0);
+}
+
+void VN_flush(const u8 flags) {
 	if (!textBuffer[0]) return;
 	
-	VN_waitJoyRelease();
+	bool shouldWait = !(flags & FLUSH_NOWAIT);
+	
+	if (shouldWait) VN_waitJoyRelease();
 
 	VN_clearWindow();
 	
@@ -158,7 +161,7 @@ void VN_flushText() {
 	}
 	strclr(textBuffer);
 	
-	VN_waitPressNext();
+	if (shouldWait) VN_waitPressNext();
 }
 
 void VN_wait(u16 duration) {
@@ -245,4 +248,25 @@ u8 VN_choice() {
 	VN_waitJoyRelease();
 	
 	return choiceValues[choiceNumber];
+}
+
+void VN_windowDefault() {
+	window.x = 1;
+	window.y = 20;
+	window.w = 38;
+	window.h = 6;
+}
+
+void VN_windowFrom(u16 x, u16 y) {
+	window.x = x;
+	window.y = y;
+}
+
+void VN_windowTo(u16 x, u16 y) {
+	VN_windowSize(x - window.x + 1, y - window.y + 1);
+}
+
+void VN_windowSize(u16 w, u16 h) {
+	window.w = w;
+	window.h = h;
 }

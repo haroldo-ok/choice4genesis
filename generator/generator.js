@@ -169,6 +169,7 @@ const COMMAND_GENERATORS = {
 				optionsContent.map((content, index) => [
 					`case ${index + 1}:`,
 					indent(content),
+					'\tVN_flushText();',
 					'\tbreak;'
 				]),
 				'}',
@@ -269,7 +270,46 @@ const COMMAND_GENERATORS = {
 		context.scenesToProcess.push(sceneName);
 		return 'VN_flushText();\n' + 
 			`return VS_${sceneName};`;
-	}
+	},
+	
+	'window': (entity, context) => {
+		const generated = ['VN_flushText();'];
+		
+		const flags = entity.params.flags || {};
+		if (flags.default) {
+			generated.push('VN_windowDefault();');
+		}
+		
+		const named = entity.params.named || {};
+		
+		if (named.from) {
+			const x = getExpression(entity, named.from.x, context, 'Window X origin') || {};
+			const y = getExpression(entity, named.from.y, context, 'Window Y origin') || {};
+			generated.push(`VN_windowFrom(${x.code}, ${y.code});`);
+		}
+		
+		if (named.to) {
+			const x = getExpression(entity, named.to.x, context, 'Window X destination') || {};
+			const y = getExpression(entity, named.to.y, context, 'Window Y destination') || {};
+			generated.push(`VN_windowTo(${x.code}, ${y.code});`);
+		}
+		
+		if (named.size) {
+			const w = getExpression(entity, named.size.w, context, 'Window width') || {};
+			const h = getExpression(entity, named.size.h, context, 'Window height') || {};
+			generated.push(`VN_windowSize(${w.code}, ${h.code});`);
+		}
+
+		return generated.join('\n');
+	},
+	
+	'flush': (entity, context) => {
+		const generatedFlags = Object.entries(entity.params.flags || {})
+			.filter(([k, v]) => v)
+			.map(([k, v]) => `FLUSH_${k.toUpperCase()}`);
+		
+		return `VN_flush(${generatedFlags.join('|') || 0});`;
+	}		
 };
 
 
