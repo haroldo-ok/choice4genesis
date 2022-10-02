@@ -55,5 +55,7 @@
 				* window default
 				Returning to the default window
 				* flush
+				* clear background, foreground
+				Clearing everything
 			# Go to another scene
 				* goto_scene test

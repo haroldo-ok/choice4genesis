@@ -309,6 +309,14 @@ const COMMAND_GENERATORS = {
 			.map(([k, v]) => `FLUSH_${k.toUpperCase()}`);
 		
 		return `VN_flush(${generatedFlags.join('|') || 0});`;
+	},
+	
+	'clear': (entity, context) => {
+		const generatedFlags = Object.entries(entity.params.flags || {})
+			.filter(([k, v]) => v)
+			.map(([k, v]) => `CLEAR_${k.toUpperCase()}`);
+		
+		return `VN_clear(${generatedFlags.join('|') || 'CLEAR_BACKGROUND|CLEAR_FOREGROUND'});`;
 	}		
 };
 
