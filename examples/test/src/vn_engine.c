@@ -60,7 +60,7 @@ void VN_init() {
 	XGM_setLoopNumber(-1);
 	XGM_setForceDelayDMA(TRUE);
 
-	VDP_drawText("choice4genesis v0.5.0", 18, 27);
+	VDP_drawText("choice4genesis v0.6.0", 18, 27);
 }
 
 
@@ -162,6 +162,12 @@ void VN_flush(const u8 flags) {
 	strclr(textBuffer);
 	
 	if (shouldWait) VN_waitPressNext();
+}
+
+void VN_clear(const u8 flags) {
+	if (flags & CLEAR_FOREGROUND) VDP_clearPlane(BG_A, TRUE);
+	if (flags & CLEAR_BACKGROUND) VDP_clearPlane(BG_B, TRUE);
+	if (flags & CLEAR_WINDOW) VN_clearWindow();
 }
 
 void VN_wait(u16 duration) {

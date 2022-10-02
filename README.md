@@ -62,6 +62,9 @@ Allows to configure the region of the screen that will be used for the text popu
 ### `flush`
 Immediately shows the contents of the current text buffer on the text window; if passed the flag `nowait`, does not wait for a button press.
 
+### `clear`
+Allows to clear regions of the screen.
+
 
 
 ## Planned commands
@@ -79,9 +82,6 @@ Will configure the default sequence in which the scenes will be played.
 
 ### `finish`
 Will jump to the next scene in the game.
-
-### `clear`
-Will allow to clear regions of the screen.
 
 ### `video`
 Will play a full screen video.
