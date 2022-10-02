@@ -164,6 +164,12 @@ void VN_flush(const u8 flags) {
 	if (shouldWait) VN_waitPressNext();
 }
 
+void VN_clear(const u8 flags) {
+	if (flags & CLEAR_FOREGROUND) VDP_clearPlane(BG_A, TRUE);
+	if (flags & CLEAR_BACKGROUND) VDP_clearPlane(BG_B, TRUE);
+	if (flags & CLEAR_WINDOW) VN_clearWindow();
+}
+
 void VN_wait(u16 duration) {
 	VN_flushText();
 	for (u16 remainining = duration; remainining; remainining--) {
