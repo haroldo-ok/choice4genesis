@@ -4,6 +4,7 @@ const { compact } = require('lodash');
 const { parse } = require('../parser/syntax-full');
 const { createNamespace } = require('./namespace');
 const { generateExpression } = require('./expression');
+const { generateRomHeader } = require('./romheader');
 
 
 const buildEntityError = ({ line }, message) => ({ line, message });
@@ -423,7 +424,9 @@ const generateFromSource = (mainSourceName, context) => {
 				generateVariableDeclarations(context.globals),
 				generatedForwards.join('\n'),
 				...generatedFunctions
-			].join('\n\n\n')
+			].join('\n\n\n'),
+			
+			'boot/rom_head.c': generateRomHeader(context)
 		},
 		
 		resources: Object.fromEntries(Object.entries(context.res).map(([name, resource]) => 
