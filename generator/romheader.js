@@ -1,5 +1,9 @@
 'use strict';
 
+const pjson = require('./../package.json');
+
+const formatHeader = (s, size) => s.padEnd(size, ' ').substring(0, size);
+
 const generateRomHeader = context => {
 
 return `
@@ -33,7 +37,7 @@ const ROMHeader rom_header = {
     0x00200000,
     0x0020FFFF,
     "            ",
-    "DEMONSTRATION PROGRAM                   ",
+    "${formatHeader('Made with ' + pjson.name + ' ' + pjson.version, 40)}",
     "JUE             "
 };
 
