@@ -65,6 +65,18 @@ Immediately shows the contents of the current text buffer on the text window; if
 ### `clear`
 Allows to clear regions of the screen.
 
+### `title`
+
+Sets the title of the story. Used to populate the ROM headers.
+
+### `author`
+
+Sets the author of the story. Used to populate the ROM headers.
+
+
+
+
+
 
 
 ## Planned commands
