@@ -318,7 +318,13 @@ const COMMAND_GENERATORS = {
 			.map(([k, v]) => `CLEAR_${k.toUpperCase()}`);
 		
 		return `VN_clear(${generatedFlags.join('|') || 'CLEAR_BACKGROUND|CLEAR_FOREGROUND'});`;
-	}		
+	},
+	
+	'title': (entity, context) => {
+		const name = getStringConstant(entity, entity.params.positional.name, context, 'Story name');
+		context.header.title = name;
+		return null;
+	},
 };
 
 
