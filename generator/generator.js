@@ -325,6 +325,12 @@ const COMMAND_GENERATORS = {
 		context.header.title = name;
 		return null;
 	},
+	
+	'author': (entity, context) => {
+		const name = getStringConstant(entity, entity.params.positional.name, context, 'Author name');
+		context.header.author = name;
+		return null;
+	},
 };
 
 
