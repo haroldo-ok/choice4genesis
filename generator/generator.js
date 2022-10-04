@@ -443,7 +443,11 @@ const generate = fileSystem => {
 		res: { gfx: {}, music: {}, sound: {} },
 		choices: [],
 		globals: createNamespace(),
-		locals: null
+		locals: null,
+		header: {
+			author: 'Unnamed Author',
+			title: 'Unnamed Story'
+		}
 	};
 	return generateFromSource('startup', context);
 };

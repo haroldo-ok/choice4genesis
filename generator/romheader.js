@@ -18,9 +18,9 @@ const ROMHeader rom_header = {
 #else
     "SEGA MEGA DRIVE ",
 #endif
-    "(C)SGDK 2021    ",
-    "SAMPLE PROGRAM                                  ",
-    "SAMPLE PROGRAM                                  ",
+    "${formatHeader(context.header.author, 16)}",
+    "${formatHeader(context.header.title, 48)}",
+    "${formatHeader(context.header.title, 48)}",
     "GM 00000000-00",
     0x000,
     "JD              ",
