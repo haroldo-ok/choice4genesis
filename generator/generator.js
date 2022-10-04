@@ -4,6 +4,7 @@ const { compact } = require('lodash');
 const { parse } = require('../parser/syntax-full');
 const { createNamespace } = require('./namespace');
 const { generateExpression } = require('./expression');
+const { generateRomHeader } = require('./romheader');
 
 
 const buildEntityError = ({ line }, message) => ({ line, message });
@@ -317,7 +318,19 @@ const COMMAND_GENERATORS = {
 			.map(([k, v]) => `CLEAR_${k.toUpperCase()}`);
 		
 		return `VN_clear(${generatedFlags.join('|') || 'CLEAR_BACKGROUND|CLEAR_FOREGROUND'});`;
-	}		
+	},
+	
+	'title': (entity, context) => {
+		const name = getStringConstant(entity, entity.params.positional.name, context, 'Story name');
+		context.header.title = name;
+		return null;
+	},
+	
+	'author': (entity, context) => {
+		const name = getStringConstant(entity, entity.params.positional.name, context, 'Author name');
+		context.header.author = name;
+		return null;
+	},
 };
 
 
@@ -423,7 +436,9 @@ const generateFromSource = (mainSourceName, context) => {
 				generateVariableDeclarations(context.globals),
 				generatedForwards.join('\n'),
 				...generatedFunctions
-			].join('\n\n\n')
+			].join('\n\n\n'),
+			
+			'boot/rom_head.c': generateRomHeader(context)
 		},
 		
 		resources: Object.fromEntries(Object.entries(context.res).map(([name, resource]) => 
@@ -440,7 +455,11 @@ const generate = fileSystem => {
 		res: { gfx: {}, music: {}, sound: {} },
 		choices: [],
 		globals: createNamespace(),
-		locals: null
+		locals: null,
+		header: {
+			author: 'Unnamed Author',
+			title: 'Unnamed Story'
+		}
 	};
 	return generateFromSource('startup', context);
 };
