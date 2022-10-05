@@ -266,6 +266,17 @@ const COMMAND_GENERATORS = {
 		].join('\n');
 	},
 	
+	'while': (entity, context) => {		
+		const condition = getExpression(entity, entity.params.positional.condition, context, 'Condition') || {};
+		const generatedBody = generateFromBody(entity.body, context);
+
+		return [
+			`while (${condition.code}) {`,
+			indent(generatedBody),
+			'}'
+		].join('\n');
+	},
+
 	'goto_scene': (entity, context) => {
 		const sceneName = getIdentifier(entity, entity.params.positional.target, context, 'Target scene name');
 		context.scenesToProcess.push(sceneName);

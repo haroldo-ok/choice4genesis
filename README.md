@@ -53,6 +53,10 @@ Changes the current value of an existing variable.
 
 Allows a certain block of code to only be executed on a given condition.
 
+### `while`
+
+Keeps looping a block of code while a given condicion is met.
+
 ### `goto_scene`
 Jumps to a different scene. The scene files are located on the script directory, and have the `.choice` extension.
 
