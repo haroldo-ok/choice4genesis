@@ -60,5 +60,19 @@
 				* flush
 				* clear background, foreground
 				Clearing everything
+			# Test looping
+				* temp numberOfTriesLeft, 3
+				* temp answeredYes, false
+				* while numberOfTriesLeft > 0 and !answeredYes
+					Will you answer Yes?
+					* choice
+						# Yes
+							Okay, then!
+							* set answeredYes, true
+						# No
+							But thou must!
+							* set numberOfTriesLeft, numberOfTriesLeft - 1
+				* if numberOfTriesLeft <= 0
+					Okay, I quit.
 			# Go to another scene
 				* goto_scene test

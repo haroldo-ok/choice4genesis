@@ -12,6 +12,7 @@ const COMMANDS = {
 	'if': { positional: ['condition'], siblings: [ ['elseif'], ['else'] ] },
 	'elseif': { positional: ['condition'], onlyAfter: ['if', 'elseif'] },
 	'else': { onlyAfter: ['if', 'elseif'] },
+	'while': { positional: ['condition'] },
 	
 	'wait': { positional: ['duration'] },
 
