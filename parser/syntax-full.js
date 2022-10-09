@@ -32,6 +32,7 @@ const COMMANDS = {
 	'stop': { flags: ['music', 'sound'] },
 
 	'window': { named: { 'from': ['x', 'y'], 'to': ['x', 'y'], 'size': ['w', 'h'] }, flags: ['borderless', 'withborder', 'default'] },
+	'cursor': { positional: ['fileName', 'width', 'height', 'frameDelay'] },
 	'clear': { flags: ['background', 'foreground', 'window'] },
 	'flush': { flags: ['nowait'] },
 

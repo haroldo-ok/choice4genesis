@@ -3,6 +3,7 @@
 
 #include "genesis.h"
 #include "gfx.h"
+#include "sprite.h"
 #include "music.h"
 
 #define STOP_MUSIC (1)
@@ -38,6 +39,7 @@ extern void VN_windowDefault();
 extern void VN_windowFrom(u16 x, u16 y);
 extern void VN_windowTo(u16 x, u16 y);
 extern void VN_windowSize(u16 w, u16 h);
+extern void VN_cursor(const SpriteDefinition *sprite);
 
 extern void VN_option(u8 number, char *text);
 extern u8 VN_choice();
