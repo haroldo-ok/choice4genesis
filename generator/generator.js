@@ -320,10 +320,10 @@ const COMMAND_GENERATORS = {
 		const imageFileName = getStringConstant(entity, entity.params.positional.fileName, context, 'Image filename');
 		const width = getNumber(entity, entity.params.positional.width, context, 'Sprite width in tiles');
 		const height = getNumber(entity, entity.params.positional.height, context, 'Sprite height in tiles');
-		const frameRate = getNumber(entity, entity.params.positional.frameRate, context, 'Sprite frame rate');		
+		const frameDelay = getNumber(entity, entity.params.positional.frameDelay, context, 'Sprite animation delay');		
 		
 		const imageVariable = addResource(context.res.sprite, imageFileName, imageVariable => 
-			`SPRITE ${imageVariable} "../project/${imageFileName}" ${width} ${height} NONE ${frameRate}`);
+			`SPRITE ${imageVariable} "../project/${imageFileName}" ${width} ${height} NONE ${frameDelay}`);
 			
 		return `VN_cursor(&${imageVariable});`;
 	},
