@@ -11,6 +11,7 @@ char textBuffer[TEXT_BUFFER_LEN];
 
 struct {
 	u16 x, y, w, h;
+	Sprite *cursor;
 } window;
 
 struct {
@@ -32,15 +33,20 @@ void VN_joyHandler(u16 joy, u16 changed, u16 state) {
 	input.next = !!(state & (BUTTON_A | BUTTON_B | BUTTON_C));
 }
 
+void VN_doVBlank() {
+	SPR_update();
+	SYS_doVBlankProcess();
+}
+
 void VN_waitJoyRelease() {
 	do {
-		SYS_doVBlankProcess();
+		VN_doVBlank();
 	} while(input.up || input.down || input.next);
 }
 
 void VN_waitPressNext() {
 	do {
-		SYS_doVBlankProcess();
+		VN_doVBlank();
 	} while(!input.next);
 	VN_waitJoyRelease();
 }
@@ -52,6 +58,9 @@ void VN_init() {
 	memset(textBuffer, 0, TEXT_BUFFER_LEN);
 
 	VN_windowDefault();
+	window.cursor = NULL;
+
+	SPR_init(0, 0, 0);
 
 	imageInfo.x = 0;
 	imageInfo.y = 0;
@@ -162,7 +171,14 @@ void VN_flush(const u8 flags) {
 	}
 	strclr(textBuffer);
 	
-	if (shouldWait) VN_waitPressNext();
+	if (shouldWait) {
+		if (window.cursor) {
+			SPR_setPosition (window.cursor, (window.x + window.w - 1) * 8, (window.y + window.h - 1) * 8);
+			SPR_setVisibility(window.cursor, VISIBLE);			
+		}
+		VN_waitPressNext();
+		if (window.cursor) SPR_setVisibility(window.cursor, HIDDEN);
+	}
 }
 
 void VN_clear(const u8 flags) {
@@ -174,7 +190,7 @@ void VN_clear(const u8 flags) {
 void VN_wait(u16 duration) {
 	VN_flushText();
 	for (u16 remainining = duration; remainining; remainining--) {
-		for (u16 i = 60; i; i--) SYS_doVBlankProcess();		
+		for (u16 i = 60; i; i--) VN_doVBlank();		
 	}
 }
 
@@ -228,7 +244,7 @@ u8 VN_choice() {
 	u8 choiceNumber = 0;
 	VDP_drawText(">", window.x, cursorPositons[0]);
 	while (!input.next) {
-		SYS_doVBlankProcess();
+		VN_doVBlank();
 		if (input.up || input.down) {
 			VDP_drawText(" ", window.x, cursorPositons[choiceNumber]);
 
@@ -279,4 +295,14 @@ void VN_windowSize(u16 w, u16 h) {
 }
 
 void VN_cursor(const SpriteDefinition *sprite) {
+	if (window.cursor) {
+		SPR_releaseSprite(window.cursor);
+		window.cursor = NULL;
+	}
+	
+	if (!sprite) return;
+	
+	window.cursor = SPR_addSprite(sprite, 0, 0, TILE_ATTR(PAL0, 1, FALSE, FALSE));
+	SPR_setVisibility(window.cursor, HIDDEN);
+	VDP_setPalette(PAL0, (u16*) sprite->palette->data);
 }
