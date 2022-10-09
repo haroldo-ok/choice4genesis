@@ -33,6 +33,7 @@
 		OK, playing a digital voice.
 	# Show a smiley
 		* image "Smiley.png", at(30, 3)
+		* image "Smiley.png", at(28, 5), foreground
 		OK... showing a smiley!
 	# Fourth choice
 		This is a test.

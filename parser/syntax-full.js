@@ -24,7 +24,7 @@ const COMMANDS = {
 	'author': { positional: ['name'] },
 
 	'background': { positional: ['fileName'] },
-	'image': { positional: ['fileName'], named: { 'at': ['x', 'y'] } },
+	'image': { positional: ['fileName'], named: { 'at': ['x', 'y'] }, flags: ['foreground', 'background'] },
 	'font': { positional: ['fileName'] },
 
 	'music': { positional: ['fileName'] },

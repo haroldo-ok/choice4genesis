@@ -102,20 +102,21 @@ const addResource = (map, fileName, generator) => {
 
 const generateResource = map => Object.values(map).map(({ content }) => content).join('\n');
 	
-const generateImageCommand = (functionName, entity, context, mapOption = 'ALL') => {
+const generateImageCommand = (functionName, entity, context, mapOption = 'ALL', generatedFlags='') => {
 	const imageFileName = getStringConstant(entity, entity.params.positional.fileName, context, 'Image filename');
-	/*
-	const imageVariable = 'img_' + imageFileName.trim().replace(/\.png$/, '').replace(/\W+/g, '_');				
-	context.res.gfx.push(`IMAGE ${imageVariable} "../project/${imageFileName}" APLIB ${mapOption}`);
-	*/
 	const imageVariable = addResource(context.res.gfx, imageFileName, imageVariable => 
 		`IMAGE ${imageVariable} "../project/${imageFileName}" APLIB ${mapOption}`);
 	
 	const position = entity.params.named && entity.params.named.at;
 	const positionSrc = position ? `VN_imageAt(${position.x[1]}, ${position.y[1]});` + '\n' : '';
 	
-	return positionSrc + `${functionName}(&${imageVariable});`;
+	return positionSrc + `${functionName}(&${imageVariable}${generatedFlags && ', ' + generatedFlags});`;
 };
+
+const generateFlags = (entity, prefix) => Object.entries(entity.params.flags || {})
+	.filter(([k, v]) => v)
+	.map(([k, v]) => `${prefix}_${k.toUpperCase()}`)
+	.join('|');
 
 const generateVariableDeclarations = namespace =>
 	namespace.list().map(({ value }) => value.code).join('\n');
@@ -125,7 +126,7 @@ let generateFromBody;
 
 const COMMAND_GENERATORS = {
 	'background': (entity, context) => generateImageCommand('VN_background', entity, context),
-	'image': (entity, context) => generateImageCommand('VN_image', entity, context),
+	'image': (entity, context) => generateImageCommand('VN_image', entity, context, 'ALL', generateFlags(entity, 'LAYER') || 'LAYER_BACKGROUND'),
 	'font': (entity, context) => generateImageCommand('VN_font', entity, context, 'NONE'),
 	
 	'music': (entity, context) => {
@@ -316,19 +317,13 @@ const COMMAND_GENERATORS = {
 	},
 	
 	'flush': (entity, context) => {
-		const generatedFlags = Object.entries(entity.params.flags || {})
-			.filter(([k, v]) => v)
-			.map(([k, v]) => `FLUSH_${k.toUpperCase()}`);
-		
-		return `VN_flush(${generatedFlags.join('|') || 0});`;
+		const generatedFlags = generateFlags(entity, 'FLUSH');
+		return `VN_flush(${generatedFlags || 0});`;
 	},
 	
 	'clear': (entity, context) => {
-		const generatedFlags = Object.entries(entity.params.flags || {})
-			.filter(([k, v]) => v)
-			.map(([k, v]) => `CLEAR_${k.toUpperCase()}`);
-		
-		return `VN_clear(${generatedFlags.join('|') || 'CLEAR_BACKGROUND|CLEAR_FOREGROUND'});`;
+		const generatedFlags = generateFlags(entity, 'LAYER');
+		return `VN_clear(${generatedFlags || 'LAYER_BACKGROUND|LAYER_FOREGROUND'});`;
 	},
 	
 	'title': (entity, context) => {
