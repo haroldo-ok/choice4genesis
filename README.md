@@ -63,6 +63,9 @@ Jumps to a different scene. The scene files are located on the script directory,
 ### `window`
 Allows to configure the region of the screen that will be used for the text popups and menus.
 
+### `cursor`
+Allows to configure the blinking text cursor.
+
 ### `flush`
 Immediately shows the contents of the current text buffer on the text window; if passed the flag `nowait`, does not wait for a button press.
 
