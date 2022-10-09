@@ -64,10 +64,10 @@ void VN_init() {
 }
 
 
-void VN_showImage(const Image *image, u16 palNum, u16 x, u16 y) {
+void VN_showImage(const Image *image, VDPPlane plane, u16 palNum, u16 x, u16 y) {
 	VDP_loadTileSet(image->tileset, imageInfo.tileNumber, DMA);
     TileMap *tmap = unpackTileMap(image->tilemap, NULL);
-	VDP_setTileMapEx(BG_B, tmap, TILE_ATTR_FULL(palNum, FALSE, FALSE, FALSE, imageInfo.tileNumber), 
+	VDP_setTileMapEx(plane, tmap, TILE_ATTR_FULL(palNum, FALSE, FALSE, FALSE, imageInfo.tileNumber), 
 		x, y,  0, 0, tmap->w, tmap->h, CPU);
 	VDP_setPalette(palNum, (u16*)image->palette->data);
 	imageInfo.tileNumber += image->tileset->numTile;
@@ -76,11 +76,12 @@ void VN_showImage(const Image *image, u16 palNum, u16 x, u16 y) {
 
 void VN_background(const Image *image) {
 	imageInfo.tileNumber = 256;
-	VN_showImage(image, PAL1, 0, 0);
+	VN_showImage(image, BG_B, PAL1, 0, 0);
 }
 
-void VN_image(const Image *image) {
-	VN_showImage(image, PAL2, imageInfo.x, imageInfo.y);
+void VN_image(const Image *image, const u8 flags) {
+	if (flags & CLEAR_FOREGROUND) VN_showImage(image, BG_A, PAL2, imageInfo.x, imageInfo.y);
+	if (flags & CLEAR_BACKGROUND) VN_showImage(image, BG_B, PAL2, imageInfo.x, imageInfo.y);
 }
 
 void VN_imageAt(u16 x, u16 y) {
