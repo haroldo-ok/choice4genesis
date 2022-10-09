@@ -316,6 +316,18 @@ const COMMAND_GENERATORS = {
 		return generated.join('\n');
 	},
 	
+	'cursor': (entity, context) => {
+		const imageFileName = getStringConstant(entity, entity.params.positional.fileName, context, 'Image filename');
+		const width = getNumber(entity, entity.params.positional.width, context, 'Sprite width in tiles');
+		const height = getNumber(entity, entity.params.positional.height, context, 'Sprite height in tiles');
+		const frameRate = getNumber(entity, entity.params.positional.frameRate, context, 'Sprite frame rate');		
+		
+		const imageVariable = addResource(context.res.sprite, imageFileName, imageVariable => 
+			`SPRITE ${imageVariable} "../project/${imageFileName}" ${width} ${height} NONE ${frameRate}`);
+			
+		return `VN_cursor(&${imageVariable});`;
+	},
+		
 	'flush': (entity, context) => {
 		const generatedFlags = generateFlags(entity, 'FLUSH');
 		return `VN_flush(${generatedFlags || 0});`;
@@ -458,7 +470,7 @@ const generate = fileSystem => {
 		scenesToProcess: [],
 		generatedScripts: [], 
 		errors: [],
-		res: { gfx: {}, music: {}, sound: {} },
+		res: { gfx: {}, sprite: {}, music: {}, sound: {} },
 		choices: [],
 		globals: createNamespace(),
 		locals: null,

@@ -277,3 +277,6 @@ void VN_windowSize(u16 w, u16 h) {
 	window.w = w;
 	window.h = h;
 }
+
+void VN_cursor(const SpriteDefinition *sprite) {
+}
