@@ -126,7 +126,7 @@ let generateFromBody;
 
 const COMMAND_GENERATORS = {
 	'background': (entity, context) => generateImageCommand('VN_background', entity, context),
-	'image': (entity, context) => generateImageCommand('VN_image', entity, context, 'ALL', generateFlags(entity, 'CLEAR') || 'CLEAR_BACKGROUND'),
+	'image': (entity, context) => generateImageCommand('VN_image', entity, context, 'ALL', generateFlags(entity, 'LAYER') || 'LAYER_BACKGROUND'),
 	'font': (entity, context) => generateImageCommand('VN_font', entity, context, 'NONE'),
 	
 	'music': (entity, context) => {
@@ -322,8 +322,8 @@ const COMMAND_GENERATORS = {
 	},
 	
 	'clear': (entity, context) => {
-		const generatedFlags = generateFlags(entity, 'CLEAR');
-		return `VN_clear(${generatedFlags || 'CLEAR_BACKGROUND|CLEAR_FOREGROUND'});`;
+		const generatedFlags = generateFlags(entity, 'LAYER');
+		return `VN_clear(${generatedFlags || 'LAYER_BACKGROUND|LAYER_FOREGROUND'});`;
 	},
 	
 	'title': (entity, context) => {

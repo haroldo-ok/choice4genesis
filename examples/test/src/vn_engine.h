@@ -10,9 +10,9 @@
 
 #define FLUSH_NOWAIT (1)
 
-#define CLEAR_FOREGROUND (1)
-#define CLEAR_BACKGROUND (2)
-#define CLEAR_WINDOW (4)
+#define LAYER_FOREGROUND (1)
+#define LAYER_BACKGROUND (2)
+#define LAYER_WINDOW (4)
 
 extern void VN_init();
 
