@@ -117,6 +117,11 @@ const generateImageCommand = (functionName, entity, context, mapOption = 'ALL') 
 	return positionSrc + `${functionName}(&${imageVariable});`;
 };
 
+const generateFlags = (entity, prefix) => Object.entries(entity.params.flags || {})
+	.filter(([k, v]) => v)
+	.map(([k, v]) => `${prefix}_${k.toUpperCase()}`)
+	.join('|');
+
 const generateVariableDeclarations = namespace =>
 	namespace.list().map(({ value }) => value.code).join('\n');
 
@@ -316,19 +321,13 @@ const COMMAND_GENERATORS = {
 	},
 	
 	'flush': (entity, context) => {
-		const generatedFlags = Object.entries(entity.params.flags || {})
-			.filter(([k, v]) => v)
-			.map(([k, v]) => `FLUSH_${k.toUpperCase()}`);
-		
-		return `VN_flush(${generatedFlags.join('|') || 0});`;
+		const generatedFlags = generateFlags(entity, 'FLUSH');
+		return `VN_flush(${generatedFlags || 0});`;
 	},
 	
 	'clear': (entity, context) => {
-		const generatedFlags = Object.entries(entity.params.flags || {})
-			.filter(([k, v]) => v)
-			.map(([k, v]) => `CLEAR_${k.toUpperCase()}`);
-		
-		return `VN_clear(${generatedFlags.join('|') || 'CLEAR_BACKGROUND|CLEAR_FOREGROUND'});`;
+		const generatedFlags = generateFlags(entity, 'CLEAR');
+		return `VN_clear(${generatedFlags || 'CLEAR_BACKGROUND|CLEAR_FOREGROUND'});`;
 	},
 	
 	'title': (entity, context) => {
