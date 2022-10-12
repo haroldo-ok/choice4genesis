@@ -40,6 +40,31 @@ Each command can take three basic types of parameters:
 	* clear background, foreground
 	```
 	In the example above, the `clear` command comes with two flags: `background` and `foreground`.
+	
+## Expressions
+
+Many commands accept expressions as parameters; the expressions can contain the following operators:
+* Comparison:
+	* Equality: `variable = 33`;
+	* Non equal to: `variable != 12`;
+	* Greater than: `variable > 37`;
+	* Less than: `variable < 98`;
+	* Greater or equal to: `variable >= 56`;
+	* Greater or lesser than: `variable <= 78`.
+* Arithmetic:
+	* Addition: `variable + 48`;
+	* Subtraction: `variable - 13`;
+	* Multiplication: `variable * 89`;
+	* Division: `variable / 75`;
+	* Negation: `-variable`.
+* Logic:
+	* And: `(variable > 32) and (variable < 64)`;
+	* Or: `(variable < 15) or (variable > 32)`;
+	* Not: `!(variable > 31)`.
+* Constants:
+	* Numeric: `123`, `456`;
+	* Logical: `true`, `false`;
+	* String: `"This is a string."`.
 
 ## Commands implemented so far
 
