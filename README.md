@@ -293,26 +293,109 @@ Jumps to the scene contained in the archive `test.choice`.
 ### `window`
 Allows to configure the region of the screen that will be used for the text popups and menus.
 
+#### Positional parameters:
+* `from(x, y)`: the window will start at this coordinate, in characters;
+* `to(x, y)`: the window will end at this coordinate, in characters;
+* `size(w, h)`: the window will have this width and height, in characters.
+#### Flags:
+* `default`: the window will be located at the default position, with the default size.
+
+#### Examples:
+```shell
+* window from(1, 1), to(10, 4)
+```
+Tells that the window will start at position `1, 1` and end at position `10, 4`, in characters.
+```shell
+* window from(29, 1), size(10, 6)
+```
+Tells that the window will start at position `29, 1` and have a width of `10` and a height of `6`, in characters.
+```shell
+* window default
+```
+Tells that the window will be located at the default position, with the default size.
+
 ### `cursor`
-Allows to configure the blinking text cursor.
+Allows to configure the blinking text cursor. It uses the palette #0.
+
+#### Positional parameters:
+* `fileName`: name of the `.png` file containing the graphics of the cursor sprite;
+* `width` of the cursor sprite, in characters; the amount of frames will be the width of the image file divided by the width of the sprite, both in characters;
+* `height`: height of the cursor sprite, in characters;
+* `frameDelay`: the amount of video frames that the animation should wait before advance to the next cursor animation frame.
+
+#### Example:
+```shell
+* cursor "Cursor sprite.png", 1, 1, 3
+```
+Loads the file `"Cursor sprite.png"` as a cursor, with a width of 1 character and a height of one character; it will wait 3 video frames betweeen one sprite frame and the next.
 
 ### `flush`
 Immediately shows the contents of the current text buffer on the text window; if passed the flag `nowait`, does not wait for a button press.
 
+#### Flags:
+* `nowait`: if present, does not wait for a button press.
+
+#### Examples:
+```shell
+* flush
+```
+Displays the text on the text window and waits for a button press.
+```shell
+* flush nowait
+```
+Displays the text on the text window without waiting for a button press.
+
 ### `clear`
 Allows to clear regions of the screen.
 
-### `title`
+#### Flags:
+* `background`: if present, clears the background layer;
+* `foreground`: if present, clears the foreground layer;
+* `window`: if present, clears the text window.
 
+#### Examples:
+```shell
+* clear background
+```
+Clears the background.
+```shell
+* clear foreground
+```
+Clears the foreground.
+```shell
+* clear window
+```
+Clears the text window.
+```shell
+* clear background, foreground
+```
+Clears both background and foreground.
+```shell
+* clear
+```
+Also clears both background and foreground.
+
+### `title`
 Sets the title of the story. Used to populate the ROM headers.
 
-### `author`
+#### Positional parameters:
+* `name`: The title of the story.
 
+#### Example
+```shell
+* title "choice4genesis demo"
+```
+
+### `author`
 Sets the author of the story. Used to populate the ROM headers.
 
+#### Positional parameters:
+* `name`: The author of the story.
 
-
-
+#### Example
+```shell
+* author "John Doe"
+```
 
 
 
