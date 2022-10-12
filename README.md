@@ -128,8 +128,55 @@ Starts playing a sound file named `"ready.wav"`.
 ### `stop`
 Stops the music and/or sound.
 
+#### Flags:
+* `music`: tells it that it should stop the current music;
+* `sound`: tells it that it should stop the current sound effect.
+
+#### Examples:
+```shell
+* stop music
+```
+Stops current music.
+```shell
+* stop sound
+```
+Stops current sound.
+```shell
+* stop music, sound
+```
+Stops both current music and current sound.
+```shell
+* stop
+```
+Also stops both current music and current sound.
+
+
 ### `image`
-Allows drawing a small image in `.png` format somewhere in the background. Note that the image must be paletized, with 16 colors. Future versions of this tool will probably convert the image *automagically*.
+Allows drawing a small image in `.png` format somewhere in the background. Note that the image must be paletized, with 16 colors. Future versions of this tool will probably convert the image *automagically*. This command uses palette #2.
+
+#### Positional parameters:
+* `fileName`: a string pointing to the `.png` file to use.
+#### Named parameters:
+* `at(x, y)` if informed, will place the image at map position `x, y` on the target layer.
+#### Flags:
+* `foreground`: tells that the image should be drawn on the foreground layer;
+* `background`: tells that the image should be drawn on the background layer.
+
+#### Examples:
+```shell
+* image "Example.png", at(1, 2)
+```
+Draws the image "Example.png" at position `1, 2` of the background layer.
+```shell
+* image "Example.png", at(1, 2), foreground
+```
+Draws the image "Example.png" at position `1, 2` of the foreground layer.
+```shell
+* image "Example.png"
+```
+Draws the image "Example.png" background layer, at the same position used by the previous `image` command.
+
+
 
 ### `wait`
 Waits for a few seconds.
