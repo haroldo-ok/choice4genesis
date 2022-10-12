@@ -181,28 +181,114 @@ Draws the image "Example.png" background layer, at the same position used by the
 ### `wait`
 Waits for a few seconds.
 
-### `create`
+#### Positional parameters:
+* `duration`: tells how many seconds the command should wait.
 
+#### Example:
+```shell
+* wait 3
+```
+Waits for 3 seconds.
+
+### `create`
 Creates a global variable.
 
-### `temp`
+#### Positional parameters:
+* `variable`: the name of the variable to create;
+* `initialValue`: the initial value of the variable; the type of this value also determines the type of the variable.
 
+#### Examples:
+```shell
+* create someVar, 12
+```
+Creates an integer variable named `someVar`, whose initial value is `12`.
+```shell
+* create anotherOne, true
+```
+Creates a logical variable named `anotherOne`, whose initial value is `true`.
+
+### `temp`
 Creates a local variable. `temp` variables are only visible inside the scene file that created them.
 
-### `set`
+#### Positional parameters:
+* `variable`: the name of the variable to create;
+* `initialValue`: the initial value of the variable; the type of this value also determines the type of the variable.
 
+#### Examples:
+```shell
+* temp someVar, 12
+```
+Creates an integer variable named `someVar`, whose initial value is `12`.
+```shell
+* temp anotherOne, true
+```
+Creates a logical variable named `anotherOne`, whose initial value is `true`.
+
+### `set`
 Changes the current value of an existing variable.
+
+#### Positional parameters:
+* `variable`: name of the variable to update;
+* `newValue`: expression defining the new value of the variable.
+
+#### Examples:
+```shell
+* set someThing, 2
+```
+Updates the value of the `someThing` variable to be `2`.
+```shell
+* set anotherThing, anotherVar * 3
+```
+Updates the value of the `anotherThing` variable to be the value of the variable `anotherVar` multiplied by `3`.
+```shell
+* set counter, counter + 2
+```
+Adds `2` to the value of the `counter` variable.
 
 ### `if`/`elseif`/`else`
 
 Allows a certain block of code to only be executed on a given condition.
 
-### `while`
+#### Positional parameters for the `if` and `elseif` commands:
+* `condition`: a logical expression that will be used to determine if the corresponding block will be entered or not.
 
-Keeps looping a block of code while a given condicion is met.
+#### Example:
+```shell
+* if myVar = 2
+	It is two.
+* elseif myVar = 3
+	It is three.
+* else
+	It is some other number.
+```
+If the variable `myVar` equals `2`, it will say `It is two.` or else, if `myVar` equals `3`, instead, it will say `It is three.`; otherwise, it will say `It is some other number.`.
+
+### `while`
+Keeps looping a block of code while a given condition is met.
+
+#### Positional parameters:
+* `condition`: a logical expression that will be used to determine if the corresponding block will be entered or not.
+
+#### Example:
+```shell
+* temp counter, 3
+* while counter > 0
+	Value is ${counter}
+	* set counter, counter - 1
+```
+This will say `Value is 3`, then `Value is 2`, then `Value is 1`.
 
 ### `goto_scene`
 Jumps to a different scene. The scene files are located on the script directory, and have the `.choice` extension.
+
+#### Positional parameters:
+* `target`: the name of the scene to jump to.
+
+#### Example
+```shell
+* goto_scene test
+```
+Jumps to the scene contained in the archive `test.choice`.
 
 ### `window`
 Allows to configure the region of the screen that will be used for the text popups and menus.
