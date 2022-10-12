@@ -69,22 +69,63 @@ Many commands accept expressions as parameters; the expressions can contain the 
 ## Commands implemented so far
 
 ### `font`
-Loads a `.png` file containing the 8x8 font. Note that the image must be paletized, with 16 colors. Future versions of this tool will probably convert the image *automagically*.
+Loads a `.png` file containing the 8x8 font. Note that the image must be paletized, with 16 colors. Future versions of this tool will probably convert the image *automagically*. Fonts will use palette #0.
+#### Positional parameters:
+* `fileName`: a string pointing to the `.png` file to use.
+#### Example:
+```shell
+* font "damieng.com - Hourglass font.png"
+```
+Loads a image file named `"damieng.com - Hourglass font.png"` as a font.
 
 ### `background`
-Loads a `.png` file as a background image. Note that the image must be paletized, with 16 colors. Future versions of this tool will probably convert the image *automagically*.
+Loads a `.png` file as a background image. Note that the image must be paletized, with 16 colors. Future versions of this tool will probably convert the image *automagically*. Backgrounds will use palette #1.
+#### Positional parameters:
+* `fileName`: a string pointing to the `.png` file to use.
+#### Example:
+```shell
+* background "Blue Hedgehog.png"
+```
+Displays a image file named `"Blue Hedgehog.png"` into the background.
 
 ### `choice`
 Presents a menu to the user, allowing to choose between multiple options.
 
+#### Example:
+```shell
+* choice
+	# Play a music
+		* music "Example.vgm"
+	# Play a sound effect
+		* sound "Example.vgm"
+```
+This displays a menu with two options "Play a music" and "Play a sound effect"; if the first one is selected, a music starts playing; if the second one is selected, a sound effect is played.
+
 ### `music`
 Starts playing a `.vgm`/`.xgm` music in the background.
+
+#### Positional parameters:
+* `fileName`: a string pointing to the `.vgm` or `.xgm` file to use.
+
+#### Example:
+```shell
+* music "Actraiser - Fillmore.vgm"
+```
+Starts playing a music file named `"Actraiser - Fillmore.vgm"`.
 
 ### `sound`
 Plays a digitized sound.
 
-### `stop`
+#### Positional parameters:
+* `fileName`: a string pointing to the `.wav` file to use.
 
+#### Example:
+```shell
+* sound "ready.wav"
+```
+Starts playing a sound file named `"ready.wav"`.
+
+### `stop`
 Stops the music and/or sound.
 
 ### `image`
