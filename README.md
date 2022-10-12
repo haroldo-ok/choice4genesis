@@ -8,7 +8,38 @@ The syntax of the scripts is somewhat based on ChoiceScript, but it is not exact
 
 *Please note that this is an early work and progress, and it is not as stable or user-friendly as it is planned to become.*
 
+## Indentation
 
+Just like ChoiceScript, choice4genesis uses indentation to identify nested commands:
+
+```shell
+* choice
+	# Say yes
+		You said yes!
+	# Say no
+		You said no!
+```
+
+You can use any amount  spaces or tabs to indent the code, but not both at the same time; the indentation character must be consistent.
+
+## Structure of the commands
+
+Each command can take three basic types of parameters:
+* Positional parameters: are obligatory, and must be always inform right at the start of the command:
+	```shell
+	* music "Actraiser - Fillmore.vgm"
+	```
+    In the example above, the `music` command has one positional parameter: the file name.
+* Named parameters: are optional, and if informed, must be placed after the positional parameters; the positional parameters themselves can have one or more positional parameters:
+	```shell
+	* image "Smiley.png", at(30, 3)
+	```
+	In the example above, the `image` command has one positional parameter, the file name, and one named parameter, called `at`, which, in turn, has two positional parameters, `x` and `y`.
+* Flags: are optional, and, if informed, must be placed after the positional parameters:
+	```shell
+	* clear background, foreground
+	```
+	In the example above, the `clear` command comes with two flags: `background` and `foreground`.
 
 ## Commands implemented so far
 
