@@ -76,5 +76,19 @@
 							* set numberOfTriesLeft, numberOfTriesLeft - 1
 				* if numberOfTriesLeft <= 0
 					Okay, I quit.
+			# Test word wrapping
+				This is a really long text to check if the text wrapping is working correctly; I hope it does.
+				* flush
+				Now, another word wrapping text, now with two lines involved.
+				This is the second line.
+				* flush
+				Now, testing a text that is so long, it spread multiple pages.
+				A line.
+				Another line.
+				Some other line.
+				One more line.
+				Yet another line.
+				A really, really long line, to test a bit more.
+				Final line.
 			# Go to another scene
 				* goto_scene test

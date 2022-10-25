@@ -25,6 +25,129 @@ struct {
 	bool next;
 } input;
 
+struct {
+	int width, height;
+	char** lines;
+} msgLines;
+
+char *bufferWrappedTextLine(char *s, int x, int y, int w) {
+	char *o, ch;
+	int tx = x;
+	
+	char *startOfLine, *endOfLine;
+	int currW, bestW;
+	
+	startOfLine = s;
+	
+	currW = 0;
+	bestW = 0;
+
+	// Skips initial spaces for current line
+	for (o = startOfLine; *o == ' '; o++) {
+		msgLines.lines[y][tx] = ' ';
+		tx++;
+		currW++;
+		bestW = currW;
+	}
+	startOfLine = o;
+	
+	if (!*o || currW >= w) {
+		msgLines.lines[y][tx] = 0;
+		return 0;
+	}
+
+	// Scans words that fit the maximum width
+	endOfLine = startOfLine;
+	for (o = startOfLine; *o && *o != '\n' && currW <= w; o++) {
+		ch = *o;
+		if (ch == ' ') {
+			currW++;
+			if (currW <= w) {
+				endOfLine = o;
+				bestW = currW;
+			}
+		} else {
+			currW++;
+		}
+	}
+	
+	// Corner cases: last word in string, and exceedingly long words
+	if (currW <= w || !bestW) {
+		endOfLine = o;
+		bestW = currW;		
+	}
+
+	// Renders the line of text
+	for (o = startOfLine; o <= endOfLine; o++) {
+		ch = *o;
+		if (ch && ch != '\n') {
+			msgLines.lines[y][tx] = ch;
+			tx++;
+		}
+	}
+	
+	// Skips spaces at end of line.
+	while (*endOfLine == ' ') {
+		endOfLine++;
+	}
+
+	// Skips one line break, if necessary.
+	if (*endOfLine == '\n') {
+		endOfLine++;
+	}
+
+	msgLines.lines[y][tx] = 0;
+	return *endOfLine ? endOfLine : 0;
+}
+
+char *bufferWrappedText(char *s, int x, int y, int w, int h) {
+	char *o = s;
+	int ty = y;
+	int maxY = y + h;
+	
+	while (o && *o && ty < maxY) {
+		o = bufferWrappedTextLine(o, x, ty, w);
+		ty++;
+	}
+	
+	return o;
+}
+
+void bufferResize(int width, int height) {
+	unsigned char i;
+	
+	// Skip if the width/height haven't changed
+	if (msgLines.width == width && msgLines.height == height) return;
+	
+	// Deallocate existing buffers
+	if (msgLines.lines) {
+		for (i = 0; i != msgLines.height; i++) {
+			free(msgLines.lines[i]);
+		}
+		free(msgLines.lines);
+		msgLines.lines = 0;
+	}
+
+	// Reallocate according to the new size
+	
+	msgLines.width = width;
+	msgLines.height = height;
+	msgLines.lines = malloc(msgLines.height * sizeof(char *));
+	
+	for (i = 0; i != msgLines.height; i++) {
+		msgLines.lines[i] = malloc(msgLines.width + 1);
+		msgLines.lines[i][0] = 0;
+	}	
+}
+
+void bufferClear() {
+	unsigned char i;
+	
+	for (i = 0; i != msgLines.height; i++) {
+		msgLines.lines[i][0] = 0;
+	}
+}
+
 void VN_joyHandler(u16 joy, u16 changed, u16 state) {
 	if (joy != JOY_1) return;
 	
@@ -57,6 +180,10 @@ void VN_init() {
 	
 	memset(textBuffer, 0, TEXT_BUFFER_LEN);
 
+	msgLines.width = 0;
+	msgLines.height = 0;
+	msgLines.lines = 0;
+	
 	VN_windowDefault();
 	window.cursor = NULL;
 
@@ -69,7 +196,7 @@ void VN_init() {
 	XGM_setLoopNumber(-1);
 	XGM_setForceDelayDMA(TRUE);
 
-	VDP_drawText("choice4genesis v0.8.0", 18, 27);
+	VDP_drawText("choice4genesis v0.9.0", 18, 27);
 }
 
 
@@ -147,38 +274,45 @@ void VN_flushText() {
 	VN_flush(0);
 }
 
+void VN_blinkNextCursor() {
+	if (window.cursor) {
+		SPR_setPosition (window.cursor, (window.x + window.w - 1) * 8, (window.y + window.h - 1) * 8);
+		SPR_setVisibility(window.cursor, VISIBLE);			
+	}
+	VN_waitPressNext();
+	if (window.cursor) SPR_setVisibility(window.cursor, HIDDEN);
+}
+
 void VN_flush(const u8 flags) {
 	if (!textBuffer[0]) return;
 	
+	bufferResize(window.w, window.h);
+	
 	bool shouldWait = !(flags & FLUSH_NOWAIT);
 	
-	if (shouldWait) VN_waitJoyRelease();
-
-	VN_clearWindow();
-	
-	char lineBuffer[41];
-	char *o = textBuffer;
-	u16 y = window.y;
-	
-	while (*o) {
-		char *d = lineBuffer;
-		for (;*o && *o != '\n'; o++, d++) *d = *o;
-		*d = 0;
-		if (*o) o++;
+	for (char *textToDisplay = textBuffer; textToDisplay;) {
+		if (shouldWait) VN_waitJoyRelease();
 		
-		VDP_drawText(lineBuffer, window.x, y);
-		y++;
-	}
-	strclr(textBuffer);
-	
-	if (shouldWait) {
-		if (window.cursor) {
-			SPR_setPosition (window.cursor, (window.x + window.w - 1) * 8, (window.y + window.h - 1) * 8);
-			SPR_setVisibility(window.cursor, VISIBLE);			
+		// Word wrapping
+		
+		bufferClear();
+		textToDisplay = bufferWrappedText(textToDisplay, 0, 0, msgLines.width, msgLines.height);
+		
+		// Draw the text on screen
+		
+		VN_clearWindow();
+		
+		u16 y = window.y;
+		for (int i = 0; i != msgLines.height; i++) {
+			VDP_drawText(msgLines.lines[i], window.x, y);
+			y++;
 		}
-		VN_waitPressNext();
-		if (window.cursor) SPR_setVisibility(window.cursor, HIDDEN);
+		
+		// Wait button press
+		if (shouldWait) VN_blinkNextCursor();
 	}
+
+	strclr(textBuffer);
 }
 
 void VN_clear(const u8 flags) {
