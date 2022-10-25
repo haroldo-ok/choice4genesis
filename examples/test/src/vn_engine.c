@@ -25,6 +25,127 @@ struct {
 	bool next;
 } input;
 
+struct {
+	unsigned char x, y;
+	unsigned char width, height;
+	unsigned char** lines;
+} msgLines;
+
+char *bufferWrappedTextLine(char *s, char x, char y, char w) {
+	char *o, ch;
+	char tx = x;
+	
+	char *startOfLine, *endOfLine;
+	char currW, bestW, charW, spaceW;
+	
+	startOfLine = s;
+	
+	currW = 0;
+	bestW = 0;
+
+	// Skips initial spaces for current line
+	for (o = startOfLine; *o == ' '; o++) {
+		msgLines.lines[y][tx] = ' ';
+		tx++;
+		currW++;
+		bestW = currW;
+	}
+	startOfLine = o;
+	
+	if (!*o || currW >= w) {
+		msgLines.lines[y][tx] = 0;
+		return 0;
+	}
+
+	// Scans words that fit the maximum width
+	endOfLine = startOfLine;
+	for (o = startOfLine; *o && *o != '\n' && currW <= w; o++) {
+		ch = *o;
+		if (ch == ' ') {
+			currW++;
+			if (currW <= w) {
+				endOfLine = o;
+				bestW = currW;
+			}
+		} else {
+			currW++;
+		}
+	}
+	
+	// Corner cases: last word in string, and exceedingly long words
+	if (currW <= w || !bestW) {
+		endOfLine = o;
+		bestW = currW;		
+	}
+
+	// Renders the line of text
+	for (o = startOfLine; o <= endOfLine; o++) {
+		ch = *o;
+		if (ch && ch != '\n') {
+			msgLines.lines[y][tx] = ch;
+			tx++;
+		}
+	}
+	
+	// Skips spaces at end of line.
+	while (*endOfLine == ' ') {
+		endOfLine++;
+	}
+
+	// Skips one line break, if necessary.
+	if (*endOfLine == '\n') {
+		endOfLine++;
+	}
+
+	msgLines.lines[y][tx] = 0;
+	return *endOfLine ? endOfLine : 0;
+}
+
+char *bufferWrappedText(char *s, char x, char y, char w, char h) {
+	char *o = s;
+	char ty = y;
+	char maxY = y + h;
+	
+	while (o && *o && ty < maxY) {
+		o = bufferWrappedTextLine(o, x, ty, w);
+		ty++;
+	}
+	
+	return o;
+}
+
+void bufferResize(char width, char height) {
+	unsigned char i;
+	
+	// Deallocate existing buffers
+	if (msgLines.lines) {
+		for (i = 0; i != msgLines.height; i++) {
+			free(msgLines.lines[i]);
+		}
+		free(msgLines.lines);
+		msgLines.lines = 0;
+	}
+
+	// Reallocate according to the new size
+	
+	msgLines.width = width;
+	msgLines.height = height;
+	msgLines.lines = calloc(msgLines.height, sizeof(char *));
+	
+	for (i = 0; i != msgLines.height; i++) {
+		msgLines.lines[i] = malloc(msgLines.width + 1);
+		msgLines.lines[i][0] = 0;
+	}	
+}
+
+void bufferClear() {
+	unsigned char i;
+	
+	for (i = 0; i != msgLines.height; i++) {
+		msgLines.lines[i][0] = 0;
+	}
+}
+
 void VN_joyHandler(u16 joy, u16 changed, u16 state) {
 	if (joy != JOY_1) return;
 	
