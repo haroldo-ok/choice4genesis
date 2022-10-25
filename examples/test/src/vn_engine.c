@@ -26,17 +26,16 @@ struct {
 } input;
 
 struct {
-	unsigned char x, y;
-	unsigned char width, height;
+	int width, height;
 	unsigned char** lines;
 } msgLines;
 
-char *bufferWrappedTextLine(char *s, char x, char y, char w) {
+char *bufferWrappedTextLine(char *s, int x, int y, int w) {
 	char *o, ch;
-	char tx = x;
+	int tx = x;
 	
 	char *startOfLine, *endOfLine;
-	char currW, bestW, charW, spaceW;
+	int currW, bestW;
 	
 	startOfLine = s;
 	
@@ -101,7 +100,7 @@ char *bufferWrappedTextLine(char *s, char x, char y, char w) {
 	return *endOfLine ? endOfLine : 0;
 }
 
-char *bufferWrappedText(char *s, char x, char y, char w, char h) {
+char *bufferWrappedText(char *s, int x, int y, int w, int h) {
 	char *o = s;
 	char ty = y;
 	char maxY = y + h;
@@ -114,7 +113,7 @@ char *bufferWrappedText(char *s, char x, char y, char w, char h) {
 	return o;
 }
 
-void bufferResize(char width, char height) {
+void bufferResize(int width, int height) {
 	unsigned char i;
 	
 	// Deallocate existing buffers
@@ -130,7 +129,7 @@ void bufferResize(char width, char height) {
 	
 	msgLines.width = width;
 	msgLines.height = height;
-	msgLines.lines = calloc(msgLines.height, sizeof(char *));
+	msgLines.lines = malloc(msgLines.height * sizeof(char *));
 	
 	for (i = 0; i != msgLines.height; i++) {
 		msgLines.lines[i] = malloc(msgLines.width + 1);
