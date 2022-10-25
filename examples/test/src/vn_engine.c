@@ -27,7 +27,7 @@ struct {
 
 struct {
 	int width, height;
-	unsigned char** lines;
+	char** lines;
 } msgLines;
 
 char *bufferWrappedTextLine(char *s, int x, int y, int w) {
@@ -102,8 +102,8 @@ char *bufferWrappedTextLine(char *s, int x, int y, int w) {
 
 char *bufferWrappedText(char *s, int x, int y, int w, int h) {
 	char *o = s;
-	char ty = y;
-	char maxY = y + h;
+	int ty = y;
+	int maxY = y + h;
 	
 	while (o && *o && ty < maxY) {
 		o = bufferWrappedTextLine(o, x, ty, w);
@@ -115,6 +115,9 @@ char *bufferWrappedText(char *s, int x, int y, int w, int h) {
 
 void bufferResize(int width, int height) {
 	unsigned char i;
+	
+	// Skip if the width/height haven't changed
+	if (msgLines.width == width && msgLines.height == height) return;
 	
 	// Deallocate existing buffers
 	if (msgLines.lines) {
@@ -177,6 +180,10 @@ void VN_init() {
 	
 	memset(textBuffer, 0, TEXT_BUFFER_LEN);
 
+	msgLines.width = 0;
+	msgLines.height = 0;
+	msgLines.lines = 0;
+	
 	VN_windowDefault();
 	window.cursor = NULL;
 
@@ -267,38 +274,45 @@ void VN_flushText() {
 	VN_flush(0);
 }
 
+void VN_blinkNextCursor() {
+	if (window.cursor) {
+		SPR_setPosition (window.cursor, (window.x + window.w - 1) * 8, (window.y + window.h - 1) * 8);
+		SPR_setVisibility(window.cursor, VISIBLE);			
+	}
+	VN_waitPressNext();
+	if (window.cursor) SPR_setVisibility(window.cursor, HIDDEN);
+}
+
 void VN_flush(const u8 flags) {
 	if (!textBuffer[0]) return;
 	
+	bufferResize(window.w, window.h);
+	
 	bool shouldWait = !(flags & FLUSH_NOWAIT);
 	
-	if (shouldWait) VN_waitJoyRelease();
-
-	VN_clearWindow();
-	
-	char lineBuffer[41];
-	char *o = textBuffer;
-	u16 y = window.y;
-	
-	while (*o) {
-		char *d = lineBuffer;
-		for (;*o && *o != '\n'; o++, d++) *d = *o;
-		*d = 0;
-		if (*o) o++;
+	for (char *textToDisplay = textBuffer; textToDisplay;) {
+		if (shouldWait) VN_waitJoyRelease();
 		
-		VDP_drawText(lineBuffer, window.x, y);
-		y++;
-	}
-	strclr(textBuffer);
-	
-	if (shouldWait) {
-		if (window.cursor) {
-			SPR_setPosition (window.cursor, (window.x + window.w - 1) * 8, (window.y + window.h - 1) * 8);
-			SPR_setVisibility(window.cursor, VISIBLE);			
+		// Word wrapping
+		
+		bufferClear();
+		textToDisplay = bufferWrappedText(textToDisplay, 0, 0, msgLines.width, msgLines.height);
+		
+		// Draw the text on screen
+		
+		VN_clearWindow();
+		
+		u16 y = window.y;
+		for (int i = 0; i != msgLines.height; i++) {
+			VDP_drawText(msgLines.lines[i], window.x, y);
+			y++;
 		}
-		VN_waitPressNext();
-		if (window.cursor) SPR_setVisibility(window.cursor, HIDDEN);
+		
+		// Wait button press
+		if (shouldWait) VN_blinkNextCursor();
 	}
+
+	strclr(textBuffer);
 }
 
 void VN_clear(const u8 flags) {
