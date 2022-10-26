@@ -20,6 +20,18 @@ const getStringConstant = (entity, parameter, context, name) => {
 	return parameter[1];
 }
 
+const getFilenameConstant = (entity, parameter, context, name) => {
+	const fileName = getStringConstant(entity, parameter, context, name);
+	if (!fileName) {
+		// Assumes `getStringConstant()` already generated the error message
+		return null;
+	}
+	
+	if (!context.fileSystem.fileExistsInProjectDir(filename)) {
+		context.errors.push(buildEntityError(entity, `${name} points to a missing file: "${fileName}".`));
+	}
+}
+
 const getNumber = (entity, parameter, context, name) => {
 	if (!parameter) {
 		context.errors.push(buildEntityError(entity, name + ' was not informed.'));
