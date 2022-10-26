@@ -16,6 +16,10 @@ const transpile = commandLine => {
 			const fileName = name + '.choice';
 			const source = readFileSync(projectFolder + 'project/' + fileName, {encoding:'utf8', flag:'r'});
 			return source;
+		},
+		
+		fileExistsInProjectDir: fileName => {
+			return existsSync(projectFolder + 'project/' + fileName);
 		}
 	};
 

@@ -20,6 +20,19 @@ const getStringConstant = (entity, parameter, context, name) => {
 	return parameter[1];
 }
 
+const getFileNameConstant = (entity, parameter, context, name) => {
+	const fileName = getStringConstant(entity, parameter, context, name);
+	if (!fileName) {
+		// Assumes `getStringConstant()` already generated the error message
+		return null;
+	}
+	
+	if (!context.fileSystem.fileExistsInProjectDir(fileName)) {
+		context.errors.push(buildEntityError(entity, `${name} points to a missing file: "${fileName}".`));
+	}	
+	return fileName;
+}
+
 const getNumber = (entity, parameter, context, name) => {
 	if (!parameter) {
 		context.errors.push(buildEntityError(entity, name + ' was not informed.'));
@@ -103,7 +116,7 @@ const addResource = (map, fileName, generator) => {
 const generateResource = map => Object.values(map).map(({ content }) => content).join('\n');
 	
 const generateImageCommand = (functionName, entity, context, mapOption = 'ALL', generatedFlags='') => {
-	const imageFileName = getStringConstant(entity, entity.params.positional.fileName, context, 'Image filename');
+	const imageFileName = getFileNameConstant(entity, entity.params.positional.fileName, context, 'Image filename');
 	const imageVariable = addResource(context.res.gfx, imageFileName, imageVariable => 
 		`IMAGE ${imageVariable} "../project/${imageFileName}" APLIB ${mapOption}`);
 	
@@ -130,7 +143,7 @@ const COMMAND_GENERATORS = {
 	'font': (entity, context) => generateImageCommand('VN_font', entity, context, 'NONE'),
 	
 	'music': (entity, context) => {
-		const musicFileName = getStringConstant(entity, entity.params.positional.fileName, context, 'Music filename');
+		const musicFileName = getFileNameConstant(entity, entity.params.positional.fileName, context, 'Music filename');
 		const musicVariable = addResource(context.res.music, musicFileName, musicVariable => 
 			`XGM ${musicVariable} "../project/${musicFileName}" APLIB`);
 
@@ -138,7 +151,7 @@ const COMMAND_GENERATORS = {
 	},
 	
 	'sound': (entity, context) => {
-		const soundFileName = getStringConstant(entity, entity.params.positional.fileName, context, 'Sound filename');
+		const soundFileName = getFileNameConstant(entity, entity.params.positional.fileName, context, 'Sound filename');
 		const soundVariable = addResource(context.res.music, soundFileName, soundVariable => 
 			`WAV ${soundVariable} "../project/${soundFileName}" XGM`);
 
@@ -317,7 +330,7 @@ const COMMAND_GENERATORS = {
 	},
 	
 	'cursor': (entity, context) => {
-		const imageFileName = getStringConstant(entity, entity.params.positional.fileName, context, 'Image filename');
+		const imageFileName = getFileNameConstant(entity, entity.params.positional.fileName, context, 'Image filename');
 		const width = getNumber(entity, entity.params.positional.width, context, 'Sprite width in tiles');
 		const height = getNumber(entity, entity.params.positional.height, context, 'Sprite height in tiles');
 		const frameDelay = getNumber(entity, entity.params.positional.frameDelay, context, 'Sprite animation delay');		
