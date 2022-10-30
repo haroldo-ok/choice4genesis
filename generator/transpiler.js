@@ -42,10 +42,17 @@ const transpile = commandLine => {
 	['src/boot/', 'res/'].forEach(dirName => 
 		mkdirSync(projectFolder + dirName, { recursive: true }));
 
-	// Copy base source files
-	['src/', 'res'].forEach(dirName =>
+	// Copy standard base source files
+	['src/', 'res/'].forEach(dirName =>
 		copySync(baseFolder + dirName, projectFolder + dirName));
 
+	// Copy extra source files added to the project
+	['src/', 'res/'].forEach(dirName => {
+		if (fileSystem.fileExistsInProjectDir(dirName)) {
+			copySync(projectFolder + 'project/' + dirName, projectFolder + dirName);
+		}
+	})
+	
 	// TODO: Refactor support asynchronous file writing
 	Object.entries(result.sources).forEach(([fileName, content]) => {
 		writeFileSync(projectFolder + 'src/' + fileName, content, {encoding: 'utf8'});
