@@ -36,7 +36,10 @@ const transpile = commandLine => {
 
 	if (result.errors && result.errors.length) {
 		return result;
-	}	
+	}
+	
+	mkdirSync(projectFolder + 'src/boot/', { recursive: true });
+	mkdirSync(projectFolder + 'res/', { recursive: true });
 	
 	copySync(baseFolder + 'src/', projectFolder + 'src/');
 	copySync(baseFolder + 'res/', projectFolder + 'res/');
