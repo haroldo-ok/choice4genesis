@@ -1,4 +1,5 @@
 const { existsSync, mkdirSync, readFileSync, writeFileSync } = require('fs');
+const { copySync } = require('fs-extra');
 const { normalize } = require('path');
 
 const { generate } = require('./generator');
@@ -8,6 +9,11 @@ const transpile = commandLine => {
 	const projectFolder = normalize(`${commandLine.projectDir}/${commandLine.project}/`);
 	if (!existsSync(projectFolder)) {
 		return { errors: [{ message: 'Directory does not exist: ' + projectFolder }] };
+	}
+	
+	const baseFolder = normalize(`${__dirname}/../base/`);
+	if (!existsSync(baseFolder)) {
+		return { errors: [{ message: 'Directory does not exist: ' + baseFolder }] };
 	}
 
 	// TODO: Refactor generator to support asynchronous file reading
@@ -20,14 +26,20 @@ const transpile = commandLine => {
 		
 		fileExistsInProjectDir: fileName => {
 			return existsSync(projectFolder + 'project/' + fileName);
-		}
+		},
+		
+		copyBase: (sourceFileName, destFileName) => {
+		}			
 	};
 
 	const result = generate(fileSystem);
 
 	if (result.errors && result.errors.length) {
 		return result;
-	}
+	}	
+	
+	copySync(baseFolder + 'src/', projectFolder + 'src/');
+	copySync(baseFolder + 'res/', projectFolder + 'res/');
 
 	// TODO: Refactor support asynchronous file writing
 	Object.entries(result.sources).forEach(([fileName, content]) => {
