@@ -38,11 +38,13 @@ const transpile = commandLine => {
 		return result;
 	}
 	
-	mkdirSync(projectFolder + 'src/boot/', { recursive: true });
-	mkdirSync(projectFolder + 'res/', { recursive: true });
-	
-	copySync(baseFolder + 'src/', projectFolder + 'src/');
-	copySync(baseFolder + 'res/', projectFolder + 'res/');
+	// Ensures the existance of the target dirs
+	['src/boot/', 'res/'].forEach(dirName => 
+		mkdirSync(projectFolder + dirName, { recursive: true }));
+
+	// Copy base source files
+	['src/', 'res'].forEach(dirName =>
+		copySync(baseFolder + dirName, projectFolder + dirName));
 
 	// TODO: Refactor support asynchronous file writing
 	Object.entries(result.sources).forEach(([fileName, content]) => {
