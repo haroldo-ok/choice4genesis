@@ -362,6 +362,33 @@ const COMMAND_GENERATORS = {
 		context.header.author = name;
 		return null;
 	},
+	
+	'import': (entity, context) => {
+		const fileName = getStringConstant(entity, entity.params.positional.fileName, context, 'File name');
+		context.imports.push(fileName);
+		return null;
+	},
+	
+	'native': (entity, context) => {
+		const functionName = getIdentifier(entity, entity.params.positional.functionName, context, 'Function name');
+		
+		let assignment = '';
+		const named = entity.params.named || {};		
+		if (named.into) {
+			const varName = getIdentifier(entity, named.into.variable, context, 'Variable name');
+			const existingVar = context.locals.get(varName) || context.globals.get(varName);
+			if (existingVar) {
+				assignment = `${existingVar.value.internalVar} = `;
+			} else {
+				context.errors.push(buildEntityError(entity, `Couldn't find a variable named "${varName}".`));
+			}
+		}
+
+		const parameters = (entity.params.variadic || []).map((param, index) => 
+			getExpression(entity, param, context, `Parameter ${index + 1}`) || {});
+
+		return `${assignment}${functionName}(${parameters.map(expression => expression.code).join(', ')});`;
+	}
 };
 
 
@@ -463,7 +490,7 @@ const generateFromSource = (mainSourceName, context) => {
 	return {
 		sources: {
 			'generated_scripts.c': [
-				'#include "vn_engine.h"',
+				['vn_engine.h', ...context.imports].map(fileName => `#include "${fileName}"`).join('\n'),
 				generateVariableDeclarations(context.globals),
 				generatedForwards.join('\n'),
 				...generatedFunctions
@@ -487,6 +514,7 @@ const generate = fileSystem => {
 		choices: [],
 		globals: createNamespace(),
 		locals: null,
+		imports: [],
 		header: {
 			author: 'Unnamed Author',
 			title: 'Unnamed Story'
