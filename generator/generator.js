@@ -363,6 +363,12 @@ const COMMAND_GENERATORS = {
 		return null;
 	},
 	
+	'import': (entity, context) => {
+		const fileName = getStringConstant(entity, entity.params.positional.fileName, context, 'File name');
+		context.imports.push(fileName);
+		return null;
+	},
+	
 	'native': (entity, context) => {
 		const functionName = getIdentifier(entity, entity.params.positional.functionName, context, 'Function name');
 		
@@ -481,7 +487,7 @@ const generateFromSource = (mainSourceName, context) => {
 	return {
 		sources: {
 			'generated_scripts.c': [
-				'#include "vn_engine.h"',
+				['vn_engine.h', ...context.imports].map(fileName => `#include "${fileName}"`).join('\n'),
 				generateVariableDeclarations(context.globals),
 				generatedForwards.join('\n'),
 				...generatedFunctions
@@ -505,6 +511,7 @@ const generate = fileSystem => {
 		choices: [],
 		globals: createNamespace(),
 		locals: null,
+		imports: [],
 		header: {
 			author: 'Unnamed Author',
 			title: 'Unnamed Story'
