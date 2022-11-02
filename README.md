@@ -397,6 +397,36 @@ Sets the author of the story. Used to populate the ROM headers.
 * author "John Doe"
 ```
 
+### `import`
+Imports the given `.h` file into the generated code. Useful when combined with the `native` command.
+
+#### Positional parameters:
+* `fileName`: The name of the `.h` file.
+
+#### Example
+```shell
+* import "extra.h"
+```
+Will import "extra.h" into the generated `C` file.
+
+### `native`
+Directly calls a `C` language function.
+
+#### Positional parameters:
+* `functionName`: The name of the `C` function to call.
+
+#### Variadic parameters:
+All the positional parameters after `functionName` are passed as parameters to the function.
+
+#### Named parameters:
+* `into(variable)` if informed, will update the given variable with the return of the callsed function.
+
+#### Example
+```shell
+* native addExample, currentTick, 1 + 2, into(functionResult)
+```
+Will call the function `addExample` passing as parameters the value of the variable `currentTick` and the result of `1 + 2`; the result of the function will be stored in the `functionResult` variable.
+
 
 
 ## Planned commands
