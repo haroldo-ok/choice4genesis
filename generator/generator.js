@@ -362,6 +362,24 @@ const COMMAND_GENERATORS = {
 		context.header.author = name;
 		return null;
 	},
+	
+	'native': (entity, context) => {
+		const functionName = getIdentifier(entity, entity.params.positional.functionName, context, 'Function name');
+		
+		let assignment = '';
+		const named = entity.params.named || {};		
+		if (named.into) {
+			const varName = getIdentifier(entity, named.into.variable, context, 'Variable name');
+			const existingVar = context.locals.get(varName) || context.globals.get(varName);
+			if (existingVar) {
+				assignment = `${existingVar.value.internalVar} = `;
+			} else {
+				context.errors.push(buildEntityError(entity, `Couldn't find a variable named "${varName}".`));
+			}
+		}
+
+		return `${assignment}${functionName}();`;
+	}
 };
 
 
