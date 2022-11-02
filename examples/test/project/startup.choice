@@ -91,6 +91,7 @@
 				A really, really long line, to test a bit more.
 				Final line.
 			# Test native calls
+				* import "extra.h"
 				* temp currentTick, 0
 				* native getTick, into(currentTick)
 				Current tick is ${currentTick}

@@ -42,6 +42,7 @@ const COMMANDS = {
 	'scene_list': { },
 	'finish': { },
 	
+	'import': { positional: ['fileName'] },
 	'native': { positional: ['functionName'], named: { into: ['variable'] } }
 };
 
