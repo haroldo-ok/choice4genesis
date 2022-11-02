@@ -90,5 +90,9 @@
 				Yet another line.
 				A really, really long line, to test a bit more.
 				Final line.
+			# Test native calls
+				* temp currentTick, 0
+				* native getTick, into(currentTick)
+				Current tick is ${currentTick}
 			# Go to another scene
 				* goto_scene test

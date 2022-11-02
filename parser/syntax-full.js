@@ -40,7 +40,9 @@ const COMMANDS = {
 	
 	'choice': { },
 	'scene_list': { },
-	'finish': { }	
+	'finish': { },
+	
+	'native': { positional: ['functionName'], named: { into: ['variable'] } }
 };
 
 const COMMAND_PARSERS = Object.fromEntries(Object.entries(COMMANDS).map(([command, config]) => [command, createExpressionParser(config)]));
