@@ -93,7 +93,10 @@
 			# Test native calls
 				* import "extra.h"
 				* temp currentTick, 0
+				* temp functionResult, 0
 				* native getTick, into(currentTick)
+				* native addExample, currentTick, 1 + 2, into(functionResult)
 				Current tick is ${currentTick}
+				Second function result is ${functionResult}
 			# Go to another scene
 				* goto_scene test

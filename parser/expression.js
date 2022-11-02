@@ -206,10 +206,17 @@ const buildResultObject = (result, lineNumber, config) => {
 	const errors = [];
 	const params = {};
 
-	const positional = collectPositionalArguments(result.value, config.positional, errors);	
-	validateTooManyArguments(result.value, config.positional, errors);
+	const positional = collectPositionalArguments(result.value, config.positional, errors);
+	const variadic = config.variadic ? (result.value || []).slice(positional.length).filter(param => param[0] !== 'NamedParam') : [];
+	
+	if (!config.variadic) {
+		validateTooManyArguments(result.value, config.positional, errors);
+	}
 	if (positional.length) {
 		params.positional = Object.fromEntries(positional);
+	}
+	if (variadic.length) {
+		params.variadic = variadic;
 	}
 
 	const flags = collectFlags(result, config, errors);
