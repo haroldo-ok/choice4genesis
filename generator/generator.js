@@ -384,7 +384,10 @@ const COMMAND_GENERATORS = {
 			}
 		}
 
-		return `${assignment}${functionName}();`;
+		const parameters = (entity.params.variadic || []).map((param, index) => 
+			getExpression(entity, param, context, `Parameter ${index + 1}`) || {});
+
+		return `${assignment}${functionName}(${parameters.map(expression => expression.code).join(', ')});`;
 	}
 };
 
