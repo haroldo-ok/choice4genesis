@@ -1,6 +1,7 @@
 const { identify } = require('imagemagick');
 const { normalize } = require('path');
 const { existsSync } = require('fs');
+const { copy } = require('fs-extra');
 
 const getMetadata = async imageFile => new Promise((resolve, reject) => {
 	identify(imageFile, (err, metadata) => {
@@ -27,9 +28,14 @@ const convertImages = async (result, projectFolder) => {
 	const errors = [];
 	await Promise.all(Object.entries(result.images).map(async ([imageFile, { entity }]) => {
 		try {
-			const {format, type, colors, width, height} = await getMetadata(normalize(`${projectFolder}/project/${imageFile}`));
+			const sourceFile = normalize(`${projectFolder}/project/${imageFile}`);
+			const destFile = normalize(`${projectFolder}/res/${imageFile}`);
+			
+			const {format, type, colors, width, height} = await getMetadata(sourceFile);
+			
 			if (format == 'PNG' && colors <= 16) {
 				console.log(`Copying "${imageFile}"...`);
+				await copy(sourceFile, destFile);
 			} else {
 				errors.push({ message: `The image "${imageFile}" requires conversion.` });
 			}
