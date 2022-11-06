@@ -3,11 +3,12 @@ const { normalize } = require('path');
 const { existsSync } = require('fs');
 
 const getMetadata = async imageFile => new Promise((resolve, reject) => {
-	identify(imageFile, (err, {format, type, colors, width, height}) => {
+	identify(imageFile, (err, metadata) => {
 		if (err) {
 			reject(err);
 			return;
 		}
+		const {format, type, colors, width, height} = metadata;
 		resolve({format, type, colors: parseInt(colors), width, height});
 	});
 });
@@ -23,7 +24,25 @@ const convertImages = async (result, projectFolder) => {
 		return { errors: [{ message: 'Imagemagick "identify" tool not found at: ' + identify.path }] };
 	}
 	
-	console.log(await getMetadata(normalize(projectFolder + '/project/' + Object.entries(result.images)[1][0])));
+	const errors = [];
+	await Promise.all(Object.entries(result.images).map(async ([imageFile, { entity }]) => {
+		try {
+			const {format, type, colors, width, height} = await getMetadata(normalize(`${projectFolder}/project/${imageFile}`));
+			if (format == 'PNG' && colors <= 16) {
+				console.log(`Copying "${imageFile}"...`);
+			} else {
+				errors.push({ message: `The image "${imageFile}" requires conversion.` });
+			}
+		} catch (e) {
+			const message = `Error processing image "${imageFile}": ${e}`;
+			console.error(message, e);
+			errors.push({ message });
+		}
+	}));
+	
+	if (errors.length) {
+		return { errors };
+	}
 	
 	return result;
 };
