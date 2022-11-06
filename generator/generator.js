@@ -119,6 +119,10 @@ const generateImageCommand = (functionName, entity, context, mapOption = 'ALL', 
 	const imageFileName = getFileNameConstant(entity, entity.params.positional.fileName, context, 'Image filename');
 	const imageVariable = addResource(context.res.gfx, imageFileName, imageVariable => 
 		`IMAGE ${imageVariable} "../project/${imageFileName}" APLIB ${mapOption}`);
+		
+	if (!context.images[imageFileName]) {
+		context.images[imageFileName] = { entity, imageFileName };
+	}
 	
 	const position = entity.params.named && entity.params.named.at;
 	const positionSrc = position ? `VN_imageAt(${position.x[1]}, ${position.y[1]});` + '\n' : '';
@@ -487,6 +491,9 @@ const generateFromSource = (mainSourceName, context) => {
 		return { errors };
 	}
 	
+	// FIXME: *** Added for testing ***
+	console.log(context.images);
+	
 	return {
 		sources: {
 			'generated_scripts.c': [
@@ -500,7 +507,9 @@ const generateFromSource = (mainSourceName, context) => {
 		},
 		
 		resources: Object.fromEntries(Object.entries(context.res).map(([name, resource]) => 
-			[ `${name}.res`,  generateResource(resource)]))
+			[ `${name}.res`,  generateResource(resource)])),
+			
+		images: context.images
 	}
 };
 
@@ -518,7 +527,8 @@ const generate = fileSystem => {
 		header: {
 			author: 'Unnamed Author',
 			title: 'Unnamed Story'
-		}
+		},
+		images: {}
 	};
 	return generateFromSource('startup', context);
 };
