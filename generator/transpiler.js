@@ -66,7 +66,7 @@ const transpile = async commandLine => {
 		writeFileSync(directory + fileName, content, {encoding: 'utf8'});
 	});
 	
-	return convertImages(result, projectFolder);
+	return await convertImages(result, projectFolder);
 }
 
 module.exports = { transpile };

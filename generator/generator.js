@@ -491,9 +491,6 @@ const generateFromSource = (mainSourceName, context) => {
 		return { errors };
 	}
 	
-	// FIXME: *** Added for testing ***
-	console.log(context.images);
-	
 	return {
 		sources: {
 			'generated_scripts.c': [
