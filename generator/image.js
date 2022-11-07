@@ -42,10 +42,10 @@ const convertImages = async (result, projectFolder) => {
 	}
 
 	const errors = [];
-	await Promise.all(Object.entries(result.images).map(async ([imageFile, { entity }]) => {
+	await Promise.all(Object.entries(result.images).map(async ([imageFile, { entity, targetFileName }]) => {
 		try {
 			const sourceFile = normalize(`${projectFolder}/project/${imageFile}`);
-			const destFile = normalize(`${projectFolder}/res/${imageFile}`);
+			const destFile = normalize(`${projectFolder}/res/${targetFileName}`);
 			
 			const {format, type, colors, width, height} = await getMetadata(sourceFile);
 			

@@ -117,11 +117,15 @@ const generateResource = map => Object.values(map).map(({ content }) => content)
 	
 const generateImageCommand = (functionName, entity, context, mapOption = 'ALL', generatedFlags='') => {
 	const imageFileName = getFileNameConstant(entity, entity.params.positional.fileName, context, 'Image filename');
+	
+	const endsWithPng = /\.png$/i;
+	const targetFileName = endsWithPng.test(imageFileName) ? imageFileName : imageFileName + '.png';
+	
 	const imageVariable = addResource(context.res.gfx, imageFileName, imageVariable => 
-		`IMAGE ${imageVariable} "${imageFileName}" APLIB ${mapOption}`);
+		`IMAGE ${imageVariable} "${targetFileName}" APLIB ${mapOption}`);
 		
 	if (!context.images[imageFileName]) {
-		context.images[imageFileName] = { entity, imageFileName };
+		context.images[imageFileName] = { entity, imageFileName, targetFileName };
 	}
 	
 	const position = entity.params.named && entity.params.named.at;
