@@ -31,6 +31,13 @@ const readCommandLine = () => yargs
 			describe: 'Directory where the projects are located',
 			type: 'string'
 		},
+		'imagemagick-dir': {
+			alias: 'kd',
+			default: normalize(__dirname + '/../../ImageMagick-7.0.10-53-portable-Q16-x86'),
+			normalize: true,
+			describe: 'Directory where ImageMagick is located',
+			type: 'string'
+		},
 		'sgdk-dir': {
 			alias: 'sd',
 			default: normalize(__dirname + '/../../sgdk170'),

@@ -3,8 +3,9 @@ const { copySync } = require('fs-extra');
 const { normalize } = require('path');
 
 const { generate } = require('./generator');
+const { convertImages } = require('./image');
 
-const transpile = commandLine => {
+const transpile = async commandLine => {
 
 	const projectFolder = normalize(`${commandLine.projectDir}/${commandLine.project}/`);
 	if (!existsSync(projectFolder)) {
@@ -65,7 +66,7 @@ const transpile = commandLine => {
 		writeFileSync(directory + fileName, content, {encoding: 'utf8'});
 	});
 	
-	return result;
+	return await convertImages(result, projectFolder, commandLine);
 }
 
 module.exports = { transpile };

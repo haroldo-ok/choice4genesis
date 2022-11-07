@@ -69,7 +69,7 @@ Many commands accept expressions as parameters; the expressions can contain the 
 ## Commands implemented so far
 
 ### `font`
-Loads a `.png` file containing the 8x8 font. Note that the image must be paletized, with 16 colors. Future versions of this tool will probably convert the image *automagically*. Fonts will use palette #0.
+Loads a `.png` file containing the 8x8 font. Fonts will use palette #0.
 #### Positional parameters:
 * `fileName`: a string pointing to the `.png` file to use.
 #### Example:
@@ -79,7 +79,7 @@ Loads a `.png` file containing the 8x8 font. Note that the image must be paletiz
 Loads a image file named `"damieng.com - Hourglass font.png"` as a font.
 
 ### `background`
-Loads a `.png` file as a background image. Note that the image must be paletized, with 16 colors. Future versions of this tool will probably convert the image *automagically*. Backgrounds will use palette #1.
+Loads a `.png` file as a background image. If the image is not paletized with 16 colors, it will be automatically converted by the tool. Backgrounds will use palette #1.
 #### Positional parameters:
 * `fileName`: a string pointing to the `.png` file to use.
 #### Example:
@@ -152,7 +152,7 @@ Also stops both current music and current sound.
 
 
 ### `image`
-Allows drawing a small image in `.png` format somewhere in the background. Note that the image must be paletized, with 16 colors. Future versions of this tool will probably convert the image *automagically*. This command uses palette #2.
+Allows drawing a small image in `.png` format somewhere in the background. If the image is not paletized with 16 colors, it will be automatically converted by the tool. This command uses palette #2.
 
 #### Positional parameters:
 * `fileName`: a string pointing to the `.png` file to use.

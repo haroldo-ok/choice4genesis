@@ -98,5 +98,11 @@
 				* native addExample, currentTick, 1 + 2, into(functionResult)
 				Current tick is ${currentTick}
 				Second function result is ${functionResult}
+			# Show more backgrounds
+				* background "Cartoon Fox.png"
+				Showing a cartoon fox
+				* flush
+				* background "Red echidna.jpg"
+				Showing a red echidna
 			# Go to another scene
 				* goto_scene test
