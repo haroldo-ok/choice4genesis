@@ -33,10 +33,15 @@ const convertImages = async (result, projectFolder) => {
 			
 			const {format, type, colors, width, height} = await getMetadata(sourceFile);
 			
-			if (format == 'PNG' && colors <= 16) {
+			const isCorrectFormat = format == 'PNG';
+			const isCorrectPalette = type === 'Palette' && colors <= 16;
+			const isCorrectSize = entity.command !== 'background' || width === 320 && height === 224;
+			
+			if (isCorrectFormat && isCorrectPalette && isCorrectSize) {
 				console.log(`Copying "${imageFile}"...`);
 				await copy(sourceFile, destFile);
 			} else {
+				console.log(`Converting "${imageFile}"...`);	
 				errors.push({ message: `The image "${imageFile}" requires conversion.` });
 			}
 		} catch (e) {
