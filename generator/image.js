@@ -1,7 +1,7 @@
 const { identify, convert } = require('imagemagick');
 const { normalize } = require('path');
 const { existsSync } = require('fs');
-const { copy } = require('fs-extra');
+const { copy, exists, stat } = require('fs-extra');
 
 const getMetadata = async imageFile => new Promise((resolve, reject) => {
 	identify(imageFile, (err, metadata) => {
@@ -46,6 +46,17 @@ const convertImages = async (result, projectFolder) => {
 		try {
 			const sourceFile = normalize(`${projectFolder}/project/${imageFile}`);
 			const destFile = normalize(`${projectFolder}/res/${targetFileName}`);
+			
+			// If the destination exists
+			if (await exists(destFile)) {
+				const sourceStat = await stat(sourceFile);
+				const destStat = await stat(destFile);
+				// If the destination is the same age or older than the file
+				if (sourceStat.mtimeMs <= destStat.mtimeMs) {
+					// Skip conversion for this file
+					return;
+				}
+			}
 			
 			const {format, type, colors, width, height} = await getMetadata(sourceFile);
 			
