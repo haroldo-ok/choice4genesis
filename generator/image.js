@@ -25,8 +25,8 @@ const convertImage = async params => new Promise((resolve, reject) => {
 	});
 });
 
-const convertImages = async (result, projectFolder) => {
-	const imagemagickDir = normalize(__dirname + '/../../ImageMagick-7.0.10-53-portable-Q16-x86');
+const convertImages = async (result, projectFolder, commandLine) => {
+	const imagemagickDir = commandLine.imagemagickDir;
 	if (!existsSync(imagemagickDir)) {
 		return { errors: [{ message: 'Imagemagick directory does not exist at: ' + projectFolder }] };
 	}
