@@ -9,6 +9,7 @@
 
 #define BACKGROUND_PAL PAL0
 #define TEXT_PAL PAL1
+#define IMAGE_PAL PAL2
 
 char textBuffer[TEXT_BUFFER_LEN];
 
@@ -220,8 +221,8 @@ void VN_background(const Image *image) {
 }
 
 void VN_image(const Image *image, const u8 flags) {
-	if (flags & LAYER_FOREGROUND) VN_showImage(image, BG_A, PAL2, imageInfo.x, imageInfo.y);
-	if (flags & LAYER_BACKGROUND) VN_showImage(image, BG_B, PAL2, imageInfo.x, imageInfo.y);
+	if (flags & LAYER_FOREGROUND) VN_showImage(image, BG_A, IMAGE_PAL, imageInfo.x, imageInfo.y);
+	if (flags & LAYER_BACKGROUND) VN_showImage(image, BG_B, IMAGE_PAL, imageInfo.x, imageInfo.y);
 }
 
 void VN_imageAt(u16 x, u16 y) {
