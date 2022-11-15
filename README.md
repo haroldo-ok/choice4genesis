@@ -69,7 +69,7 @@ Many commands accept expressions as parameters; the expressions can contain the 
 ## Commands implemented so far
 
 ### `font`
-Loads a `.png` file containing the 8x8 font. Fonts will use palette #0.
+Loads a `.png` file containing the 8x8 font. Fonts will use palette #1.
 #### Positional parameters:
 * `fileName`: a string pointing to the `.png` file to use.
 #### Example:
@@ -79,7 +79,7 @@ Loads a `.png` file containing the 8x8 font. Fonts will use palette #0.
 Loads a image file named `"damieng.com - Hourglass font.png"` as a font.
 
 ### `background`
-Loads a `.png` file as a background image. If the image is not paletized with 16 colors, it will be automatically converted by the tool. Backgrounds will use palette #1.
+Loads a `.png` file as a background image. If the image is not paletized with 16 colors, it will be automatically converted by the tool. Backgrounds will use palette #0.
 #### Positional parameters:
 * `fileName`: a string pointing to the `.png` file to use.
 #### Example:
@@ -315,7 +315,7 @@ Tells that the window will start at position `29, 1` and have a width of `10` an
 Tells that the window will be located at the default position, with the default size.
 
 ### `cursor`
-Allows to configure the blinking text cursor. It uses the palette #0.
+Allows to configure the blinking text cursor. It uses the palette #1.
 
 #### Positional parameters:
 * `fileName`: name of the `.png` file containing the graphics of the cursor sprite;
