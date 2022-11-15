@@ -212,7 +212,7 @@ void VN_showImage(const Image *image, VDPPlane plane, u16 palNum, u16 x, u16 y) 
 
 void VN_background(const Image *image) {
 	imageInfo.tileNumber = 256;
-	VN_showImage(image, BG_B, PAL1, 0, 0);
+	VN_showImage(image, BG_B, PAL0, 0, 0);
 }
 
 void VN_image(const Image *image, const u8 flags) {
