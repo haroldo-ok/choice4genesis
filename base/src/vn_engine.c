@@ -7,6 +7,10 @@
 
 #define PCM_CHANNEL (64)
 
+#define BACKGROUND_PAL PAL0
+#define TEXT_PAL PAL1
+#define IMAGE_PAL PAL2
+
 char textBuffer[TEXT_BUFFER_LEN];
 
 struct {
@@ -196,7 +200,8 @@ void VN_init() {
 	XGM_setLoopNumber(-1);
 	XGM_setForceDelayDMA(TRUE);
 
-	VDP_drawText("choice4genesis v0.11.0", 17, 27);
+	VDP_setTextPalette(TEXT_PAL);
+	VDP_drawText("choice4genesis v0.11.1", 17, 27);
 }
 
 
@@ -212,12 +217,12 @@ void VN_showImage(const Image *image, VDPPlane plane, u16 palNum, u16 x, u16 y) 
 
 void VN_background(const Image *image) {
 	imageInfo.tileNumber = 256;
-	VN_showImage(image, BG_B, PAL1, 0, 0);
+	VN_showImage(image, BG_B, BACKGROUND_PAL, 0, 0);
 }
 
 void VN_image(const Image *image, const u8 flags) {
-	if (flags & LAYER_FOREGROUND) VN_showImage(image, BG_A, PAL2, imageInfo.x, imageInfo.y);
-	if (flags & LAYER_BACKGROUND) VN_showImage(image, BG_B, PAL2, imageInfo.x, imageInfo.y);
+	if (flags & LAYER_FOREGROUND) VN_showImage(image, BG_A, IMAGE_PAL, imageInfo.x, imageInfo.y);
+	if (flags & LAYER_BACKGROUND) VN_showImage(image, BG_B, IMAGE_PAL, imageInfo.x, imageInfo.y);
 }
 
 void VN_imageAt(u16 x, u16 y) {
@@ -227,7 +232,7 @@ void VN_imageAt(u16 x, u16 y) {
 
 void VN_font(const Image *image) {
 	VDP_loadFont(image->tileset, DMA);
-	VDP_setPalette(PAL0, (u16*)image->palette->data);
+	VDP_setPalette(TEXT_PAL, (u16*)image->palette->data);
 }
 
 
@@ -248,7 +253,7 @@ void VN_stop(const u8 flags) {
 
 
 void VN_clearWindow() {
-	VDP_clearTextAreaEx(BG_A, TILE_ATTR_FULL(PAL0, FALSE, FALSE, FALSE, 0x05A0), window.x, window.y, window.w, window.h, DMA);
+	VDP_clearTextAreaEx(BG_A, TILE_ATTR_FULL(TEXT_PAL, FALSE, FALSE, FALSE, 0x05A0), window.x, window.y, window.w, window.h, DMA);
 }
 
 void VN_textStart() {
@@ -436,7 +441,7 @@ void VN_cursor(const SpriteDefinition *sprite) {
 	
 	if (!sprite) return;
 	
-	window.cursor = SPR_addSprite(sprite, 0, 0, TILE_ATTR(PAL0, 1, FALSE, FALSE));
+	window.cursor = SPR_addSprite(sprite, 0, 0, TILE_ATTR(TEXT_PAL, 1, FALSE, FALSE));
 	SPR_setVisibility(window.cursor, HIDDEN);
-	VDP_setPalette(PAL0, (u16*) sprite->palette->data);
+	VDP_setPalette(TEXT_PAL, (u16*) sprite->palette->data);
 }
