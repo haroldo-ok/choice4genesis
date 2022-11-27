@@ -34,6 +34,11 @@ struct {
 	char** lines;
 } msgLines;
 
+struct {
+	u16 baseTileNumber;
+	Image *image;
+} backgroundInfo;
+
 char *bufferWrappedTextLine(char *s, int x, int y, int w) {
 	char *o, ch;
 	int tx = x;
@@ -193,9 +198,12 @@ void VN_init() {
 
 	SPR_init(0, 0, 0);
 
+	backgroundInfo.image = NULL;
+	backgroundInfo.baseTileNumber = 256;
+
 	imageInfo.x = 0;
 	imageInfo.y = 0;
-	imageInfo.tileNumber = 256;
+	imageInfo.tileNumber = backgroundInfo.baseTileNumber;	
 	
 	XGM_setLoopNumber(-1);
 	XGM_setForceDelayDMA(TRUE);
@@ -216,7 +224,8 @@ void VN_showImage(const Image *image, VDPPlane plane, u16 palNum, u16 x, u16 y) 
 }
 
 void VN_background(const Image *image) {
-	imageInfo.tileNumber = 256;
+	imageInfo.tileNumber = backgroundInfo.baseTileNumber;
+	backgroundInfo.image = image;
 	VN_showImage(image, BG_B, BACKGROUND_PAL, 0, 0);
 }
 
@@ -321,8 +330,16 @@ void VN_flush(const u8 flags) {
 }
 
 void VN_clear(const u8 flags) {
-	if (flags & LAYER_FOREGROUND) VDP_clearPlane(BG_A, TRUE);
-	if (flags & LAYER_BACKGROUND) VDP_clearPlane(BG_B, TRUE);
+	if (flags & LAYER_FOREGROUND) {
+		VDP_clearPlane(BG_A, TRUE);
+		imageInfo.tileNumber = backgroundInfo.baseTileNumber + 
+			(backgroundInfo.image ? backgroundInfo.image->tileset->numTile : 0);
+	}
+	if (flags & LAYER_BACKGROUND) {
+		VDP_clearPlane(BG_B, TRUE);
+		imageInfo.tileNumber = backgroundInfo.baseTileNumber;
+		backgroundInfo.image = NULL;
+	}
 	if (flags & LAYER_WINDOW) VN_clearWindow();
 }
 
