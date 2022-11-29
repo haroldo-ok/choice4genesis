@@ -15,6 +15,9 @@
 #define LAYER_BACKGROUND (2)
 #define LAYER_WINDOW (4)
 
+#define SOUND_XGM (1)
+#define SOUND_ADPCM (2)
+
 extern void VN_init();
 
 extern void VN_background(const Image *image);
@@ -22,8 +25,8 @@ extern void VN_image(const Image *image, const u8 flags);
 extern void VN_imageAt(u16 x, u16 y);
 extern void VN_font(const Image *image);
 
-extern void VN_music(const u8 *music);
-extern void VN_sound(const u8 *sound, const u16 length);
+extern void VN_music(const u8 *music, const u32 length, const u8 driverFlags);
+extern void VN_sound(const u8 *sound, const u32 length, const u8 driverFlags);
 extern void VN_stop(const u8 flags);
 
 extern void VN_textStart();

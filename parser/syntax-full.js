@@ -27,8 +27,8 @@ const COMMANDS = {
 	'image': { positional: ['fileName'], named: { 'at': ['x', 'y'] }, flags: ['foreground', 'background'] },
 	'font': { positional: ['fileName'] },
 
-	'music': { positional: ['fileName'] },
-	'sound': { positional: ['fileName'] },
+	'music': { positional: ['fileName'], flags: ['adpcm'] },
+	'sound': { positional: ['fileName'], flags: ['adpcm'] },
 	'stop': { flags: ['music', 'sound'] },
 
 	'window': { named: { 'from': ['x', 'y'], 'to': ['x', 'y'], 'size': ['w', 'h'] }, flags: ['borderless', 'withborder', 'default'] },
