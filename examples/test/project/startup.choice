@@ -108,5 +108,7 @@
 				* choice
 					# Play ADPCM music
 						* music "illurock.wav", adpcm
+					# Play ADPCM sound
+						* sound "greeting_3_karen.wav", adpcm
 					# Go to another scene
 						* goto_scene test
