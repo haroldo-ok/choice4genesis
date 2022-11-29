@@ -245,11 +245,15 @@ void VN_font(const Image *image) {
 }
 
 
-void VN_music(const u8 *music) {
-	XGM_startPlay(music);
+void VN_music(const u8 *music, const u32 length, const u8 driverFlags) {
+	if (driverFlags == SOUND_ADPCM) {
+		SND_startPlay_2ADPCM(music, length, SOUND_PCM_CH1, TRUE);
+	} else {
+		XGM_startPlay(music);
+	}
 }
 
-void VN_sound(const u8 *sound, const u16 length) {
+void VN_sound(const u8 *sound, const u32 length) {
 	XGM_stopPlayPCM (SOUND_PCM_CH2);
 	XGM_setPCM(PCM_CHANNEL, sound, length);
 	XGM_startPlayPCM(PCM_CHANNEL, 1, SOUND_PCM_CH2);

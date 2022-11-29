@@ -162,7 +162,7 @@ const COMMAND_GENERATORS = {
 		const musicVariable = addResource(context.res.music, musicFileName, musicVariable => 
 			`${resType} ${musicVariable} "../project/${musicFileName}" ${driver}`);
 
-		return `VN_music(${musicVariable}, ${driverFlag});`;
+		return `VN_music(${musicVariable}, sizeof(${musicVariable}), ${driverFlag});`;
 	},
 	
 	'sound': (entity, context) => {
