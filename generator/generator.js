@@ -167,10 +167,16 @@ const COMMAND_GENERATORS = {
 	
 	'sound': (entity, context) => {
 		const soundFileName = getFileNameConstant(entity, entity.params.positional.fileName, context, 'Sound filename');
-		const soundVariable = addResource(context.res.music, soundFileName, soundVariable => 
-			`WAV ${soundVariable} "../project/${soundFileName}" XGM`);
+		const flags = entity.params.flags || {};
+		const isAdpcm = Object.entries(flags).filter(([k, v]) => v).find(([name, v]) => name.toUpperCase() === 'ADPCM');
 
-		return `VN_sound(${soundVariable}, sizeof(${soundVariable}));`;
+		const driver = isAdpcm ? '2ADPCM' : 'XGM';
+		const driverFlag = isAdpcm ? 'SOUND_ADPCM' : 'SOUND_XGM';
+
+		const soundVariable = addResource(context.res.music, soundFileName, soundVariable => 
+			`WAV ${soundVariable} "../project/${soundFileName}" ${driver}`);
+
+		return `VN_sound(${soundVariable}, sizeof(${soundVariable}), ${driverFlag});`;
 	},
 	
 	'stop': (entity, context) => {
