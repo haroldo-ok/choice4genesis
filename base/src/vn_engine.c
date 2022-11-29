@@ -253,10 +253,14 @@ void VN_music(const u8 *music, const u32 length, const u8 driverFlags) {
 	}
 }
 
-void VN_sound(const u8 *sound, const u32 length) {
-	XGM_stopPlayPCM (SOUND_PCM_CH2);
-	XGM_setPCM(PCM_CHANNEL, sound, length);
-	XGM_startPlayPCM(PCM_CHANNEL, 1, SOUND_PCM_CH2);
+void VN_sound(const u8 *sound, const u32 length, const u8 driverFlags) {
+	if (driverFlags == SOUND_ADPCM) {
+		SND_startPlay_2ADPCM(sound, length, SOUND_PCM_CH2, FALSE);
+	} else {
+		XGM_stopPlayPCM (SOUND_PCM_CH2);
+		XGM_setPCM(PCM_CHANNEL, sound, length);
+		XGM_startPlayPCM(PCM_CHANNEL, 1, SOUND_PCM_CH2);
+	}
 }
 
 void VN_stop(const u8 flags) {
