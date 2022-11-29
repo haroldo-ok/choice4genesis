@@ -104,5 +104,9 @@
 				* flush
 				* background "Red echidna.jpg"
 				Showing a red echidna
-			# Go to another scene
-				* goto_scene test
+			# More options...
+				* choice
+					# Play ADPCM music
+						* music "illurock.wav", adpcm
+					# Go to another scene
+						* goto_scene test
