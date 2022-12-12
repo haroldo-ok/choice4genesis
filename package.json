@@ -38,6 +38,7 @@
     "imagemagick": "^0.1.3",
     "lodash": "^4.17.21",
     "node-menu": "^1.3.2",
+    "parcel": "^2.8.1",
     "parsimmon": "^1.18.1",
     "yargs": "^17.5.1"
   }
