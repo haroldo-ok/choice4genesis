@@ -9,6 +9,7 @@ const { emulate } = require('./generator/emulator');
 const { readCommandLine } = require('./generator/commandline');
 const { watchProject } = require('./generator/watcher');
 const { showMenu } = require('./generator/ui')
+const { showEditor } = require('./generator/editor')
 
 
 const commandLine = readCommandLine();
@@ -48,6 +49,8 @@ const executeCommands = async () => {
 
 if (commandLine._.includes('menu')) {
 	showMenu(commandLine, executeCommands);
+} else if (commandLine._.includes('edit')) {
+	showEditor(commandLine, executeCommands);
 } else if (commandLine.watch) {
 	console.warn('The "watch" option is a bit unstable, right now.');
 	watchProject(commandLine, executeCommands);

@@ -23,6 +23,7 @@ const readCommandLine = () => yargs
 		})
 	})
 	.command('menu', 'show an interactive menu')
+	.command('edit', 'calls the code editor')
 	.options({
 		'project-dir': {
 			alias: 'pd',
