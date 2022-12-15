@@ -107,3 +107,6 @@ dist
 /examples/test/src/*
 /examples/test/res
 /examples/test/src
+
+/.cache
+/.parcel-cache

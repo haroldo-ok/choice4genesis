@@ -1,21 +1,39 @@
 'use strict';
 
-const Bundler = require('parcel-bundler');
-const app = require('express')();
+
+const { Parcel } = require('@parcel/core');
 const { openInBrowser } = require('@parcel/utils');
 
+const app = require('express')();
+
+const PARCEL_PORT = 1234;
+const API_PORT = 1235;
+
 const showEditor = async (commandLine, executeCommands) => {
+	let bundler = new Parcel({
+		entries: 'editor/index.html',
+		defaultConfig: '@parcel/config-default',
+		serveOptions: {
+			port: PARCEL_PORT
+		},
+		hmrOptions: {
+			port: PARCEL_PORT
+		}
+	});
+
+	await bundler.watch();	
+	
+	/*
 	const bundler = new Bundler('editor/index.html', {});
 	await bundler.watch();
+	*/
 
-	app.get('/api', (req, res) => {
+	app.get('/', (req, res) => {
 	  res.send('OK!')
 	});
-	app.use(bundler.middleware());	
+	app.listen(API_PORT);
 	
-	app.listen(1234);
-	
-	openInBrowser('http://localhost:1234/');
+	openInBrowser(`http://localhost:${PARCEL_PORT}/`);
 
 	console.log('OK');
 };
