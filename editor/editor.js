@@ -3,6 +3,7 @@
 
 const { Parcel } = require('@parcel/core');
 const { openInBrowser } = require('@parcel/utils');
+const { normalize } = require('path');
 
 const app = require('express')();
 
@@ -11,7 +12,7 @@ const API_PORT = 1235;
 
 const showEditor = async (commandLine, executeCommands) => {
 	let bundler = new Parcel({
-		entries: 'editor/index.html',
+		entries: normalize(__dirname + '/front/index.html'),
 		defaultConfig: '@parcel/config-default',
 		serveOptions: {
 			port: PARCEL_PORT
