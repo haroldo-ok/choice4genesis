@@ -1,4 +1,5 @@
 import React, {useState} from 'react';
+import { useFetch } from 'usehooks-ts'
 //import './App.css';
 
 export function App() {
@@ -8,6 +9,8 @@ export function App() {
 		{ label: "Banana", value: "🍌" },
 		{ label: "Orange", value: "🍊" }
 	];
+	
+	const { data, error } = useFetch('/api/v0/projects');
 	
 	// Using state to keep track of what the selected fruit is
 	const [fruit, setFruit] = useState("⬇️ Select a fruit ⬇️")
@@ -36,5 +39,11 @@ export function App() {
 			<option value="⬇️ Select a fruit ⬇️"> -- Select a fruit -- </option>
 			{fruits.map((fruit) => <option key={fruit.label} value={fruit.value}>{fruit.label}</option>)}
 		</select>
+		
+		{error && <h1>Error while listing projects: ${error}</h1>}
+		{!data && <h1>Loading project list...</h1>}
+		{data && <select>
+			{data.map(projectName => <option key={projectName} value={projectName}>{projectName}</option>)}
+		</select>}
 	</div>;
 }
