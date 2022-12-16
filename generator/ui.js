@@ -11,9 +11,9 @@ const pjson = require('./../package.json');
 const { getProjectsFolder, isProjectsFolderPresent } = require('./project');
 
 // TODO: Use async file access
-const showMenu = (commandLine, executeCommands) => {
+const showMenu = async (commandLine, executeCommands) => {
 	
-	if (!isProjectsFolderPresent(commandLine)) {
+	if (!await isProjectsFolderPresent(commandLine)) {
 		return { errors: [{ message: 'Directory does not exist: ' + projectsFolder }] };
 	}
 	
