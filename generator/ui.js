@@ -8,14 +8,16 @@ const chalk = require('chalk');
 const menu = require('node-menu');
 
 const pjson = require('./../package.json');
+const { getProjectsFolder, isProjectsFolderPresent } = require('./project');
 
 // TODO: Use async file access
 const showMenu = (commandLine, executeCommands) => {
 	
-	const projectsFolder = normalize(commandLine.projectDir);
-	if (!existsSync(projectsFolder)) {
+	if (!isProjectsFolderPresent(commandLine)) {
 		return { errors: [{ message: 'Directory does not exist: ' + projectsFolder }] };
 	}
+	
+	const projectsFolder = getProjectsFolder(commandLine);
 	
 	readdir(projectsFolder, (err, files) => {
 		if (err) {
