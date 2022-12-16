@@ -9,7 +9,7 @@ const { emulate } = require('./generator/emulator');
 const { readCommandLine } = require('./generator/commandline');
 const { watchProject } = require('./generator/watcher');
 const { showMenu } = require('./generator/ui')
-const { showEditor } = require('./generator/editor')
+const { showEditor } = require('./editor/editor')
 
 
 const commandLine = readCommandLine();
