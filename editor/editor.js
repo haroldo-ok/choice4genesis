@@ -5,12 +5,14 @@ const { Parcel } = require('@parcel/core');
 const { openInBrowser } = require('@parcel/utils');
 const { normalize } = require('path');
 
-const app = require('express')();
+const { startBackend } = require('./back/backend');
 
 const PARCEL_PORT = 1234;
 const API_PORT = 1235;
 
 const showEditor = async (commandLine, executeCommands) => {
+	startBackend(API_PORT);
+	
 	let bundler = new Parcel({
 		entries: normalize(__dirname + '/front/index.html'),
 		defaultConfig: '@parcel/config-default',
@@ -23,20 +25,9 @@ const showEditor = async (commandLine, executeCommands) => {
 	});
 
 	await bundler.watch();	
-	
-	/*
-	const bundler = new Bundler('editor/index.html', {});
-	await bundler.watch();
-	*/
-
-	app.get('/', (req, res) => {
-	  res.send('OK!')
-	});
-	app.listen(API_PORT);
+	console.log(`Frontend running on port ${PARCEL_PORT}`);
 	
 	openInBrowser(`http://localhost:${PARCEL_PORT}/`);
-
-	console.log('OK');
 };
 
 module.exports = { showEditor };
