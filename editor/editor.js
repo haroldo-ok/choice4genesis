@@ -16,6 +16,7 @@ const showEditor = async (commandLine, executeCommands) => {
 	let bundler = new Parcel({
 		entries: normalize(__dirname + '/front/index.html'),
 		defaultConfig: '@parcel/config-default',
+		shouldAutoInstall: true,
 		serveOptions: {
 			port: PARCEL_PORT
 		},
