@@ -8,7 +8,7 @@ const chalk = require('chalk');
 const menu = require('node-menu');
 
 const pjson = require('./../package.json');
-const { getProjectsFolder, isProjectsFolderPresent } = require('./project');
+const { getProjectsFolder, isProjectsFolderPresent, listProjectNames } = require('./project');
 
 // TODO: Use async file access
 const showMenu = async (commandLine, executeCommands) => {
@@ -17,30 +17,22 @@ const showMenu = async (commandLine, executeCommands) => {
 		return { errors: [{ message: 'Directory does not exist: ' + projectsFolder }] };
 	}
 	
-	const projectsFolder = getProjectsFolder(commandLine);
+	const projectNames = await listProjectNames(commandLine);
 	
-	readdir(projectsFolder, (err, files) => {
-		if (err) {
-			console.error('Error while listing projects: ' + err);
-			return;
-		}
+	menu.customHeader(function() {
+		console.log(chalk.blue(textSync(pjson.name, { font: 'Rectangles' })));
+		console.log(`v${pjson.version}`);
+		console.log('');
+	})
+	.addDelimiter('-', 40, 'Which project do you want to compile?');
 		
-		menu.customHeader(function() {
-				console.log(chalk.blue(textSync(pjson.name, { font: 'Rectangles' })));
-				console.log(`v${pjson.version}`);
-				console.log('');
-			})
-			.addDelimiter('-', 40, 'Which project do you want to compile?');
+		
+	projectNames.forEach(projectName => menu.addItem(projectName, () => {
+		commandLine.project = projectName;
+		return executeCommands();
+	}));
 			
-		files
-			.filter(fileName => lstatSync(`${projectsFolder}/${fileName}`).isDirectory())
-			.forEach(projectName => menu.addItem(projectName, () => {
-				commandLine.project = projectName;
-				return executeCommands();
-			}));
-			
-		menu.start();
-	});
+	menu.start();
 };
 
 module.exports = { showMenu }; 
