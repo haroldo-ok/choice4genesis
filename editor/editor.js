@@ -11,7 +11,7 @@ const PARCEL_PORT = 1234;
 const API_PORT = 1235;
 
 const showEditor = async (commandLine, executeCommands) => {
-	startBackend(API_PORT);
+	startBackend(commandLine, API_PORT);
 	
 	let bundler = new Parcel({
 		entries: normalize(__dirname + '/front/index.html'),

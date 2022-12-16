@@ -2,10 +2,12 @@
 
 const express = require('express');
 
-const startBackend = port => {
+const { listProjectNames } = require('../../generator/project');
+
+const startBackend = (commandLine, port) => {
 	const api = express.Router();
-	api.get('/projects', (req, res) => {
-		res.send('OK!')
+	api.get('/projects', async (req, res) => {
+		res.send(await listProjectNames(commandLine))
 	});
 
 	const app = express();
