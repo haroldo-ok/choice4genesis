@@ -1,7 +1,5 @@
 import React, {useState} from 'react';
-import { useFetch } from 'usehooks-ts'
 import { ProjectList } from './ProjectList'
-//import './App.css';
 
 export function App() {
 	// Array of objects containing our fruit data
@@ -11,8 +9,6 @@ export function App() {
 		{ label: "Orange", value: "🍊" }
 	];
 	
-	const { data, error } = useFetch('/api/v0/projects');
-	
 	// Using state to keep track of what the selected fruit is
 	const [fruit, setFruit] = useState("⬇️ Select a fruit ⬇️")
 
@@ -20,6 +16,11 @@ export function App() {
 	// whenever a new option is selected from the dropdown
 	const handleFruitChange = (e) => {
 		setFruit(e.target.value)
+	}
+	
+	const [projectName, setProjectName] = useState("test");
+	const handleProjectNameChange = projectName => {
+		console.log({ projectName });
 	}
 
 	return <div>
@@ -41,6 +42,6 @@ export function App() {
 			{fruits.map((fruit) => <option key={fruit.label} value={fruit.value}>{fruit.label}</option>)}
 		</select>
 		
-		<ProjectList />
+		<ProjectList value={projectName} />
 	</div>;
 }
