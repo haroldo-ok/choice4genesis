@@ -20,7 +20,7 @@ export function App() {
 	
 	const [projectName, setProjectName] = useState("test");
 	const handleProjectNameChange = projectName => {
-		console.log({ projectName });
+		setProjectName(projectName);
 	}
 
 	return <div>
@@ -42,6 +42,6 @@ export function App() {
 			{fruits.map((fruit) => <option key={fruit.label} value={fruit.value}>{fruit.label}</option>)}
 		</select>
 		
-		<ProjectList value={projectName} />
+		<ProjectList value={projectName} onChange={handleProjectNameChange} />
 	</div>;
 }
