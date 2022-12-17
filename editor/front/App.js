@@ -12,6 +12,8 @@ export function App() {
 	return <div>
 		<h1>Hello world!</h1>				
 		<ProjectList value={projectName} onChange={handleProjectNameChange} />
-		<SceneList projectName={projectName} />
-	</div>;
+		<article>
+			<SceneList projectName={projectName} />
+		</article>
+	</div>
 }

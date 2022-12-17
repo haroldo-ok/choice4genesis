@@ -16,10 +16,16 @@ export function SceneList(props) {
 	};
 	
 	return (
-		<select value={selectedValue} onChange={handleProjectNameChange}>
-			{['', ...data].map(({ fileName }) => 
-				<option key={fileName} value={fileName}>{fileName || '-- Select project --'}</option>
-			)};
-		</select>
+		<aside>
+			<nav>
+				<ul>
+					{['', ...data].map(({ fileName }) =>
+						<li key={fileName}>
+							<a href="#" class="secondary">{fileName || '-- Select scene --'}</a>
+						</li>
+					)}
+				</ul>
+			</nav>
+		</aside>
 	);
 }
