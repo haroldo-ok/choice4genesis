@@ -27,6 +27,9 @@ const showEditor = async (commandLine, executeCommands) => {
 
 	await bundler.watch();	
 	console.log(`Frontend running on port ${PARCEL_PORT}`);
+
+	// FIXME: Only for testing
+	return;
 	
 	openInBrowser(`http://localhost:${PARCEL_PORT}/`);
 };

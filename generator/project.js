@@ -3,6 +3,13 @@
 const { exists, lstat, readdir } = require('fs-extra');
 const { normalize } = require('path');
 
+const validateRequiredParams = params => {
+	const missingParams = Object.entries(params).filter(([name, value]) => !value).map(([name, value]) => name);
+	if (missingParams.length) {
+		throw new Error(`Those params are missing: ${missingParams}`, { missingParams });
+	}
+};
+
 const getProjectsFolder = commandLine => normalize(commandLine.projectDir);
 
 const isProjectsFolderPresent = async commandLine => exists(getProjectsFolder(commandLine));
@@ -30,9 +37,19 @@ const listProjectFiles = async (commandLine, { directory, filter } = {}) => {
 	return fileNamesStat.filter(filter);
 };
 
+const listProjectSources = async (commandLine, projectName, options = {}) => {
+	console.log({ commandLine, projectName });
+	validateRequiredParams({ commandLine, projectName });
+	return listProjectFiles(commandLine, { directory: `/${projectName}/project`, ...options });
+};
+
 const listProjectNames = async commandLine => {
 	const projectFiles = await listProjectFiles(commandLine, { filter: ({ isDirectory }) => isDirectory });
 	return projectFiles.map(({ fileName }) => fileName);
 };
 
-module.exports = { getProjectsFolder, isProjectsFolderPresent, listProjectNames };
+const listProjectScenes = async (commandLine, projectName) => {
+	return listProjectSources(commandLine, projectName);
+};
+
+module.exports = { getProjectsFolder, isProjectsFolderPresent, listProjectNames, listProjectScenes };
