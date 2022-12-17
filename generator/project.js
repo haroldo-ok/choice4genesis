@@ -44,7 +44,14 @@ const listProjectFiles = async (commandLine, { directory, filter, map, isRecursi
 		return file;
 	}));
 	
-	return fileNamesStat.filter(filter).map(map);
+	const filterFunction = file => {
+		if (isRecursive && file.isDirectory) {
+			return file.children && file.children.length;
+		}
+		return filter(file);
+	};
+	
+	return fileNamesStat.filter(filterFunction).map(map);
 };
 
 const listProjectSources = async (commandLine, projectName, options = {}) => {
@@ -66,7 +73,7 @@ const listProjectNames = async commandLine => {
 };
 
 const listProjectScenes = async (commandLine, projectName) => {
-	return listProjectSources(commandLine, projectName);
+	return listProjectSources(commandLine, projectName, { filter: ({ fileName }) => /.*\.choice$/ig.test(fileName) });
 };
 
 module.exports = { getProjectsFolder, isProjectsFolderPresent, listProjectNames, listProjectScenes };
