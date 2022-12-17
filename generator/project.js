@@ -14,9 +14,10 @@ const getProjectsFolder = commandLine => normalize(commandLine.projectDir);
 
 const isProjectsFolderPresent = async commandLine => exists(getProjectsFolder(commandLine));
 
-const listProjectFiles = async (commandLine, { directory, filter } = {}) => {
+const listProjectFiles = async (commandLine, { directory, filter, map } = {}) => {
 	directory ||= '/';
 	filter ||= file => true;
+	map ||= file => file;
 	
 	const projectsFolder = getProjectsFolder(commandLine);
 	const baseDir = normalize(`${projectsFolder}/${directory}`);
@@ -34,13 +35,19 @@ const listProjectFiles = async (commandLine, { directory, filter } = {}) => {
 		}
 	}));
 	
-	return fileNamesStat.filter(filter);
+	return fileNamesStat.filter(filter).map(map);
 };
 
 const listProjectSources = async (commandLine, projectName, options = {}) => {
-	console.log({ commandLine, projectName });
 	validateRequiredParams({ commandLine, projectName });
-	return listProjectFiles(commandLine, { directory: `/${projectName}/project`, ...options });
+	return listProjectFiles(commandLine, {
+		directory: `/${projectName}/project`,
+		map: ({ directory, ...rest }) => ({ 
+			directory: '/' + directory.replace(/^\/[^\/]+\/project/g, ''), 
+			...rest
+		}),
+		...options
+	});
 };
 
 const listProjectNames = async commandLine => {
