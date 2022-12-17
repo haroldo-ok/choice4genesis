@@ -14,7 +14,7 @@ const getProjectsFolder = commandLine => normalize(commandLine.projectDir);
 
 const isProjectsFolderPresent = async commandLine => exists(getProjectsFolder(commandLine));
 
-const listProjectFiles = async (commandLine, { directory, filter, map } = {}) => {
+const listProjectFiles = async (commandLine, { directory, filter, map, isRecursive } = {}) => {
 	directory ||= '/';
 	filter ||= file => true;
 	map ||= file => file;
@@ -25,14 +25,23 @@ const listProjectFiles = async (commandLine, { directory, filter, map } = {}) =>
 	const fileNames = await readdir(baseDir);
 	const fileNamesStat = await Promise.all(fileNames.map(async fileName => {
 		const stat = await lstat(normalize(`${baseDir}/${fileName}`));
-		return {
+		const file = {
 			directory,
 			fileName, 
 			isDirectory: stat.isDirectory(),
 			size: stat.size,
 			createdAt: new Date(stat.birthtimeMs),
 			modifiedAt: new Date(stat.mtimeMs)
+		};
+		
+		if (isRecursive && file.isDirectory) {
+			return {
+				...file,
+				children: await listProjectFiles(commandLine, { directory: `${directory}/${fileName}`, filter, map, isRecursive })
+			};
 		}
+		
+		return file;
 	}));
 	
 	return fileNamesStat.filter(filter).map(map);
@@ -43,9 +52,10 @@ const listProjectSources = async (commandLine, projectName, options = {}) => {
 	return listProjectFiles(commandLine, {
 		directory: `/${projectName}/project`,
 		map: ({ directory, ...rest }) => ({ 
-			directory: '/' + directory.replace(/^\/[^\/]+\/project/g, ''), 
+			directory: directory.replace(/^\/[^\/]+\/project/g, '') || '/', 
 			...rest
 		}),
+		isRecursive: true,
 		...options
 	});
 };
