@@ -1,5 +1,6 @@
 import React, {useState} from 'react';
 import { useFetch } from 'usehooks-ts'
+import { ProjectList } from './ProjectList'
 //import './App.css';
 
 export function App() {
@@ -40,10 +41,6 @@ export function App() {
 			{fruits.map((fruit) => <option key={fruit.label} value={fruit.value}>{fruit.label}</option>)}
 		</select>
 		
-		{error && <h1>Error while listing projects: ${error}</h1>}
-		{!data && <h1>Loading project list...</h1>}
-		{data && <select>
-			{data.map(projectName => <option key={projectName} value={projectName}>{projectName}</option>)}
-		</select>}
+		<ProjectList />
 	</div>;
 }
