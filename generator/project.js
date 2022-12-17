@@ -18,13 +18,20 @@ const listProjectFiles = async (commandLine, { directory, filter } = {}) => {
 	
 	const fileNames = await readdir(baseDir);
 	console.log({ fileNames, baseDir });
-	const fileNamesStat = await Promise.all(fileNames.map(async fileName => ({
-		fileName, 
-		isDirectory: (await lstat(normalize(`${baseDir}/${fileName}`))).isDirectory()
-	})));
+	const fileNamesStat = await Promise.all(fileNames.map(async fileName => {
+		const stat = await lstat(normalize(`${baseDir}/${fileName}`));
+		return {
+			directory,
+			fileName, 
+			isDirectory: stat.isDirectory(),
+			size: stat.size,
+			createdAt: new Date(stat.birthtimeMs),
+			modifiedAt: new Date(stat.mtimeMs)
+		}
+	}));
+	console.log({ fileNames, fileNamesStat });
 	
 	return fileNamesStat.filter(filter);
-	console.log({ fileNames, fileNamesStat });
 };
 
 const listProjectNames = async commandLine => {
