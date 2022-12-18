@@ -1,7 +1,7 @@
 import React, {useState} from 'react';
 import { ProjectList } from './ProjectList'
 import { SceneList } from './SceneList'
-import { Editor } from './Editor'
+import { Editor } from './Scene'
 import '@picocss/pico/css/pico.min.css'
 
 export function App() {
