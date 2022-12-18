@@ -2,7 +2,7 @@
 
 const express = require('express');
 
-const { listProjectNames, listProjectScenes } = require('../../generator/project');
+const { listProjectNames, listProjectScenes, readProjectScene } = require('../../generator/project');
 
 const startBackend = (commandLine, port) => {
 	const api = express.Router();
@@ -12,6 +12,11 @@ const startBackend = (commandLine, port) => {
 
 	api.get('/projects/:project/scenes', async (req, res) => {
 		res.send(await listProjectScenes(commandLine, req.params.project))
+	});
+
+	api.get('/projects/:project/scenes/:scene', async (req, res) => {
+		res.type('txt');
+		res.send(await readProjectScene(commandLine, req.params.project, req.params.scene));
 	});
 
 	const app = express();

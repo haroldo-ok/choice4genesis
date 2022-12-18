@@ -1,6 +1,6 @@
 'use strict';
 
-const { exists, lstat, readdir } = require('fs-extra');
+const { exists, lstat, readdir, readFile } = require('fs-extra');
 const { normalize } = require('path');
 
 const validateRequiredParams = params => {
@@ -75,4 +75,11 @@ const listProjectScenes = async (commandLine, projectName) => {
 	return listProjectSources(commandLine, projectName, { filter: ({ fileName }) => /.*\.choice$/ig.test(fileName) });
 };
 
-module.exports = { getProjectsFolder, isProjectsFolderPresent, listProjectNames, listProjectScenes };
+const readProjectScene = async (commandLine, projectName, sceneName) => {
+	const projectsFolder = getProjectsFolder(commandLine);
+	const fileName = normalize(`${projectsFolder}/${projectName}/project/${sceneName}.choice`);
+	const source = await readFile(fileName, {encoding:'utf8', flag:'r'});
+	return source;	
+};
+
+module.exports = { getProjectsFolder, isProjectsFolderPresent, listProjectNames, listProjectScenes, readProjectScene };
