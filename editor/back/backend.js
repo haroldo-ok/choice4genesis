@@ -5,24 +5,38 @@ const express = require('express');
 const { listProjectNames, listProjectScenes, readProjectScene } = require('../../generator/project');
 
 const startBackend = (commandLine, port) => {
+	const errorHandler = (err, req, res, next) => {
+		const fullUrl = req.protocol + '://' + req.get('host') + req.originalUrl;;
+		console.error(`Error ${err} at URL ${fullUrl}`, err);
+		res.status(500).send({ url: fullUrl, error: err });
+	}	
+	
 	const api = express.Router();
 	api.get('/projects', async (req, res) => {
-		res.send(await listProjectNames(commandLine))
+		try {
+			res.send(await listProjectNames(commandLine))
+		} catch (e) {
+			errorHandler(e, req, res);
+		}
 	});
 
 	api.get('/projects/:project/scenes', async (req, res) => {
-		res.send(await listProjectScenes(commandLine, req.params.project))
+		try {
+			res.send(await listProjectScenes(commandLine, req.params.project))
+		} catch (e) {
+			errorHandler(e, req, res);
+		}
 	});
 
 	api.get('/projects/:project/scenes/:scene', async (req, res) => {
-		res.type('txt');
-		res.send(await readProjectScene(commandLine, req.params.project, req.params.scene));
+		try {
+			res.type('txt');
+			res.send(await readProjectScene(commandLine, req.params.project, req.params.scene));
+		} catch (e) {
+			errorHandler(e, req, res);
+		}
 	});
 	
-	api.use((err, req, res, next) => {
-		console.error(err);
-	});
-
 	const app = express();
 		
 	app.use('/v0', api);
