@@ -9,3 +9,7 @@ export function useProjectListApi() {
 export function useSceneListApi(projectName) {
 	return useFetch(`${BASE_URL}/projects/${projectName}/scenes`);
 }
+
+export function useSceneApi(projectName, sceneName) {
+	return useFetch(`${BASE_URL}/projects/${projectName}/scenes/${sceneName}`);
+}

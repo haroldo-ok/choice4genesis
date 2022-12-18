@@ -18,6 +18,10 @@ const startBackend = (commandLine, port) => {
 		res.type('txt');
 		res.send(await readProjectScene(commandLine, req.params.project, req.params.scene));
 	});
+	
+	api.use((err, req, res, next) => {
+		console.error(err);
+	});
 
 	const app = express();
 		

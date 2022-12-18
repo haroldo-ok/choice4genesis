@@ -76,6 +76,7 @@ const listProjectScenes = async (commandLine, projectName) => {
 };
 
 const readProjectScene = async (commandLine, projectName, sceneName) => {
+	validateRequiredParams({ commandLine, projectName, sceneName });
 	const projectsFolder = getProjectsFolder(commandLine);
 	const fileName = normalize(`${projectsFolder}/${projectName}/project/${sceneName}.choice`);
 	const source = await readFile(fileName, {encoding:'utf8', flag:'r'});
