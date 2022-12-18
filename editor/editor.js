@@ -28,7 +28,9 @@ const showEditor = async (commandLine, executeCommands) => {
 	await bundler.watch();	
 	console.log(`Frontend running on port ${PARCEL_PORT}`);
 
-	openInBrowser(`http://localhost:${PARCEL_PORT}/`);
+	if (commandLine.openBrowser) {
+		openInBrowser(`http://localhost:${PARCEL_PORT}/`);
+	}
 };
 
 module.exports = { showEditor };
