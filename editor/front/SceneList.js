@@ -5,7 +5,10 @@ export function SceneList(props) {
 	
 	const { data, error } = useSceneListApi(props.projectName);
 	
-	if (error) return <h1>Error while listing scenes: ${error}</h1>;
+	if (error) {
+		console.error('Error while listing scenes', error);
+		return <h1>Error while listing scenes</h1>;
+	}
 	if (!data) return <h1>Loading scene list...</h1>;
 	
 	const selectedValue = props.value && data.find(projectName => projectName === props.value) ? props.value : '';
