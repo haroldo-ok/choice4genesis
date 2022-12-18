@@ -14,14 +14,19 @@ export function SceneList(props) {
 	const handleProjectNameChange = e => {
 		props.onChange && props.onChange(e.target.value);
 	};
+
+	const preprocessData = data => data.map(o => ({
+		name: o.fileName.replace(/\.choice$/ig, ''),
+		...o
+	}));
 	
 	return (
 		<aside>
 			<nav>
 				<ul>
-					{['', ...data].map(({ fileName }) =>
-						<li key={fileName}>
-							<a href="#" class="secondary">{fileName || '-- Select scene --'}</a>
+					{preprocessData(data).map(({ name }) =>
+						<li key={name}>
+							<a href="#" className="secondary">{name}</a>
 						</li>
 					)}
 				</ul>

@@ -11,7 +11,6 @@ const startBackend = (commandLine, port) => {
 	});
 
 	api.get('/projects/:project/scenes', async (req, res) => {
-		console.log({ req });
 		res.send(await listProjectScenes(commandLine, req.params.project))
 	});
 

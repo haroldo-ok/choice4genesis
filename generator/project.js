@@ -62,7 +62,6 @@ const listProjectSources = async (commandLine, projectName, options = {}) => {
 			directory: directory.replace(/^\/[^\/]+\/project/g, '') || '/', 
 			...rest
 		}),
-		isRecursive: true,
 		...options
 	});
 };
