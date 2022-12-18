@@ -1,8 +1,7 @@
-import React, {useState} from 'react';
-import { useFetch } from 'usehooks-ts'
+import { useProjectListApi } from './hooks';
 
 export function ProjectList(props) {
-	const { data, error } = useFetch('/api/v0/projects');
+	const { data, error } = useProjectListApi();
 	
 	if (error) return <h1>Error while listing projects: ${error}</h1>;
 	if (!data) return <h1>Loading project list...</h1>;

@@ -1,10 +1,9 @@
-import React, {useState} from 'react';
-import { useFetch } from 'usehooks-ts'
+import { useSceneListApi } from './hooks';
 
 export function SceneList(props) {
 	if (!props.projectName) return <h1>Please, select a project...</h1>;
 	
-	const { data, error } = useFetch(`/api/v0/projects/${props.projectName}/scenes`);
+	const { data, error } = useSceneListApi(props.projectName);
 	
 	if (error) return <h1>Error while listing scenes: ${error}</h1>;
 	if (!data) return <h1>Loading scene list...</h1>;
