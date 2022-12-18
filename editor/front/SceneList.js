@@ -2,17 +2,17 @@ import React, {useState} from 'react';
 import { useFetch } from 'usehooks-ts'
 
 export function SceneList(props) {
-	if (!props.projectName) return `<h1>Please, select a project...</h1>`
+	if (!props.projectName) return <h1>Please, select a project...</h1>;
 	
 	const { data, error } = useFetch(`/api/v0/projects/${props.projectName}/scenes`);
 	
-	if (error) return <h1>Error while listing projects: ${error}</h1>;
-	if (!data) return <h1>Loading project list...</h1>;
+	if (error) return <h1>Error while listing scenes: ${error}</h1>;
+	if (!data) return <h1>Loading scene list...</h1>;
 	
 	const selectedValue = props.value && data.find(projectName => projectName === props.value) ? props.value : '';
 	
-	const handleProjectNameChange = e => {
-		props.onChange && props.onChange(e.target.value);
+	const handleSceneChange = name => {
+		props.onChange && props.onChange(name);
 	};
 
 	const preprocessData = data => data.map(o => ({
@@ -26,7 +26,9 @@ export function SceneList(props) {
 				<ul>
 					{preprocessData(data).map(({ name }) =>
 						<li key={name}>
-							<a href="#" className="secondary">{name}</a>
+							<a href="#" className={name === props.value ? '' : 'secondary'} onClick={() => handleSceneChange(name)}>
+								{name}
+							</a>
 						</li>
 					)}
 				</ul>
