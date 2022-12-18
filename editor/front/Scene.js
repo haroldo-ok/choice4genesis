@@ -18,7 +18,8 @@ export function Scene(props) {
 	return (
 	   <Editor
 		 height="90vh"
-		 value={data}
+		 path={`${props.projectName}/project/${props.sceneName}`}
+		 defaultValue={data}
 	   />
    );
 };
