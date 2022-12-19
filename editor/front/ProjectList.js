@@ -11,15 +11,23 @@ export function ProjectList(props) {
 	
 	const selectedValue = props.value && data.find(projectName => projectName === props.value) ? props.value : '';
 	
-	const handleProjectNameChange = e => {
-		props.onChange && props.onChange(e.target.value);
+	const handleProjectNameChange = projectName => {
+		props.onChange && props.onChange(projectName);
 	};
 	
 	return (
-		<select value={selectedValue} onChange={handleProjectNameChange}>
-			{['', ...data].map(projectName => 
-				<option key={projectName} value={projectName}>{projectName || '-- Select project --'}</option>
-			)};
-		</select>
+		<aside>
+			<nav>
+				<ul>
+					{data.map(projectName =>
+						<li key={projectName}>
+							<a href="#" className={projectName === selectedValue ? '' : 'secondary'} onClick={() => handleProjectNameChange(projectName)}>
+								{projectName}
+							</a>
+						</li>
+					)}
+				</ul>
+			</nav>
+		</aside>
 	);
 }

@@ -7,8 +7,7 @@ export function prepareSyntax() {
 	const monaco = useMonaco();
 	useEffect(() => {
 		if (!monaco) return;		
-		console.log("here is the monaco instance:", monaco);
-		
+	
 		monaco.languages.register({ id: 'choicescript' });
 		monaco.languages.setMonarchTokensProvider('choicescript', {
 			tokenizer: {

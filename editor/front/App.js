@@ -14,9 +14,21 @@ export function App() {
 
 	const [projectName, setProjectName] = useState("");
 	const [sceneName, setSceneName] = useState("");
+	
+	if (!projectName) {
+		return (
+			<main className="container">
+				<nav>
+					<article>
+						<header>Select a project to edit...</header>
+						<ProjectList value={projectName} onChange={setProjectName} />
+					</article>
+				</nav>
+			</main>
+		);
+	}
 
-	return <div>
-		{ !projectName && <ProjectList value={projectName} onChange={setProjectName} /> }
+	return (
 		<div className="editContainer">
 			<nav>
 				<article>
@@ -28,5 +40,5 @@ export function App() {
 				<Scene projectName={projectName} sceneName={sceneName} />
 			</div>
 		</div>
-	</div>
+	);
 }
