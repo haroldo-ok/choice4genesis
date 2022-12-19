@@ -1,11 +1,11 @@
-import { useSceneApi } from './hooks';
+'use strict';
+
 import Editor, { DiffEditor, useMonaco, loader } from "@monaco-editor/react";
+import { useSceneApi } from './hooks';
 
 export function Scene(props) {
 	if (!props.projectName) return <h1>Please, select a project...</h1>;
 	if (!props.sceneName) return <h1>Please, select a scene...</h1>;
-	
-	console.log('Here 1', { sceneName: props.sceneName });
 	
 	const { data, error } = useSceneApi(props.projectName, props.sceneName);
 	
@@ -18,6 +18,7 @@ export function Scene(props) {
 	return (
 	   <Editor
 		 height="90vh"
+		 defaultLanguage="choicescript"
 		 path={`${props.projectName}/project/${props.sceneName}`}
 		 defaultValue={data}
 	   />
