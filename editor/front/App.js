@@ -29,15 +29,29 @@ export function App() {
 	}
 
 	return (
-		<div className="editContainer">
+		<div>
 			<nav>
-				<article>
-					<header>Scenes</header>
-					<SceneList projectName={projectName} value={sceneName} onChange={setSceneName} />
-				</article>
+				<ul>
+					<li><a href="#" role="button" className="secondary">Save</a></li>
+					<li><a href="#" role="button" className="secondary">Save all</a></li>
+				</ul>
+				<ul>
+					<li><strong>choice4genesis editor</strong></li>
+				</ul>			
+				<ul>
+					<li><a href="#" role="button">Run</a></li>
+				</ul>
 			</nav>
-			<div>
-				<Scene projectName={projectName} sceneName={sceneName} />
+			<div className="editContainer">
+				<nav>
+					<article>
+						<header>Scenes</header>
+						<SceneList projectName={projectName} value={sceneName} onChange={setSceneName} />
+					</article>
+				</nav>
+				<div>
+					<Scene projectName={projectName} sceneName={sceneName} />
+				</div>
 			</div>
 		</div>
 	);
