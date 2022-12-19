@@ -12,11 +12,11 @@ import { Scene } from './Scene'
 export function App() {
 	prepareSyntax();
 
-	const [projectName, setProjectName] = useState("test");
+	const [projectName, setProjectName] = useState("");
 	const [sceneName, setSceneName] = useState("");
 
 	return <div>
-		<ProjectList value={projectName} onChange={setProjectName} />
+		{ !projectName && <ProjectList value={projectName} onChange={setProjectName} /> }
 		<div className="editContainer">
 			<nav>
 				<article>
