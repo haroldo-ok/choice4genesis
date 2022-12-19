@@ -16,7 +16,11 @@ export function App() {
 		monaco.languages.setMonarchTokensProvider('choicescript', {
 			tokenizer: {
 				root: [
-					[/^\*[ \t]*\w+/, 'keyword']
+					[/^[ \t]*\*[ \t]*\w+/, 'keyword'],
+					[/^[ \t]*\#/, 'keyword'],
+					[/"((\\"|[^"])+)"/, 'string'],
+					[/[\(\),]/, 'delimiter'],
+					[/\d+/, 'number']
 				]
 			}
 		});
