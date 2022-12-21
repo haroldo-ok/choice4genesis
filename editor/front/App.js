@@ -2,12 +2,14 @@ import React, { useEffect, useState } from 'react';
 import Editor, { DiffEditor, useMonaco, loader } from "@monaco-editor/react";
 
 import '@picocss/pico/css/pico.min.css'
+import 'font-awesome/css/font-awesome.min.css'
 import './App.css'
 
 import { prepareSyntax } from './syntax'
 import { ProjectList } from './ProjectList'
 import { SceneList } from './SceneList'
 import { Scene } from './Scene'
+import { RunButton } from './RunButton'
 
 export function App() {
 	prepareSyntax();
@@ -39,7 +41,7 @@ export function App() {
 					<li><strong>choice4genesis editor</strong></li>
 				</ul>			
 				<ul>
-					<li><a href="#" role="button">Run</a></li>
+					<li><RunButton projectName={projectName} /></li>
 				</ul>
 			</nav>
 			<div className="editContainer">
