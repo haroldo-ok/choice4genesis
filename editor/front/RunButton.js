@@ -1,30 +1,27 @@
 'use strict';
+
+import React, { useState } from 'react';
+
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faPlay } from '@fortawesome/free-solid-svg-icons'
 
-import { useSceneListApi } from './hooks';
+import { callRunApi } from './hooks';
 
 export function RunButton(props) {
-	if (!props.projectName) return <a href="#" role="button" disabled={true}><FontAwesomeIcon icon={faPlay} /> Run?</a>;
+	if (!props.projectName) return <a href="#" role="button" disabled={true}><FontAwesomeIcon icon={faPlay} /> Run</a>;
 	
-	const { data, error } = useSceneListApi(props.projectName);
+	const [processing, setProcessing] = useState(false);
 	
-	if (error) {
-		console.error('Error while listing scenes', error);
-		return <h1>Error while listing scenes</h1>;
-	}
-	if (!data) return <h1>Loading scene list...</h1>;
-	
-	const selectedValue = props.value && data.find(projectName => projectName === props.value) ? props.value : '';
-	
-	const handleSceneChange = name => {
-		props.onChange && props.onChange(name);
+	const handleButtonClick = async e => {
+		setProcessing(true);
+		try {
+			await callRunApi(props.projectName);
+		} catch (e) {
+			console.error('Error while executing', e);
+		} finally {
+			setProcessing(false);
+		}
 	};
-
-	const preprocessData = data => data.map(o => ({
-		name: o.fileName.replace(/\.choice$/ig, ''),
-		...o
-	}));
 	
-	return <a href="#" role="button"><FontAwesomeIcon icon={faPlay} /> Run!</a>;
+	return <a href="#" role="button" disabled={processing} onClick={handleButtonClick}><FontAwesomeIcon icon={faPlay} /> Run{processing ? '*' : ''}</a>;
 }

@@ -5,7 +5,7 @@ import axios from 'axios';
 const BASE_URL = '/api/v0';
 
 // Based on https://dev.to/techcheck/custom-react-hook-usefetch-eid
-export function useFetch(url) {
+export function useFetch(url, options = {}) {
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(null);
   const [error, setError] = useState(null);
@@ -15,7 +15,12 @@ export function useFetch(url) {
       setData(null);
       setError(null);
       const source = axios.CancelToken.source();
-      axios.get(url, { cancelToken: source.token })
+	  
+	  const promise = options.isPost ?
+		axios.post(url, null, { cancelToken: source.token }) :
+		axios.get(url, { cancelToken: source.token });
+      
+	  promise
       .then(res => {
           setLoading(false);
           //checking for multiple responses for more flexibility 
@@ -45,4 +50,8 @@ export function useSceneListApi(projectName) {
 
 export function useSceneApi(projectName, sceneName) {
 	return useFetch(`${BASE_URL}/projects/${projectName}/scenes/${sceneName}`);
+}
+
+export async function callRunApi(projectName) {
+	return axios.post(`${BASE_URL}/projects/${projectName}/run`);
 }
