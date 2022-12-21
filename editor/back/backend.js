@@ -1,6 +1,7 @@
 'use strict';
 
 const express = require('express');
+const { fork } = require('child_process');
 
 const { listProjectNames, listProjectScenes, readProjectScene } = require('../../generator/project');
 
@@ -37,6 +38,18 @@ const startBackend = (commandLine, port) => {
 		}
 	});
 	
+	api.post('/projects/:project/run', async (req, res) => {
+		try {
+			const child = fork('.', ['transpile', req.params.project, '--', 'compile', 'emulate']);
+			child.on('exit', () => {
+				console.log('Execution OK');
+				res.send({ message: 'Execution OK' });
+			});
+		} catch (e) {
+			errorHandler(e, req, res);
+		}
+	});
+
 	const app = express();
 		
 	app.use('/v0', api);
