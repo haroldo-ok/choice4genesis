@@ -3,7 +3,7 @@
 import React, { useState } from 'react';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faPlay } from '@fortawesome/free-solid-svg-icons'
+import { faCircleNotch, faPlay } from '@fortawesome/free-solid-svg-icons'
 
 import { callRunApi } from './hooks';
 
@@ -23,5 +23,9 @@ export function RunButton(props) {
 		}
 	};
 	
-	return <a href="#" role="button" disabled={processing} onClick={handleButtonClick}><FontAwesomeIcon icon={faPlay} /> Run{processing ? '*' : ''}</a>;
+	return (
+		<a href="#" role="button" disabled={processing} onClick={handleButtonClick}>
+			<FontAwesomeIcon icon={processing ? faCircleNotch : faPlay} className={processing ? 'fa-spin' : ''} /> Run
+		</a>
+	);
 }
