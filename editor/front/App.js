@@ -16,6 +16,15 @@ export function App() {
 
 	const [projectName, setProjectName] = useState("");
 	const [sceneName, setSceneName] = useState("");
+	const [scenes, setScenes] = useState({});
+	
+	const handleSceneDataChange = ({ data, isModified }) => {
+		const newScenes = { ...scenes };
+		newScenes[sceneName] = { data, isModified };
+		setScenes(newScenes);
+	}
+	
+	const isModifiedScene = sceneName => (scenes[sceneName] || {}).isModified;
 	
 	if (!projectName) {
 		return (
@@ -48,11 +57,11 @@ export function App() {
 				<nav>
 					<article>
 						<header>Scenes</header>
-						<SceneList projectName={projectName} value={sceneName} onChange={setSceneName} />
+						<SceneList projectName={projectName} value={sceneName} onChange={setSceneName} isModified={isModifiedScene} />
 					</article>
 				</nav>
 				<div>
-					<Scene projectName={projectName} sceneName={sceneName} />
+					<Scene projectName={projectName} sceneName={sceneName} onChange={handleSceneDataChange} />
 				</div>
 			</div>
 		</div>

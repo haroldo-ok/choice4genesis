@@ -30,6 +30,7 @@ export function SceneList(props) {
 						<li key={name}>
 							<a href="#" className={name === props.value ? '' : 'secondary'} onClick={() => handleSceneChange(name)}>
 								{name}
+								{ props.isModified && props.isModified(name) ? ' (modified)' : '' }
 							</a>
 						</li>
 					)}
