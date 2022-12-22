@@ -1,7 +1,7 @@
 'use strict';
 
 import Editor, { DiffEditor, useMonaco, loader } from "@monaco-editor/react";
-import { useSceneApi } from './hooks';
+import { useSceneApi } from './hooks/api';
 
 export function Scene(props) {
 	if (!props.projectName) return <h1>Please, select a project...</h1>;

@@ -1,4 +1,4 @@
-import { useProjectListApi } from './hooks';
+import { useProjectListApi } from './hooks/api';
 
 export function ProjectList(props) {
 	const { data, error } = useProjectListApi();

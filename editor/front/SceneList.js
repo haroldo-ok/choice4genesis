@@ -1,4 +1,4 @@
-import { useSceneListApi } from './hooks';
+import { useSceneListApi } from './hooks/api';
 
 export function SceneList(props) {
 	if (!props.projectName) return <h1>Please, select a project...</h1>;

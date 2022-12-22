@@ -5,7 +5,7 @@ import React, { useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faCircleNotch, faPlay } from '@fortawesome/free-solid-svg-icons'
 
-import { callRunApi } from './hooks';
+import { callRunApi } from './hooks/api';
 
 export function RunButton(props) {
 	if (!props.projectName) return <a href="#" role="button" disabled={true}><FontAwesomeIcon icon={faPlay} /> Run</a>;
