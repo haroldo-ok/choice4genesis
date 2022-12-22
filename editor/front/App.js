@@ -10,6 +10,7 @@ import { ProjectList } from './ProjectList'
 import { SceneList } from './SceneList'
 import { Scene } from './Scene'
 import { RunButton } from './RunButton'
+import { SaveAllButton } from './SaveAllButton'
 
 import { callSaveSceneApi } from './hooks/api'
 
@@ -34,6 +35,14 @@ export function App() {
 		handleSceneDataChange({ data, isModified: false });
 	};
 	
+	const saveAll = async () => {
+		const promises = Object.entries(scenes)
+		.filter(([sceneName, { isModified }]) => isModified)
+		.map(([sceneName]) => saveScene(sceneName));
+		
+		await Promise.all(promises);
+	};
+	
 	if (!projectName) {
 		return (
 			<main className="container">
@@ -51,8 +60,7 @@ export function App() {
 		<div>
 			<nav>
 				<ul>
-					<li><a href="#" role="button" className="secondary">Save</a></li>
-					<li><a href="#" role="button" className="secondary">Save all</a></li>
+					<li><SaveAllButton projectName={projectName} onClick={saveAll} /></li>					
 				</ul>
 				<ul>
 					<li><strong>choice4genesis editor</strong></li>
