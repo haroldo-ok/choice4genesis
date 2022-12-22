@@ -1,3 +1,6 @@
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faFloppyDisk } from '@fortawesome/free-solid-svg-icons'
+
 import { useSceneListApi } from './hooks/api';
 
 export function SceneList(props) {
@@ -22,6 +25,8 @@ export function SceneList(props) {
 		...o
 	}));
 	
+	const isModified = name => props.isModified && props.isModified(name);
+	
 	return (
 		<aside>
 			<nav>
@@ -29,8 +34,8 @@ export function SceneList(props) {
 					{preprocessData(data).map(({ name }) =>
 						<li key={name}>
 							<a href="#" className={name === props.value ? '' : 'secondary'} onClick={() => handleSceneChange(name)}>
+								{ isModified(name) && <span><FontAwesomeIcon icon={faFloppyDisk} />&nbsp;</span> }
 								{name}
-								{ props.isModified && props.isModified(name) ? ' (modified)' : '' }
 							</a>
 						</li>
 					)}
