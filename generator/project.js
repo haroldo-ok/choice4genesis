@@ -1,6 +1,6 @@
 'use strict';
 
-const { exists, lstat, readdir, readFile } = require('fs-extra');
+const { exists, lstat, readdir, readFile, writeFile } = require('fs-extra');
 const { normalize } = require('path');
 
 const validateRequiredParams = params => {
@@ -83,4 +83,11 @@ const readProjectScene = async (commandLine, projectName, sceneName) => {
 	return source;	
 };
 
-module.exports = { getProjectsFolder, isProjectsFolderPresent, listProjectNames, listProjectScenes, readProjectScene };
+const writeProjectScene = async (commandLine, projectName, sceneName, text) => {
+	validateRequiredParams({ commandLine, projectName, sceneName });
+	const projectsFolder = getProjectsFolder(commandLine);
+	const fileName = normalize(`${projectsFolder}/${projectName}/project/${sceneName}.choice`);
+	await writeFile(fileName, text, {encoding:'utf8', flag:'w'});
+};
+
+module.exports = { getProjectsFolder, isProjectsFolderPresent, listProjectNames, listProjectScenes, readProjectScene, writeProjectScene };

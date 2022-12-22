@@ -3,7 +3,7 @@
 const express = require('express');
 const { fork } = require('child_process');
 
-const { listProjectNames, listProjectScenes, readProjectScene } = require('../../generator/project');
+const { listProjectNames, listProjectScenes, readProjectScene, writeProjectScene } = require('../../generator/project');
 
 const startBackend = (commandLine, port) => {
 	const errorHandler = (err, req, res, next) => {
@@ -38,6 +38,15 @@ const startBackend = (commandLine, port) => {
 		}
 	});
 	
+	api.put('/projects/:project/scenes/:scene', express.text(), async (req, res) => {
+		try {
+			await writeProjectScene(commandLine, req.params.project, req.params.scene, req.body)
+			res.send({ message: 'File saved.' });
+		} catch (e) {
+			errorHandler(e, req, res);
+		}
+	});
+
 	api.post('/projects/:project/run', async (req, res) => {
 		try {
 			const child = fork('.', ['transpile', req.params.project, '--', 'compile', 'emulate']);
