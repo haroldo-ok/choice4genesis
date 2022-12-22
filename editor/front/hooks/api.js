@@ -52,6 +52,15 @@ export function useSceneApi(projectName, sceneName) {
 	return useFetch(`${BASE_URL}/projects/${projectName}/scenes/${sceneName}`);
 }
 
+export async function callSaveSceneApi(projectName, sceneName, text) {
+	return axios.put(`${BASE_URL}/projects/${projectName}/scenes/${sceneName}`, text, {
+		headers: {
+			'Content-Length': 0,
+			'Content-Type': 'text/plain'
+		}
+    });
+}
+
 export async function callRunApi(projectName) {
 	return axios.post(`${BASE_URL}/projects/${projectName}/run`);
 }

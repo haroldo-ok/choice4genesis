@@ -19,6 +19,11 @@ export function SceneList(props) {
 	const handleSceneChange = name => {
 		props.onChange && props.onChange(name);
 	};
+	
+	const handleSaveButtonClick = (e, sceneName) => {
+		e.preventDefault();
+		props.onSaveScene && props.onSaveScene(sceneName);
+	}
 
 	const preprocessData = data => data.map(o => ({
 		name: o.fileName.replace(/\.choice$/ig, ''),
@@ -34,7 +39,7 @@ export function SceneList(props) {
 					{preprocessData(data).map(({ name }) =>
 						<li key={name}>
 							<a href="#" className={name === props.value ? '' : 'secondary'} onClick={() => handleSceneChange(name)}>
-								{ isModified(name) && <span><FontAwesomeIcon icon={faFloppyDisk} />&nbsp;</span> }
+								{ isModified(name) && <span><FontAwesomeIcon icon={faFloppyDisk} onClick={e => handleSaveButtonClick(e, name)} />&nbsp;</span> }
 								{name}
 							</a>
 						</li>

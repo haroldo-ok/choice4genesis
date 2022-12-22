@@ -11,6 +11,8 @@ import { SceneList } from './SceneList'
 import { Scene } from './Scene'
 import { RunButton } from './RunButton'
 
+import { callSaveSceneApi } from './hooks/api'
+
 export function App() {
 	prepareSyntax();
 
@@ -25,6 +27,12 @@ export function App() {
 	}
 	
 	const isModifiedScene = sceneName => (scenes[sceneName] || {}).isModified;
+	
+	const saveScene = async sceneName => {
+		const data = scenes[sceneName].data;
+		await callSaveSceneApi(projectName, sceneName, data);
+		handleSceneDataChange({ data, isModified: false });
+	};
 	
 	if (!projectName) {
 		return (
@@ -57,7 +65,7 @@ export function App() {
 				<nav>
 					<article>
 						<header>Scenes</header>
-						<SceneList projectName={projectName} value={sceneName} onChange={setSceneName} isModified={isModifiedScene} />
+						<SceneList projectName={projectName} value={sceneName} onChange={setSceneName} onSaveScene={saveScene} isModified={isModifiedScene} />
 					</article>
 				</nav>
 				<div>
