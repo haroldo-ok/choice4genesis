@@ -1,0 +1,10 @@
+.editContainer {
+}
+
+.editContainer > nav {
+	float: left;
+}
+
+.editContainer > div {
+	overflow: auto;
+}

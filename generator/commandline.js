@@ -23,6 +23,7 @@ const readCommandLine = () => yargs
 		})
 	})
 	.command('menu', 'show an interactive menu')
+	.command('edit', 'calls the code editor')
 	.options({
 		'project-dir': {
 			alias: 'pd',
@@ -57,6 +58,12 @@ const readCommandLine = () => yargs
 			default: false,
 			boolean: true,
 			describe: 'Watch project for changes, and recompile if changed.'
+		},
+		'open-browser': {
+			alias: 'ob',
+			default: true,
+			boolean: true,
+			describe: 'Says if the editor should be immediately opened in the browser.'
 		}
 	})
 	.demandCommand(1, 'You need to inform at least one command before moving on')
