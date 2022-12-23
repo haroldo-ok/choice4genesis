@@ -1,6 +1,6 @@
 {
   "name": "choice4genesis",
-  "version": "0.13.0",
+  "version": "0.13.1",
   "description": "A ChoiceScript clone that generates SGDK-compatible C source for the Sega Genesis ",
   "main": "index.js",
   "scripts": {
