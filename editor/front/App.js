@@ -21,18 +21,26 @@ export function App() {
 	const [sceneName, setSceneName] = useState("");
 	const [scenes, setScenes] = useState({});
 	
-	const handleSceneDataChange = ({ data, isModified }) => {
+	// TODO: The code that keeps track of whether the scene's data has been changed is a big mess, right now.
+	
+	const handleSceneDataChange = (sceneInfo) => {
+		const { originalData, data } = sceneInfo;
+		const lastData = sceneInfo.lastData === undefined ? (scenes[sceneName] || {}).lastData : sceneInfo.lastData;
+		const comparedData = lastData === undefined ? originalData : lastData;
+		const isModified = comparedData != data;
+		
 		const newScenes = { ...scenes };
-		newScenes[sceneName] = { data, isModified };
+		newScenes[sceneName] = { ...sceneInfo, lastData, isModified };
 		setScenes(newScenes);
 	}
 	
 	const isModifiedScene = sceneName => (scenes[sceneName] || {}).isModified;
 	
 	const saveScene = async sceneName => {
-		const data = scenes[sceneName].data;
+		const sceneInfo = scenes[sceneName];
+		const { data } = sceneInfo;		
 		await callSaveSceneApi(projectName, sceneName, data);
-		handleSceneDataChange({ data, isModified: false });
+		handleSceneDataChange({ ...sceneInfo, lastData: data });
 	};
 	
 	const saveAll = async () => {

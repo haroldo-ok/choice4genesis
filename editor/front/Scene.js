@@ -12,8 +12,8 @@ export function Scene(props) {
 	
 	const handleEditorChange = newData => {
 		props.onChange && props.onChange({
-			data: newData,
-			isModified: data != newData
+			originalData: data,
+			data: newData
 		});
 	};
 	
