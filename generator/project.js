@@ -3,6 +3,8 @@
 const { exists, lstat, readdir, readFile, writeFile } = require('fs-extra');
 const { normalize } = require('path');
 
+const openExplorer = require('open-file-explorer');
+
 const validateRequiredParams = params => {
 	const missingParams = Object.entries(params).filter(([name, value]) => !value).map(([name, value]) => name);
 	if (missingParams.length) {
@@ -90,4 +92,18 @@ const writeProjectScene = async (commandLine, projectName, sceneName, text) => {
 	await writeFile(fileName, text, {encoding:'utf8', flag:'w'});
 };
 
-module.exports = { getProjectsFolder, isProjectsFolderPresent, listProjectNames, listProjectScenes, readProjectScene, writeProjectScene };
+const openProjectOnExplorer = async (commandLine, projectName) => new Promise((resolve, reject) => {
+	validateRequiredParams({ commandLine, projectName });
+
+	const projectsFolder = getProjectsFolder(commandLine);
+	const baseDir = normalize(`${projectsFolder}/${projectName}/project`);
+
+	openExplorer(baseDir, err => {
+		if(err) {
+			reject(err);
+		}
+		resolve({ path: baseDir });
+	});
+});
+
+module.exports = { getProjectsFolder, isProjectsFolderPresent, listProjectNames, listProjectScenes, readProjectScene, openProjectOnExplorer };

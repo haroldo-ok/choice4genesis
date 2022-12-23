@@ -3,7 +3,7 @@
 const express = require('express');
 const { fork } = require('child_process');
 
-const { listProjectNames, listProjectScenes, readProjectScene, writeProjectScene } = require('../../generator/project');
+const { listProjectNames, listProjectScenes, openProjectOnExplorer, readProjectScene, writeProjectScene } = require('../../generator/project');
 
 const startBackend = (commandLine, port) => {
 	const errorHandler = (err, req, res, next) => {
@@ -54,6 +54,15 @@ const startBackend = (commandLine, port) => {
 				console.log('Execution OK');
 				res.send({ message: 'Execution OK' });
 			});
+		} catch (e) {
+			errorHandler(e, req, res);
+		}
+	});
+
+	api.post('/projects/:project/explore', async (req, res) => {
+		try {
+			openProjectOnExplorer(commandLine, req.params.project);
+			res.send({ message: 'Execution OK' });
 		} catch (e) {
 			errorHandler(e, req, res);
 		}
