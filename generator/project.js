@@ -106,4 +106,4 @@ const openProjectOnExplorer = async (commandLine, projectName) => new Promise((r
 	});
 });
 
-module.exports = { getProjectsFolder, isProjectsFolderPresent, listProjectNames, listProjectScenes, readProjectScene, openProjectOnExplorer };
+module.exports = { getProjectsFolder, isProjectsFolderPresent, listProjectNames, listProjectScenes, readProjectScene, writeProjectScene, openProjectOnExplorer };
