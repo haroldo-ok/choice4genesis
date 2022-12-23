@@ -1,16 +1,15 @@
 'use strict';
 
-
-const { Parcel } = require('@parcel/core');
-const { openInBrowser } = require('@parcel/utils');
-const { normalize } = require('path');
-
-const { startBackend } = require('./back/backend');
-
 const PARCEL_PORT = 1234;
 const API_PORT = 1235;
 
 const showEditor = async (commandLine, executeCommands) => {
+	const { Parcel } = require('@parcel/core');
+	const { openInBrowser } = require('@parcel/utils');
+	const { normalize } = require('path');
+
+	const { startBackend } = require('./back/backend');
+
 	startBackend(commandLine, API_PORT);
 	
 	let bundler = new Parcel({
