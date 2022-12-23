@@ -8,7 +8,7 @@ export function Scene(props) {
 	if (!props.projectName) return <h1>Please, select a project...</h1>;
 	if (!props.sceneName) return <h1>Please, select a scene...</h1>;
 	
-	const { data, error } = useSceneApi(props.projectName, props.sceneName);
+	const { data, error, loading } = useSceneApi(props.projectName, props.sceneName);
 	
 	const handleEditorChange = newData => {
 		props.onChange && props.onChange({
@@ -21,7 +21,7 @@ export function Scene(props) {
 		console.error(`Error while loading scene ${props.sceneName}`, error);
 		return <h1>Error while loading scene {props.sceneName}</h1>;
 	}			
-	if (!data) return <h1>Loading scene "{props.sceneName}"...</h1>;	
+	if (loading) return <h1>Loading scene "{props.sceneName}"...</h1>;	
 	
 	return (
 	   <Editor
