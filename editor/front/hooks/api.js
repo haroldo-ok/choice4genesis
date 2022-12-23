@@ -64,3 +64,7 @@ export async function callSaveSceneApi(projectName, sceneName, text) {
 export async function callRunApi(projectName) {
 	return axios.post(`${BASE_URL}/projects/${projectName}/run`);
 }
+
+export async function callOpenExplorerApi(projectName) {
+	return axios.post(`${BASE_URL}/projects/${projectName}/explore`);
+}

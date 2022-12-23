@@ -11,6 +11,7 @@ import { SceneList } from './SceneList'
 import { Scene } from './Scene'
 import { RunButton } from './RunButton'
 import { SaveAllButton } from './SaveAllButton'
+import { OpenFileExplorer } from './OpenFileExplorer'
 
 import { callSaveSceneApi } from './hooks/api'
 
@@ -73,13 +74,14 @@ export function App() {
 		<div>
 			<nav>
 				<ul>
-					<li><SaveAllButton projectName={projectName} onClick={saveAll} /></li>					
+					<li><SaveAllButton projectName={projectName} onClick={saveAll} /></li>
+					<li><OpenFileExplorer projectName={projectName} /></li>
 				</ul>
 				<ul>
 					<li><strong>choice4genesis editor</strong></li>
 				</ul>			
 				<ul>
-					<li><RunButton projectName={projectName} onSaveAll={saveAll} /></li>
+					<li><RunButton projectName={projectName} onSaveAll={saveAll} /></li>					
 				</ul>
 			</nav>
 			<div className="editContainer">
