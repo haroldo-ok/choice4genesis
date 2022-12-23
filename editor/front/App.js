@@ -49,6 +49,11 @@ export function App() {
 		.map(([sceneName]) => saveScene(sceneName));
 		
 		await Promise.all(promises);
+		
+		setScenes(Object.fromEntries(Object.entries(scenes).map(([sceneName, sceneInfo]) => {
+			const { data } = sceneInfo;
+			return [sceneName, { ...sceneInfo, lastData: data, isModified: false }]
+		})));
 	};
 	
 	if (!projectName) {
