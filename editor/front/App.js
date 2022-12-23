@@ -79,7 +79,7 @@ export function App() {
 					<li><strong>choice4genesis editor</strong></li>
 				</ul>			
 				<ul>
-					<li><RunButton projectName={projectName} /></li>
+					<li><RunButton projectName={projectName} onSaveAll={saveAll} /></li>
 				</ul>
 			</nav>
 			<div className="editContainer">

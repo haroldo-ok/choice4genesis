@@ -15,6 +15,7 @@ export function RunButton(props) {
 	const handleButtonClick = async e => {
 		setProcessing(true);
 		try {
+			props.onSaveAll && await props.onSaveAll();
 			await callRunApi(props.projectName);
 		} catch (e) {
 			console.error('Error while executing', e);
