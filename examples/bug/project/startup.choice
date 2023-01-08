@@ -1,0 +1,17 @@
+* choice
+	# Order A (Triggers bug)
+		* background "does-not-cause-problem.png"
+		This one does not cause a problem
+		* flush
+
+		* background "causes-problem.png"
+		This one causes a problem
+		* flush
+	# Order B (No bug)
+		* background "causes-problem.png"
+		This one causes a problem
+		* flush
+
+		* background "does-not-cause-problem.png"
+		This one does not cause a problem
+		* flush
