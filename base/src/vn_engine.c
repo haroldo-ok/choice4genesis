@@ -195,6 +195,7 @@ void VN_init() {
 	
 	VN_windowDefault();
 	window.cursor = NULL;
+	bufferResize(window.w, window.h);
 
 	SPR_init(0, 0, 0);
 
