@@ -215,13 +215,11 @@ void VN_init() {
 
 
 void VN_showImage(const Image *image, VDPPlane plane, u16 palNum, u16 x, u16 y) {
-	VDP_loadTileSet(image->tileset, imageInfo.tileNumber, DMA);
-    TileMap *tmap = unpackTileMap(image->tilemap, NULL);
-	VDP_setTileMapEx(plane, tmap, TILE_ATTR_FULL(palNum, FALSE, FALSE, FALSE, imageInfo.tileNumber), 
-		x, y,  0, 0, tmap->w, tmap->h, CPU);
+	VDP_loadTileSet(image->tileset, imageInfo.tileNumber, DMA);	
+	VDP_setTileMapEx(plane, image->tilemap, TILE_ATTR_FULL(palNum, FALSE, FALSE, FALSE, imageInfo.tileNumber), 
+		x, y,  0, 0, image->tilemap->w, image->tilemap->h, CPU);
 	VDP_setPalette(palNum, (u16*)image->palette->data);
 	imageInfo.tileNumber += image->tileset->numTile;
-	free(tmap);
 }
 
 void VN_background(const Image *image) {
