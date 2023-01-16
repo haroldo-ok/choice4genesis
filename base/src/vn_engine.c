@@ -130,8 +130,8 @@ void bufferResize(int width, int height) {
 	
 	// Deallocate existing buffers
 	if (msgLines.lines) {
-		for (i = 0; i != msgLines.height; i++) {
-			free(msgLines.lines[i]);
+		for (i = msgLines.height; i; i--) {
+			free(msgLines.lines[i - 1]);
 		}
 		free(msgLines.lines);
 		msgLines.lines = 0;
