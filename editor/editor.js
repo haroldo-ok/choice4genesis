@@ -4,6 +4,8 @@ const PARCEL_PORT = 1234;
 const API_PORT = 1235;
 
 const showEditor = async (commandLine, executeCommands) => {
+	throw new Error('Not supported.');
+	/*
 	const { Parcel } = require('@parcel/core');
 	const { openInBrowser } = require('@parcel/utils');
 	const { normalize } = require('path');
@@ -30,6 +32,7 @@ const showEditor = async (commandLine, executeCommands) => {
 	if (commandLine.openBrowser) {
 		openInBrowser(`http://localhost:${PARCEL_PORT}/`);
 	}
+	*/
 };
 
 module.exports = { showEditor };
