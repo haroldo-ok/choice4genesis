@@ -2,7 +2,8 @@
   "name": "choice4genesis",
   "version": "0.13.2",
   "description": "A ChoiceScript clone that generates SGDK-compatible C source for the Sega Genesis ",
-  "main": "index.js",
+  "source": "index.js",
+  "main": "dist/index.js",
   "scripts": {
     "test": "jest",
     "test_watch": "jest --watch",
@@ -38,6 +39,8 @@
     "@fortawesome/free-solid-svg-icons": "^6.2.1",
     "@fortawesome/react-fontawesome": "^0.2.0",
     "@monaco-editor/react": "^4.4.6",
+    "@parcel/core": "^2.8.1",
+    "@parcel/utils": "^2.8.1",
     "@picocss/pico": "^1.5.6",
     "axios": "^1.2.1",
     "chalk": "^4.1.2",
