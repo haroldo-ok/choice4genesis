@@ -27,34 +27,9 @@ const showEditor = async (commandLine, executeCommands) => {
 
 	app.use(express.static(normalize(__dirname + '/front/dist')));
 	
-	app.listen(PARCEL_PORT);
-
-	
-	/*
-	const { Parcel } = require('@parcel/core');
-	const { openInBrowser } = require('@parcel/utils');
-	const { normalize } = require('path');
-
-	const { startBackend } = require('./back/backend');
-
-	startBackend(commandLine, API_PORT);
-	
-	let bundler = new Parcel({
-		entries: normalize(__dirname + '/front/index.html'),
-		defaultConfig: '@parcel/config-default',
-		shouldAutoInstall: true,
-		serveOptions: {
-			port: PARCEL_PORT
-		},
-		hmrOptions: {
-			port: PARCEL_PORT
-		}
-	});
-
-	await bundler.watch();	
-	*/
+	app.listen(PARCEL_PORT);	
 	console.log(`Frontend running on port ${PARCEL_PORT}`);
-
+	
 	if (commandLine.openBrowser) {
 		openInBrowser(`http://localhost:${PARCEL_PORT}/`);
 	}
