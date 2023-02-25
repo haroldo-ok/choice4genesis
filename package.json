@@ -4,17 +4,20 @@
   "description": "A ChoiceScript clone that generates SGDK-compatible C source for the Sega Genesis ",
   "main": "index.js",
   "targets": {
-	"main": {
-		"source": "index.js",
-		"distDir": "dist",
-		"includeNodeModules": {
-			"yargs": false
-		}
-	},
-	"editor-frontend": {
-		"source": "editor/front/index.html",
-		"distDir": "editor/front/dist"
-	}
+	"main": false,
+    "main-cli": {
+      "context": "node",	  
+      "source": "index.js",
+      "distDir": "dist",
+	  "isLibrary": true,
+      "includeNodeModules": {
+        "yargs": false
+      }
+    },	
+    "editor-frontend": {
+      "source": "editor/front/index.html",
+      "distDir": "editor/front/dist"
+    }
   },
   "scripts": {
     "test": "jest",
@@ -46,6 +49,8 @@
   "devDependencies": {
     "buffer": "^5.7.1",
     "jest": "^29.0.1",
+    "os-browserify": "^0.3.0",
+    "path-browserify": "^1.0.1",
     "process": "^0.11.10"
   },
   "dependencies": {
