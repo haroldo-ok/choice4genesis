@@ -59,6 +59,12 @@ const readCommandLine = () => yargs
 			boolean: true,
 			describe: 'Watch project for changes, and recompile if changed.'
 		},
+		'hot-reload-frontend': {
+			alias: 'hf',
+			default: false,
+			boolean: true,
+			describe: 'Says if the frontend for the editor should use be generated dinamically by parcel, instead of serving a static build.'
+		},
 		'open-browser': {
 			alias: 'ob',
 			default: true,
