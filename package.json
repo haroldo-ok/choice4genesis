@@ -7,14 +7,20 @@
   "targets": {
     "main": {
       "includeNodeModules": {
-        "yargs": false
+        "yargs": false,
+		"child_process": false
       },
       "isLibrary": true
-    }
+    },
+	"editor-frontend": {
+		"source": "editor/front/index.html",
+		"distDir": "editor/front/dist"
+	}
   },
   "scripts": {
     "test": "jest",
     "build": "parcel build",
+    "build:frontend": "parcel build --target editor-frontend",
     "test_watch": "jest --watch",
     "transpile_test": "node . transpile test",
     "transpile_compile_test": "node . transpile test -- compile",
