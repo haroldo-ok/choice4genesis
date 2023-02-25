@@ -15,21 +15,40 @@ const showEditor = async (commandLine, executeCommands) => {
 	
 	startBackend(commandLine, API_PORT);	
 	
-	const app = express();
+	console.log('Hot reload', commandLine.hotReloadFrontend);
 	
-	app.use('/api', createProxyMiddleware({
-		target: 'http://localhost:' + API_PORT,
-		changeOrigin: true,
-		pathRewrite: {
-			'^/api' : '/'
-		}
-	}));
+	if (commandLine.hotReloadFrontend) {
+		const { Parcel } = require('@parcel/core');
+		const bundler = new Parcel({
+			entries: normalize(__dirname + '/front/index.html'),
+			defaultConfig: '@parcel/config-default',
+			shouldAutoInstall: true,
+			serveOptions: {
+				port: PARCEL_PORT
+			},
+			hmrOptions: {
+				port: PARCEL_PORT
+			}
+		});
 
-	app.use(express.static(normalize(__dirname + '/front/dist')));
+		await bundler.watch();	
+	} else {
+		const app = express();
+		
+		app.use('/api', createProxyMiddleware({
+			target: 'http://localhost:' + API_PORT,
+			changeOrigin: true,
+			pathRewrite: {
+				'^/api' : '/'
+			}
+		}));
+
+		app.use(express.static(normalize(__dirname + '/front/dist')));
+		
+		app.listen(PARCEL_PORT);	
+	}
 	
-	app.listen(PARCEL_PORT);	
-	console.log(`Frontend running on port ${PARCEL_PORT}`);
-	
+	console.log(`Frontend running on port ${PARCEL_PORT}`);	
 	if (commandLine.openBrowser) {
 		open(`http://localhost:${PARCEL_PORT}/`);
 	}
