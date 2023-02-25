@@ -21,7 +21,7 @@
   },
   "scripts": {
     "test": "jest",
-    "build": "parcel build",
+    "build:cli": "parcel build --target main-cli",
     "build:frontend": "parcel build --target editor-frontend",
     "test_watch": "jest --watch",
     "transpile_test": "node . transpile test",
