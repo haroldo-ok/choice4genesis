@@ -2,16 +2,15 @@
   "name": "choice4genesis",
   "version": "0.13.2",
   "description": "A ChoiceScript clone that generates SGDK-compatible C source for the Sega Genesis ",
-  "source": "index.js",
-  "main": "dist/index.js",
+  "main": "index.js",
   "targets": {
-    "main": {
-      "includeNodeModules": {
-        "yargs": false,
-		"child_process": false
-      },
-      "isLibrary": true
-    },
+	"main": {
+		"source": "index.js",
+		"distDir": "dist",
+		"includeNodeModules": {
+			"yargs": false
+		}
+	},
 	"editor-frontend": {
 		"source": "editor/front/index.html",
 		"distDir": "editor/front/dist"
