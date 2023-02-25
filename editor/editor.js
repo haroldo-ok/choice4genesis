@@ -5,7 +5,7 @@ const API_PORT = 1235;
 
 const showEditor = async (commandLine, executeCommands) => {
 	const { normalize } = require('path');
-	const { openInBrowser } = require('@parcel/utils');
+	const open = require('open');
 	
 	const express = require('express');
 	const url = require('url');
@@ -31,7 +31,7 @@ const showEditor = async (commandLine, executeCommands) => {
 	console.log(`Frontend running on port ${PARCEL_PORT}`);
 	
 	if (commandLine.openBrowser) {
-		openInBrowser(`http://localhost:${PARCEL_PORT}/`);
+		open(`http://localhost:${PARCEL_PORT}/`);
 	}
 };
 
