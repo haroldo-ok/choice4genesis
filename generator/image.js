@@ -65,10 +65,10 @@ const convertImages = async (result, projectFolder, commandLine) => {
 			const isCorrectSize = entity.command !== 'background' || width === 320 && height === 224;
 			
 			if (isCorrectFormat && isCorrectPalette && isCorrectSize) {
-				console.log(`Copying "${imageFile}"...`);
+				console.log(`Copying "${imageFile}" to ${targetFileName}...`);
 				await copy(sourceFile, destFile);
 			} else {
-				console.log(`Converting "${imageFile}"...`);
+				console.log(`Converting "${imageFile}" to ${targetFileName}...`);
 
 				let params = [];
 				

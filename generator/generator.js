@@ -104,7 +104,10 @@ const addResource = (map, fileName, generator) => {
 	if (map[fileName]) return map[fileName].variable;
 	
 	// No; add to the map
-	const variable = fileName.trim().replace(/\W+/g, '_');
+	
+	const suffix = fileName.trim().replace(/\W+/g, '_');
+	const variable = /^[^A-Za-z_]/.test(suffix) ? '_' + suffix : suffix;
+	
 	map[fileName] = {
 		variable,
 		content: generator(variable)
@@ -118,11 +121,10 @@ const generateResource = map => Object.values(map).map(({ content }) => content)
 const generateImageCommand = (functionName, entity, context, mapOption = 'ALL', generatedFlags='') => {
 	const imageFileName = getFileNameConstant(entity, entity.params.positional.fileName, context, 'Image filename');
 	
-	const endsWithPng = /\.png$/i;
-	const targetFileName = endsWithPng.test(imageFileName) ? imageFileName : imageFileName + '.png';
-	
 	const imageVariable = addResource(context.res.gfx, imageFileName, imageVariable => 
-		`IMAGE ${imageVariable} "${targetFileName}" APLIB ${mapOption}`);
+		`IMAGE ${imageVariable} "${imageVariable}.png" APLIB ${mapOption}`);
+		
+	const targetFileName = `${imageVariable}.png`;
 		
 	if (!context.images[imageFileName]) {
 		context.images[imageFileName] = { entity, imageFileName, targetFileName };
