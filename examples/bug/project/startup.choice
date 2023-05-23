@@ -1,0 +1,114 @@
+* title "choice4genesis demo"
+* author "John Doe"
+
+* font "damieng.com - Hourglass font.png"
+* cursor "Cursor sprite.png", 1, 1, 3
+* background "#1chr1v1.png"
+
+* create intVar, 1
+* create boolVar, true
+* temp localInt, 2
+
+* set localInt, intVar + 3
+
+* create playingMusic, false
+
+* choice
+	* if playingMusic
+		# Stop the music
+			* stop music, sound
+			OK, music is stopped.
+			* set playingMusic, false
+	* elseif FALSE
+		This should not appear
+		This should not play
+		* music "Actraiser - Fillmore.vgm"
+	* else
+		# Play some music
+			* music "Actraiser - Fillmore.vgm"
+			OK, playing Fillmore, from Actraiser.
+			* set playingMusic, true
+		
+	# Play a voice
+		* sound "ready.wav"
+		OK, playing a digital voice.
+	# Show a smiley
+		* image "Smiley.png", at(30, 3)
+		* image "Smiley.png", at(28, 5), foreground
+		OK... showing a smiley!
+	# Fourth choice
+		This is a test.
+		Second line.
+		Third line.
+		* choice
+			# Yet another choice
+				You chose this.
+			# One more choice
+				You chose that.
+	# Increment a number
+		* set intVar, intVar + 1
+		The value is now ${intVar}!
+	# More options...
+		* choice
+			# Test window
+				* window from(1, 1), to(10, 4)
+				Window 1
+				* flush nowait
+				* window from(29, 1), size(10, 6)
+				Window 2
+				* flush nowait
+				* window default
+				Returning to the default window
+				* flush
+				* clear background, foreground
+				Clearing everything
+			# Test looping
+				* temp numberOfTriesLeft, 3
+				* temp answeredYes, false
+				* while numberOfTriesLeft > 0 and !answeredYes
+					Will you answer Yes?
+					* choice
+						# Yes
+							Okay, then!
+							* set answeredYes, true
+						# No
+							But thou must!
+							* set numberOfTriesLeft, numberOfTriesLeft - 1
+				* if numberOfTriesLeft <= 0
+					Okay, I quit.
+			# Test word wrapping
+				This is a really long text to check if the text wrapping is working correctly; I hope it does.
+				* flush
+				Now, another word wrapping text, now with two lines involved.
+				This is the second line.
+				* flush
+				Now, testing a text that is so long, it spread multiple pages.
+				A line.
+				Another line.
+				Some other line.
+				One more line.
+				Yet another line.
+				A really, really long line, to test a bit more.
+				Final line.
+			# Test native calls
+				* import "extra.h"
+				* temp currentTick, 0
+				* temp functionResult, 0
+				* native getTick, into(currentTick)
+				* native addExample, currentTick, 1 + 2, into(functionResult)
+				Current tick is ${currentTick}
+				Second function result is ${functionResult}
+			# Show more backgrounds
+				* background "Cartoon Fox.png"
+				Showing a cartoon fox
+				* flush
+				* background "Red echidna.jpg"
+				Showing a red echidna
+			# More options...
+				* choice
+					# Play ADPCM music
+						* music "illurock.wav", adpcm
+					# Play ADPCM sound
+						* sound "greeting_3_karen.wav", adpcm
+					# Go to another scene
+						* goto_scene test
