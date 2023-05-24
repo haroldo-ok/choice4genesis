@@ -106,7 +106,16 @@ const addResource = (map, fileName, generator) => {
 	// No; add to the map
 	
 	const suffix = fileName.trim().replace(/\W+/g, '_');
-	const variable = /^[^A-Za-z_]/.test(suffix) ? '_' + suffix : suffix;
+	const variableCandidate = /^[^A-Za-z_]/.test(suffix) ? '_' + suffix : suffix;
+	
+	// Check if the variable name is duplicated
+	// TODO: Cache the existing variables to speed up the verification
+	let variable = variableCandidate;
+	let variableSuffix = 1;
+	const existingVariables = Object.values(map).map(o => o.variable);
+	while (existingVariables.includes(variable)) {
+		variable = variableCandidate + '_' + variableSuffix++;
+	}
 	
 	map[fileName] = {
 		variable,
