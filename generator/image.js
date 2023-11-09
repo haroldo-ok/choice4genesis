@@ -76,9 +76,12 @@ const convertImages = async (result, projectFolder, commandLine) => {
 					params = [...params, '-resize', '320x224!', '-quality', '100'];
 				}
 				
-				if (!isCorrectPalette) {
+				if (!isCorrectPalette || !isCorrectSize) {
 					params = [...params, '-kmeans', '16'];
 				}
+				
+				// TODO: Remove this before merging to "main"
+				console.log(sourceFile, { params, isCorrectSize, isCorrectPalette, destFile });
 				
 				await convertImage([sourceFile, ...params, 'PNG8:' + destFile]);
 			}
