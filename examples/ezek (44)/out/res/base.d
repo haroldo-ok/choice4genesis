@@ -1,1 +1,0 @@
-out/res/base.o: res/base.res
