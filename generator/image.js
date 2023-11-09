@@ -80,9 +80,6 @@ const convertImages = async (result, projectFolder, commandLine) => {
 					params = [...params, '-kmeans', '16'];
 				}
 				
-				// TODO: Remove this before merging to "main"
-				console.log(sourceFile, { params, isCorrectSize, isCorrectPalette, destFile });
-				
 				await convertImage([sourceFile, ...params, 'PNG8:' + destFile]);
 			}
 		} catch (e) {

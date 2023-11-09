@@ -1,1 +1,0 @@
-node ../../. transpile test -- compile
