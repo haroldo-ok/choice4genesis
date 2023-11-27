@@ -210,7 +210,7 @@ void VN_init() {
 	XGM_setForceDelayDMA(TRUE);
 
 	VDP_setTextPalette(TEXT_PAL);
-	VDP_drawText("choice4genesis v0.14.3", 17, 27);
+	VDP_drawText("choice4genesis v0.14.4", 17, 27);
 }
 
 

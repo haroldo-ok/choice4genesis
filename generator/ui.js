@@ -29,7 +29,15 @@ const showMenu = async (commandLine, executeCommands) => {
 		
 	projectNames.forEach(projectName => menu.addItem(projectName, () => {
 		commandLine.project = projectName;
-		return executeCommands();
+		return executeCommands()
+			.then(data => {
+				console.log(chalk.green('<< Press ENTER to return to menu >>'));
+				return data;
+			})
+			.catch(e => {
+				console.error(`Error while compiling ${projectName}`, e);
+				console.error(chalk.red('<< Press ENTER to return to menu >>'));
+			});
 	}));
 			
 	menu.start();
